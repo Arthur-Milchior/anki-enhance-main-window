@@ -100,7 +100,7 @@ from aqt import mw
 
 class DeckNode:
     "A node in the new more advanced deck tree."
-    def __init__(self, mw, oldNode):
+    def __init__(self, mw, oldNode, ignoreEmpty=False):
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
         self.mw = mw
         self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCards, oldChildren = oldNode
@@ -113,6 +113,7 @@ class DeckNode:
         else:
             self.confName="Filtered"
 
+        ignoreEmpty = ignoreEmpty or hide_symbol  in self.name
         today = mw.col.sched.today
         #dayCutoff = mw.col.sched.dayCutoff
         result = mw.col.db.first("""select
@@ -141,9 +142,9 @@ class DeckNode:
         self.suspendedCards = result[5] or 0
         self.lrnSoonest = result[6] #can be null
         self.unseenCards = result[7] or 0
-        self.children = [DeckNode(mw, oldChild) for oldChild in oldChildren]
-        self.isEmpty = self.unseenCards==0
-        self.hasEmptyDescendant = False
+        self.children = [DeckNode(mw, oldChild, ignoreEmpty) for oldChild in oldChildren]
+        self.isEmpty = self.unseenCards==0 and not ignoreEmpty
+        self.hasEmptyDescendant = False 
         for child in self.children:
             self.lrnReps += child.lrnReps
             self.lrnCards += child.lrnCards
@@ -158,9 +159,9 @@ class DeckNode:
                 self.lrnSoonest = min(self.lrnSoonest, child.lrnSoonest)
             self.isEmpty = self.isEmpty and child.isEmpty
             self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
-        if hide_symbol in self.name:
-            self.color = default_color
-        elif self.isEmpty:
+        if ignoreEmpty:
+            self.hasEmptyDescendant = False
+        if self.isEmpty:
             self.color= color_empty
         elif self.hasEmptyDescendant:
             self.color = color_empty_descendant
@@ -222,16 +223,19 @@ class DeckNode:
                 return str(c) + "+"
             return str(n)
         
-        def makeCell(contents, colour):
+        def makeCell(contents, colour, text):
             if contents == 0 or contents == "0":
                 colour = "#e0e0e0"
-            cell = "<td align=right><font color='%s'>%s</font></td>"
-            return cell % (colour, contents)
+            cell = "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"
+            return cell % (colour, contents, text)
         
         due = self.dueRevCards + self.lrnDayCards + self.dueLrnCards
         if due == 0 and self.lrnSoonest is not None:
-            wait = (self.lrnSoonest - intTime()) / 60
-            dueNow = "[" + str(wait) + "m]"
+            remainingSeconds=self.lrnSoonest - intTime()
+            if remainingSeconds >= 60:
+                dueNow = "[" + str(remainingSeconds / 60) + "m]"
+            else :
+                dueNow = "[" + str(remainingSeconds) + "s]"
         else:
             dueNow = cap(due)
         laterCards = self.lrnCards - self.dueLrnCards
@@ -245,19 +249,19 @@ class DeckNode:
         else:
             later = str(laterCards) + " (" + str(laterReps) + ")"
         if userOption["new"]:
-            buf += makeCell(cap(self.newCards), "#000099")
+            buf += makeCell(cap(self.newCards), "#000099", "Unseen card you will see today.")
         if userOption["due"]:
-            buf += makeCell(due, "#007700")
+            buf += makeCell(due, "#007700", "Already seen card you will see today.")
         if userOption["due now"]:
-            buf += makeCell(dueNow, "#007700")
+            buf += makeCell(dueNow, "#007700","Already seen card you can see right now.<br/>(Or the time when there will be more cards)")
         if userOption["later"]:
-            buf += makeCell(later, "#770000")
+            buf += makeCell(later, "#770000","Cards you will see later today.")
         if userOption["buried"]:
-            buf += makeCell(cap(self.buriedCards), "#997700")
+            buf += makeCell(cap(self.buriedCards), "#997700","Cards you will not see today, even if you decide to see more cards.")
         if userOption["suspended"]:
-            buf += makeCell(cap(self.suspendedCards), "#990077")
+            buf += makeCell(cap(self.suspendedCards), "#990077","Cards you will never see until you unbury them.")
         if userOption["unseen"]:
-            buf += makeCell(cap(self.unseenCards), "#009977")
+            buf += makeCell(cap(self.unseenCards), "#009977","Cards you have never answered before.")
         # options
         buf += "<td align=right class=opts>%s</td>" % col.mw.button(
             link="opts:%d"%did, name="<img valign=bottom src='qrc:/icons/gears.png'>"+downArrow())
@@ -290,7 +294,29 @@ def renderDeckTree(self, nodes, depth=0):
             headings.append("Suspended")
         if userOption["unseen"]:
             headings.append("Unseen")
-        buf = "<tr><th colspan=5 align=left>%s</th>" % (_("Deck"),)
+        buf = """<style>
+        /* Tooltip container */
+        
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+        </style>
+        <tr><th colspan=5 align=left>%s</th>""" % (_("Deck"),)
         for heading in headings:
             buf += "<th class=count>%s</th>" % (_(heading),)
         buf += "<th class=count></th>" #for deck's option
