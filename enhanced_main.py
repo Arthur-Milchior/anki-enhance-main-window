@@ -255,7 +255,7 @@ class DeckNode:
         if userOption["buried"]:
             buf += makeCell(cap(self.buriedCards), "#997700")
         if userOption["suspended"]:
-            buf += makeCell(cap(self.buriedCards), "#990077")
+            buf += makeCell(cap(self.suspendedCards), "#990077")
         if userOption["unseen"]:
             buf += makeCell(cap(self.unseenCards), "#009977")
         # options
