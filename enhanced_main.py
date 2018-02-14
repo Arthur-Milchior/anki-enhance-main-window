@@ -44,59 +44,97 @@ by adding a special symbol in the name of the deck (by default ";")
 #USER CONFIGURATION#
 ####################
 #Write False or True depending on whether you want to see the name of the option group
+
 userOption = {
+    ###
+    #Counting cards of Decks
+    
+    #Set to true if you want to show only the number of card in the
+    #deck, not taking the subdeck into accounts (This option does not
+    #apply to the columns considering the cards due today.) 
+    "Do not count subdeck's card"  :False,
+
+
+    ###
+    #List of columns. Reorder the elements to change the order fo the columns.
+    #-Long name of the column
+    #-Header of the column
+    #-Whether this column is shown
+    #-Color of the number
+    #-Description of the column
+    "columns" :[
+        ##Learning:
+        #This number is the sum of the two numbers below.
+        ("learning card", "Learning<br/>(card)", False , "orange", "Cards in learning (either new cards you have seen once, or cards which you have forgotten recently. Assuming those cards didn't graduate)"),
+        ("learning later", "Learning<br/>later (review)", False , "orange", "Review which will happen later. Either because a review happened recently, or because the card have many review left."),
+        ("learning now", "Learning<br/>now", False , "orange", "Cards in learning which are due now. If there are no such cards, the time in minutes or seconds until another learning card is due"),
+        ("learning now later", "Learning<br/>now<br/>(later)", True, "orange", "Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)"),
+        ##Review cards:
+        ("review due", "Due<br/>all", False , "green", "Review cards which are due today (not counting the one in learning)"),
+        ("review today", "Due<br/>today", False , "green", "Review cards you will see today"),
+        ("review", "Due<br/>today (all)", True, "green", "Review cards cards you will see today (and total number in parenthesis if this number is bigger)"),
+        ##Unseen cards
+        ("unseen","Unseen<br/>all", False  , "blue", "Cards that have never been answered"),
+        ("new", "New<br/>today", False , "blue", "Unseen cards you will see today (what anki calls new cards)"),
+        ("unseen new","New<br/>(Unseen)", True, "blue", "Unseen cards you will see today (and total number of unseen cards in parenthesis if this number is bigger)"),
+        ##General count
+        ("buried", "Buried", True, "grey","number of buried cards, (cards you decided not to see today)"),        
+        ("suspended", "Suspended", True, "brown", "number of suspended cards, (cards you will never see until you unsuspend them in the browser)"),
+        ("total", "Total", True, "black", "Number of cards in the deck"),
+        ("today", "Today", True, "red", "Number of review you will see today (new, review and learning)"),
+    ],
+
+    ######
+    #Other options
     #Show the name of the deck's option:
-    "option" : True ,
-    #number of cards which are due now
-    "due now" : True,
-    #number of buried cards
-    "buried" : True ,
-    #number of suspended cards
-    "suspended" : True ,
-    #number of due cards which are due later:
-    "later" : True,
-    #number of cards in learning (a card may required to be reviewed  many times):
-    "learning" : True,
-    #number of new cards that will be shown today:
-    "new" : True,
-    #number of unseen cards:
-    "unseen" : True ,
-    #number of due cards (to see now or later)
-    "due" : False,
+    "option" : True,
+
     #Change the color of (sub)decks without new cards to color_empty (you can edit it below)
     #change also the color of the (sub)decks with a descendant without new cards to color_empty_descendant (you can edit it below)
     "no_new": True,
+
+    #the number of seconds between two refresh of the screen
+    "refresh rate": 30,
+
+    #To which value numbers should be capped.
+    #If this value is 0, you only see 0 or +
+    #If this value is negative, there is no capping
+    "cap value" : -1,
+
+    
+    ####Considering deck without unseen cards
+
+    #the color of deck whose every subdeck contains unseen cards
+    "default color" :"black",
+
+    #The color of deck who does not contains unseen cards
+    "color empty" : "red",
+
+    #The color of deck who have a subdeck which does not contains unseen cards
+    "color empty descendant" : "blue",
+
+    #if the symbol, on the right of the equal, is present into the name of the deck, the presence or absence of unseen cards will not be considered.
+    "hide symbol" :";",
 }
-
-hide_symbol =";"
-#
-default_color ="black"
-color_empty = "red"
-color_empty_descendant = "blue"
-
-#the number of seconds between two refresh of the screen
-refresh_rate= 30
-
-#To which value numbers should be capped.
-#If this value is 0, you only see 0 or +
-#If this value is negative, there is no capping
-cap_value = -1
 ###########################
 #code beginning
 #################
-
-
-
-
-
-
-
 import time
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
 from aqt.utils import downArrow
 from anki.utils import intTime
 from aqt import mw
+
+def cap(n):
+    if userOption["cap value"]==0:
+        if n==0:
+            return "0"
+        else:
+            return "+"
+        if n >= userOption["cap value"] and userOption["cap value"] >0:
+            return str(c) + "+"
+        return str(n)
 
 class DeckNode:
     "A node in the new more advanced deck tree."
@@ -113,64 +151,89 @@ class DeckNode:
         else:
             self.confName="Filtered"
 
-        ignoreEmpty = ignoreEmpty or hide_symbol  in self.name
+        ignoreEmpty = ignoreEmpty or userOption["hide symbol"]  in self.name
         today = mw.col.sched.today
         #dayCutoff = mw.col.sched.dayCutoff
-        result = mw.col.db.first("""select
-            --lrnReps
-            sum(case when queue=1 then left/1000 else 0 end),
-            --lrnCards
-            sum(case when queue=1 then 1 else 0 end),
-            --dueLrnCards
-            sum(case when queue=1 and due<=? then 1 else 0 end),
-            --lrnDayCards
-            sum(case when queue=3 and due<=? then 1 else 0 end),
-            --buriedCards
-            sum(case when queue=-2  or queue=-3 then 1 else 0 end),
+        result = mw.col.db.first("""select 
+            --Number of review total
+            sum(case when queue = 1 then left/1000 else 0 end),
+            --Number of cards in learning
+            sum(case when queue = 1 then 1 else 0 end),
+            --Number of cards in learning ready
+            sum(case when queue = 1 and due <= ? then 1 else 0 end),
+            --Number of cards in learning such that this review was supposed to wait at least a day
+            sum(case when queue = 3 and due <= ? then 1 else 0 end),
+            --Number of buried Cards
+            sum(case when queue = -2  or queue = -3 then 1 else 0 end),
             --suspendedCards
-            sum(case when queue=-1 then 1 else 0 end),
+            sum(case when queue = -1 then 1 else 0 end),
             --lrnSoonest
-            min(case when queue=1 then due else null end),
+            min(case when queue = 1 then due else null end),
             --unseen
-            sum(case when queue=0 then 1 else 0 end)
-            from cards where did=?""", cutoff, today, self.did)
-        self.lrnReps = result[0] or 0
-        self.lrnCards = result[1] or 0
-        self.dueLrnCards = result[2] or 0
-        self.lrnDayCards = result[3] or 0
-        self.buriedCards = result[4] or 0
-        self.suspendedCards = result[5] or 0
-        self.lrnSoonest = result[6] #can be null
-        self.unseenCards = result[7] or 0
+            sum(case when queue = 0 then 1 else 0 end),
+            --total
+            sum(1),
+            --review due today
+            sum(case when queue = 2 and due <= ? then 1 else 0 end)
+            from cards where did=?""", cutoff, today, today, self.did)
+        
+        self.count={
+            "flat":
+            {
+                "learning repetition" : result[0] or 0,
+                "learning card" : result[1] or 0,
+                "learning now" : result[2] or 0,
+                "learn > day" : result[3] or 0,
+                "buried" : result[4] or 0,
+                "suspended" : result[5] or 0,
+                "unseen" : result[7] or 0,
+                "total" : result[8] or 0,
+                "review due" : result[9] or 0,
+            }
+        }
+        self.count["flat"]["learning later"]= self.count["flat"]["learning repetition"]-self.count["flat"]["learning now"]
+
+        self.timeDue= {"flat": result[6], "rec":result[6]} #can be null,
+        self.count["rec"] = {name: self.count["flat"][name] for name in self.count["flat"]}
         self.children = [DeckNode(mw, oldChild, ignoreEmpty) for oldChild in oldChildren]
-        self.isEmpty = self.unseenCards==0 and not ignoreEmpty
-        self.hasEmptyDescendant = False 
+        self.isEmpty = self.count["flat"]["unseen"]==0 and not ignoreEmpty
+        self.hasEmptyDescendant = False
+        self.today = self.dueRevCards + self.dueLrnReps+self.count["flat"]["learning repetition"]
         for child in self.children:
-            self.lrnReps += child.lrnReps
-            self.lrnCards += child.lrnCards
-            self.dueLrnCards += child.dueLrnCards
-            self.lrnDayCards += child.lrnDayCards
-            self.buriedCards += child.buriedCards
-            self.suspendedCards += child.suspendedCards
-            self.unseenCards += child.unseenCards
-            if self.lrnSoonest is None:
-                self.lrnSoonest = child.lrnSoonest
-            elif child.lrnSoonest is not None:
-                self.lrnSoonest = min(self.lrnSoonest, child.lrnSoonest)
+            for name in self.count["rec"]:
+                self.count["rec"][name] += child.count["rec"][name]
+            if self.timeDue["rec"]:
+                if child.timeDue["rec"]:
+                    self.timeDue["rec"]= min(self.timeDue["rec"],child.timeDue["rec"])
+            else:
+                self.timeDue["rec"] = child.timeDue["rec"]
             self.isEmpty = self.isEmpty and child.isEmpty
             self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
         if ignoreEmpty:
             self.hasEmptyDescendant = False
         if self.isEmpty:
-            self.color= color_empty
+            self.color= userOption["color empty"]
         elif self.hasEmptyDescendant:
-            self.color = color_empty_descendant
-        else :
-            self.color = default_color
+            self.color = userOption["color empty descendant"]
+        else:
+            self.color = userOption["default color"]
+        for c in ["flat","rec"]:
+            self.count[c]["learning later"]= (self.count[c]["learning repetition"]-self.count[c]["learning now"])
+            self.count[c]["learning now later"]= str((self.count[c]["learning now"])) + (" (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
+            self.count[c]["review today"]=(self.dueRevCards)
+            reviewLater=(self.count[c]["review due"]-self.count[c]["review today"])
+            self.count[c]["review"]=str((self.count[c]["review today"])) + (" (+"+str(reviewLater)+")" if reviewLater else "")
+            self.count[c]["new"]=(self.newCards)
+            unseenLater = self.count[c]["unseen"]-self.count[c]["new"]
+            self.count[c]["unseen new"] = str((self.count[c]["new"])) + (" (+"+str(unseenLater)+")" if unseenLater else "")
+            self.count[c]["today"] = self.count[c]["new"]+self.dueRevCards+self.dueLrnReps
+            if not  self.count[c]["learning now"] and self.timeDue[c] is not None:
+                remainingSeconds = self.timeDue[c] - intTime()
+                if remainingSeconds >= 60:
+                    self.count[c]["learning now"] = "[" + str(remainingSeconds / 60) + "m]"
+                else :
+                    self.count[c]["learning now"] = "[" + str(remainingSeconds) + "s]"
             
-    def test(self, node, depth, cnt):
-        deckRow(self, node, depth, cnt)
-        
     def makeRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
         node = self
@@ -212,56 +275,13 @@ class DeckNode:
         <td class=decktd colspan=5>%s%s<a class="deck %s" href='open:%d'><font color='%s'>%s</font></a></td>"""% (
             indent(), collapse, extraclass, did, node.color,node.name)
 
-        
-        def cap(n):
-            if cap_value==0:
-                if n==0:
-                    return "0"
-                else:
-                    return "+"
-            if n >= cap_value and cap_value >0:
-                return str(c) + "+"
-            return str(n)
-        
-        def makeCell(contents, colour, text):
-            if contents == 0 or contents == "0":
-                colour = "#e0e0e0"
-            cell = "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"
-            return cell % (colour, contents, text)
-        
-        due = self.dueRevCards + self.lrnDayCards + self.dueLrnCards
-        if due == 0 and self.lrnSoonest is not None:
-            remainingSeconds=self.lrnSoonest - intTime()
-            if remainingSeconds >= 60:
-                dueNow = "[" + str(remainingSeconds / 60) + "m]"
-            else :
-                dueNow = "[" + str(remainingSeconds) + "s]"
-        else:
-            dueNow = cap(due)
-        laterCards = self.lrnCards - self.dueLrnCards
-        laterReps = self.lrnReps - self.dueLrnCards
-        if laterReps == laterCards:
-            later = cap(laterReps)
-        elif laterCards == 0:
-            later = "(" + cap(laterReps) + ")"
-        elif laterReps >= 1000:
-            later = cap(laterCards) + " (+)"
-        else:
-            later = str(laterCards) + " (" + str(laterReps) + ")"
-        if userOption["new"]:
-            buf += makeCell(cap(self.newCards), "#000099", "Unseen card you will see today.")
-        if userOption["due"]:
-            buf += makeCell(due, "#007700", "Already seen card you will see today.")
-        if userOption["due now"]:
-            buf += makeCell(dueNow, "#007700","Already seen card you can see right now.<br/>(Or the time when there will be more cards)")
-        if userOption["later"]:
-            buf += makeCell(later, "#770000","Cards you will see later today.")
-        if userOption["buried"]:
-            buf += makeCell(cap(self.buriedCards), "#997700","Cards you will not see today, even if you decide to see more cards.")
-        if userOption["suspended"]:
-            buf += makeCell(cap(self.suspendedCards), "#990077","Cards you will never see until you unbury them.")
-        if userOption["unseen"]:
-            buf += makeCell(cap(self.unseenCards), "#009977","Cards you have never answered before.")
+        for (name, _, present, colour, description) in userOption["columns"]:
+            if present:
+                contents = self.count["flat" if userOption["Do not count subdeck's card"] else "rec"][name]
+                if contents == 0 or contents == "0":
+                    colour = "#e0e0e0"
+                buf +=( "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"% (colour, contents, description))
+
         # options
         buf += "<td align=right class=opts>%s</td>" % col.mw.button(
             link="opts:%d"%did, name="<img valign=bottom src='qrc:/icons/gears.png'>"+downArrow())
@@ -277,23 +297,7 @@ def renderDeckTree(self, nodes, depth=0):
     if not nodes:
         return ""
     if depth == 0:
-    
-        #new headings
-        headings = []
-        if userOption["new"]:
-            headings.append("New")
-        if userOption["due"]:
-            headings.append("Due")
-        if userOption["due now"]:
-            headings.append("Due now")
-        if userOption["later"]:
-            headings.append("Later")
-        if userOption["buried"]:
-            headings.append("Buried")
-        if userOption["suspended"]:
-            headings.append("Suspended")
-        if userOption["unseen"]:
-            headings.append("Unseen")
+                
         buf = """<style>
         /* Tooltip container */
         
@@ -317,8 +321,9 @@ def renderDeckTree(self, nodes, depth=0):
         }
         </style>
         <tr><th colspan=5 align=left>%s</th>""" % (_("Deck"),)
-        for heading in headings:
-            buf += "<th class=count>%s</th>" % (_(heading),)
+        for (__ ,heading, present, __, __) in userOption["columns"]:
+            if present:
+                buf += "<th class=count>%s</th>" % (_(heading),)
         buf += "<th class=count></th>" #for deck's option
         if userOption["option"]:
             buf += "<td></td>"
@@ -360,5 +365,5 @@ DeckBrowser._deckRow = deckRow
 DeckBrowser.refresh = refreshDoNothing
 
 #refresh according to the refresh_rate parametr
-refreshTimer = mw.progress.timer(refresh_rate*1000, onRefreshTimer, True)
+refreshTimer = mw.progress.timer(userOption["refresh rate"]*1000, onRefreshTimer, True)
 
