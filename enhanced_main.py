@@ -65,23 +65,23 @@ userOption = {
     "columns" :[
         ##Learning:
         #This number is the sum of the two numbers below.
-        ("learning card", "Learning<br/>(card)", False , "orange", "Cards in learning (either new cards you have seen once, or cards which you have forgotten recently. Assuming those cards didn't graduate)"),
-        ("learning later", "Learning<br/>later (review)", False , "orange", "Review which will happen later. Either because a review happened recently, or because the card have many review left."),
-        ("learning now", "Learning<br/>now", False , "orange", "Cards in learning which are due now. If there are no such cards, the time in minutes or seconds until another learning card is due"),
-        ("learning now later", "Learning<br/>now<br/>(later)", True, "orange", "Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)"),
+        ("learning card", "Learning<br/>(card)", False , "orange", "Cards in learning<br/>(either new cards you have seen once,<br/>or cards which you have forgotten recently.<br/>Assuming those cards didn't graduate)"),
+        ("learning later", "Learning<br/>later (review)", False , "orange", "Review which will happen later.<br/>Either because a review happened recently,<br/>or because the card have many review left."),
+        ("learning now", "Learning<br/>now", False , "orange", "Cards in learning which are due now.<br/>If there are no such cards,<br/>the time in minutes<br/>or seconds until another learning card is due"),
+        ("learning now later", "Learning<br/>now<br/>(later)", True, "orange", "Cards in learning which are due now<br/>(and in parenthesis, the number of reviews<br/>which are due later)"),
         ##Review cards:
-        ("review due", "Due<br/>all", False , "green", "Review cards which are due today (not counting the one in learning)"),
+        ("review due", "Due<br/>all", False , "green", "Review cards which are due today<br/>(not counting the one in learning)"),
         ("review today", "Due<br/>today", False , "green", "Review cards you will see today"),
-        ("review", "Due<br/>today (all)", True, "green", "Review cards cards you will see today (and total number in parenthesis if this number is bigger)"),
+        ("review", "Due<br/>today (all)", True, "green", "Review cards cards you will see today<br/>(and the ones you will not see today)"),
         ##Unseen cards
         ("unseen","Unseen<br/>all", False  , "blue", "Cards that have never been answered"),
-        ("new", "New<br/>today", False , "blue", "Unseen cards you will see today (what anki calls new cards)"),
-        ("unseen new","New<br/>(Unseen)", True, "blue", "Unseen cards you will see today (and total number of unseen cards in parenthesis if this number is bigger)"),
+        ("new", "New<br/>today", False , "blue", "Unseen cards you will see today<br/>(what anki calls new cards)"),
+        ("unseen new","New<br/>(Unseen)", True, "blue", "Unseen cards you will see today<br/>(and those you will not see today)"),
         ##General count
-        ("buried", "Buried", True, "grey","number of buried cards, (cards you decided not to see today)"),        
-        ("suspended", "Suspended", True, "brown", "number of suspended cards, (cards you will never see until you unsuspend them in the browser)"),
+        ("buried", "Buried", True, "grey","number of buried cards,<br/>(cards you decided not to see today)"),        
+        ("suspended", "Suspended", True, "brown", "number of suspended cards,<br/>(cards you will never see<br/>unless you unsuspend them in the browser)"),
         ("total", "Total", True, "black", "Number of cards in the deck"),
-        ("today", "Today", True, "red", "Number of review you will see today (new, review and learning)"),
+        ("today", "Today", True, "red", "Number of review you will see today<br/>(new, review and learning)"),
     ],
 
     ######
@@ -182,7 +182,7 @@ class DeckNode:
             {
                 "learning repetition" : result[0] or 0,
                 "learning card" : result[1] or 0,
-                "learning now" : result[2] or 0,
+                "learning now count" : result[2] or 0,
                 "learn > day" : result[3] or 0,
                 "buried" : result[4] or 0,
                 "suspended" : result[5] or 0,
@@ -191,8 +191,6 @@ class DeckNode:
                 "review due" : result[9] or 0,
             }
         }
-        self.count["flat"]["learning later"]= self.count["flat"]["learning repetition"]-self.count["flat"]["learning now"]
-
         self.timeDue= {"flat": result[6], "rec":result[6]} #can be null,
         self.count["rec"] = {name: self.count["flat"][name] for name in self.count["flat"]}
         self.children = [DeckNode(mw, oldChild, ignoreEmpty) for oldChild in oldChildren]
@@ -200,7 +198,7 @@ class DeckNode:
         self.hasEmptyDescendant = False
         self.today = self.dueRevCards + self.dueLrnReps+self.count["flat"]["learning repetition"]
         for child in self.children:
-            for name in self.count["rec"]:
+            for name in [ "learning repetition", "learning card", "learning now count", "learn > day", "buried", "suspended", "unseen", "total", "review due",]:
                 self.count["rec"][name] += child.count["rec"][name]
             if self.timeDue["rec"]:
                 if child.timeDue["rec"]:
@@ -209,6 +207,8 @@ class DeckNode:
                 self.timeDue["rec"] = child.timeDue["rec"]
             self.isEmpty = self.isEmpty and child.isEmpty
             self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
+        self.count["flat"]["learning later"]= self.count["flat"]["learning repetition"]-self.count["flat"]["learning now count"]
+
         if ignoreEmpty:
             self.hasEmptyDescendant = False
         if self.isEmpty:
@@ -218,8 +218,7 @@ class DeckNode:
         else:
             self.color = userOption["default color"]
         for c in ["flat","rec"]:
-            self.count[c]["learning later"]= (self.count[c]["learning repetition"]-self.count[c]["learning now"])
-            self.count[c]["learning now later"]= str((self.count[c]["learning now"])) + (" (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
+            self.count[c]["learning later"]= (self.count[c]["learning repetition"]-self.count[c]["learning now count"])
             self.count[c]["review today"]=(self.dueRevCards)
             reviewLater=(self.count[c]["review due"]-self.count[c]["review today"])
             self.count[c]["review"]=str((self.count[c]["review today"])) + (" (+"+str(reviewLater)+")" if reviewLater else "")
@@ -227,12 +226,15 @@ class DeckNode:
             unseenLater = self.count[c]["unseen"]-self.count[c]["new"]
             self.count[c]["unseen new"] = str((self.count[c]["new"])) + (" (+"+str(unseenLater)+")" if unseenLater else "")
             self.count[c]["today"] = self.count[c]["new"]+self.dueRevCards+self.dueLrnReps
-            if not  self.count[c]["learning now"] and self.timeDue[c] is not None:
+            if not  self.count[c]["learning now count"] and self.timeDue[c] is not None:
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
                     self.count[c]["learning now"] = "[" + str(remainingSeconds / 60) + "m]"
                 else :
                     self.count[c]["learning now"] = "[" + str(remainingSeconds) + "s]"
+            else:
+                self.count[c]["learning now"]=self.count[c]["learning now count"]
+            self.count[c]["learning now later"]= str((self.count[c]["learning now"])) + (" (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
             
     def makeRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
