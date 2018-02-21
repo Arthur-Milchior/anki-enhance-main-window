@@ -80,7 +80,8 @@ userOption = {
         ##General count
         ("buried", "Buried", True, "grey","number of buried cards,<br/>(cards you decided not to see today)"),        
         ("suspended", "Suspended", True, "brown", "number of suspended cards,<br/>(cards you will never see<br/>unless you unsuspend them in the browser)"),
-        ("total", "Total", True, "black", "Number of cards in the deck"),
+        ("total", "Total", False, "black", "Number of cards in the deck"),
+        ("total note", "Total<br/>Card/Note", True, "black", "Number of cards in the deck (and of note)"),
         ("today", "Today", True, "red", "Number of review you will see today<br/>(new, review and learning)"),
     ],
 
@@ -154,6 +155,7 @@ class DeckNode:
         ignoreEmpty = ignoreEmpty or userOption["hide symbol"]  in self.name
         today = mw.col.sched.today
         #dayCutoff = mw.col.sched.dayCutoff
+        self.notesRec = set(mw.col.db.list("""select  nid from cards where did=?""", self.did))
         result = mw.col.db.first("""select 
             --Number of review total
             sum(case when queue = 1 then left/1000 else 0 end),
@@ -174,8 +176,11 @@ class DeckNode:
             --total
             sum(1),
             --review due today
-            sum(case when queue = 2 and due <= ? then 1 else 0 end)
+            sum(case when queue = 2 and due <= ? then 1 else 0 end),
+            --note
+            count (distinct nid)
             from cards where did=?""", cutoff, today, today, self.did)
+        
         
         self.count={
             "flat":
@@ -189,6 +194,7 @@ class DeckNode:
                 "unseen" : result[7] or 0,
                 "total" : result[8] or 0,
                 "review due" : result[9] or 0,
+                "note" : result[10] or 0,
             }
         }
         self.timeDue= {"flat": result[6], "rec":result[6]} #can be null,
@@ -198,7 +204,8 @@ class DeckNode:
         self.hasEmptyDescendant = False
         self.today = self.dueRevCards + self.dueLrnReps+self.count["flat"]["learning repetition"]
         for child in self.children:
-            for name in [ "learning repetition", "learning card", "learning now count", "learn > day", "buried", "suspended", "unseen", "total", "review due",]:
+            self.notesRec.update(child.notesRec)
+            for name in [ "learning repetition", "learning card", "learning now count", "learn > day", "buried", "suspended", "unseen", "total", "review due"]:
                 self.count["rec"][name] += child.count["rec"][name]
             if self.timeDue["rec"]:
                 if child.timeDue["rec"]:
@@ -208,6 +215,7 @@ class DeckNode:
             self.isEmpty = self.isEmpty and child.isEmpty
             self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
         self.count["flat"]["learning later"]= self.count["flat"]["learning repetition"]-self.count["flat"]["learning now count"]
+        self.count["rec"]["note"]= len(self.notesRec)
 
         if ignoreEmpty:
             self.hasEmptyDescendant = False
@@ -221,20 +229,21 @@ class DeckNode:
             self.count[c]["learning later"]= (self.count[c]["learning repetition"]-self.count[c]["learning now count"])
             self.count[c]["review today"]=(self.dueRevCards)
             reviewLater=(self.count[c]["review due"]-self.count[c]["review today"])
-            self.count[c]["review"]=str((self.count[c]["review today"])) + (" (+"+str(reviewLater)+")" if reviewLater else "")
-            self.count[c]["new"]=(self.newCards)
+            self.count[c]["review"]="%d%s" %((self.count[c]["review today"])," (+"+str(reviewLater)+")" if reviewLater else "")
+            self.count[c]["new"]=self.newCards
             unseenLater = self.count[c]["unseen"]-self.count[c]["new"]
-            self.count[c]["unseen new"] = str((self.count[c]["new"])) + (" (+"+str(unseenLater)+")" if unseenLater else "")
+            self.count[c]["unseen new"] = "%d%s"%((self.count[c]["new"])," (+"+str(unseenLater)+")" if unseenLater else "")
             self.count[c]["today"] = self.count[c]["new"]+self.dueRevCards+self.dueLrnReps
             if not  self.count[c]["learning now count"] and self.timeDue[c] is not None:
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
-                    self.count[c]["learning now"] = "[" + str(remainingSeconds / 60) + "m]"
+                    self.count[c]["learning now"] = "[%d]" % remainingSeconds / 60
                 else :
-                    self.count[c]["learning now"] = "[" + str(remainingSeconds) + "s]"
+                    self.count[c]["learning now"] = "[%d]" % remainingSeconds
             else:
                 self.count[c]["learning now"]=self.count[c]["learning now count"]
-            self.count[c]["learning now later"]= str((self.count[c]["learning now"])) + (" (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
+            self.count[c]["total note"] = "%d/%d" %(self.count[c]["total"], self.count[c]["note"])
+            self.count[c]["learning now later"]= "%d%s"%((self.count[c]["learning now"])," (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
             
     def makeRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
