@@ -11,7 +11,8 @@ Most features offered by this add-on are related to some column. Here is the det
 
 You can usually decide whether you want to have the number of cards in a deck, considering subdeck or not (for each column, use "deck" instead of "subdeck" in the last column). The only exception is when it would make no sens not to consider subdecks (e.g. the number of new cards seen today is dependant of the number of new cards in subdecks. However the number of unseen cards in a deck is independant of the number of unseen cards in subdecks)
 
-Absolute or percent. The second-to last option allows you to decide whether you want the numbers shown to be the exact number of cards, or the percentage of cards (100% being the number of cards in this deck)
+Absolute, percent or both. The second-to last option allows you to decide whether you want the numbers shown to be the exact number of cards,  the percentage of cards (100% being the number of cards in this deck) or both
+
 ###Name of the (sub)deck
 There is not a lot of change in this column. Except that now, if a (sub)deck is empty, it turns red. (You can configure the color.)
 
