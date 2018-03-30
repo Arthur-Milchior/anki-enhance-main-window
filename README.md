@@ -9,8 +9,9 @@ Adds a lot of features to the main window. Allows to configure those features. C
 ##Column
 Most features offered by this add-on are related to some column. Here is the detail, column by column.
 
-You can usually decide whether you want to have the number of cards in a deck, considering subdeck or not. Except when it would make no sens not to consider subdecks (e.g. the number of new cards seen today is dependant of the number of new cards in subdecks. However the number of unseen cards in a deck is independant of the number of unseen cards in subdecks)
+You can usually decide whether you want to have the number of cards in a deck, considering subdeck or not (for each column, use "deck" instead of "subdeck" in the last column). The only exception is when it would make no sens not to consider subdecks (e.g. the number of new cards seen today is dependant of the number of new cards in subdecks. However the number of unseen cards in a deck is independant of the number of unseen cards in subdecks)
 
+Absolute or percent. The second-to last option allows you to decide whether you want the numbers shown to be the exact number of cards, or the percentage of cards (100% being the number of cards in this deck)
 ###Name of the (sub)deck
 There is not a lot of change in this column. Except that now, if a (sub)deck is empty, it turns red. (You can configure the color.)
 
@@ -36,6 +37,12 @@ By default, this column is hidden. Indeed, it becames two columns «due now» an
 
 ###Unseen
 The number of cards which you have never answered. Most of these cards are cards you have never seens. But it also consider cards you have seens and buried. You may have seen it and buried it. By default, the number of unseen cards which you will discover today, and in parenthesis the number of unseen cards you will not see today.
+
+###Young
+The number of cards whose delay is less than 3 weak
+
+###Mature
+The number of cards whose delay is least at least 3 weak
 
 
 ###Buried

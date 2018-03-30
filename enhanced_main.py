@@ -25,6 +25,9 @@ Adds an "unseen" column to show the number of cards which have not yet
 been seen. (In fact, its the number of new cards. But «new cards» in
 anki means «new cards you will see today») 
 
+Adds a "mature"/"young" column to show the percent of cards whose
+delay is at least/less than 21 days.
+
 Adds a column with the deck's configuration's name. 
 
 Triggers a refresh every 30 seconds. (Originally every 10 minutes.)
@@ -38,6 +41,7 @@ Allow to give a special color to the name of the deck which have no
 unseen cards (by default, red). And to the deck which have a subdeck
 have no empty card (by default blue). Allows to turn off this coloring
 by adding a special symbol in the name of the deck (by default ";")
+
 """
 
 ####################
@@ -47,42 +51,38 @@ by adding a special symbol in the name of the deck (by default ";")
 
 userOption = {
     ###
-    #Counting cards of Decks
-    
-    #Set to true if you want to show only the number of card in the
-    #deck, not taking the subdeck into accounts (This option does not
-    #apply to the columns considering the cards due today.) 
-    "Do not count subdeck's card"  :False,
-
-
-    ###
     #List of columns. Reorder the elements to change the order fo the columns.
     #-Long name of the column
     #-Header of the column
     #-Whether this column is shown
     #-Color of the number
     #-Description of the column
+    #-Whether you want absolute number "absolute" or percent "percent"
+    #-Whether you want to consider subdeck "subdeck" or not "deck"
     "columns" :[
         ##Learning:
         #This number is the sum of the two numbers below.
-        ("learning card", "Learning<br/>(card)", False , "orange", "Cards in learning<br/>(either new cards you have seen once,<br/>or cards which you have forgotten recently.<br/>Assuming those cards didn't graduate)"),
-        ("learning later", "Learning<br/>later (review)", False , "orange", "Review which will happen later.<br/>Either because a review happened recently,<br/>or because the card have many review left."),
-        ("learning now", "Learning<br/>now", False , "orange", "Cards in learning which are due now.<br/>If there are no such cards,<br/>the time in minutes<br/>or seconds until another learning card is due"),
-        ("learning now later", "Learning<br/>now<br/>(later)", True, "orange", "Cards in learning which are due now<br/>(and in parenthesis, the number of reviews<br/>which are due later)"),
+        ("learning card", "Learning<br/>(card)", False , "orange", "Cards in learning<br/>(either new cards you have seen once,<br/>or cards which you have forgotten recently.<br/>Assuming those cards didn't graduate)", "absolute", "subdeck"),
+        ("learning later", "Learning<br/>later (review)", False , "orange", "Review which will happen later.<br/>Either because a review happened recently,<br/>or because the card have many review left.", "absolute", "subdeck"),
+        ("learning now", "Learning<br/>now", False , "orange", "Cards in learning which are due now.<br/>If there are no such cards,<br/>the time in minutes<br/>or seconds until another learning card is due", "absolute", "subdeck"),
+        ("learning now later", "Learning<br/>now<br/>(later)", True, "orange", "Cards in learning which are due now<br/>(and in parenthesis, the number of reviews<br/>which are due later)", "absolute", "subdeck"),
         ##Review cards:
-        ("review due", "Due<br/>all", False , "green", "Review cards which are due today<br/>(not counting the one in learning)"),
-        ("review today", "Due<br/>today", False , "green", "Review cards you will see today"),
-        ("review", "Due<br/>today (all)", True, "green", "Review cards cards you will see today<br/>(and the ones you will not see today)"),
+        ("review due", "Due<br/>all", False , "green", "Review cards which are due today<br/>(not counting the one in learning)", "absolute", "subdeck"),
+        ("review today", "Due<br/>today", False , "green", "Review cards you will see today", "absolute", "subdeck"),
+        ("review", "Due<br/>today (all)", True, "green", "Review cards cards you will see today<br/>(and the ones you will not see today)", "absolute", "subdeck"),
         ##Unseen cards
-        ("unseen","Unseen<br/>all", False  , "blue", "Cards that have never been answered"),
-        ("new", "New<br/>today", False , "blue", "Unseen cards you will see today<br/>(what anki calls new cards)"),
-        ("unseen new","New<br/>(Unseen)", True, "blue", "Unseen cards you will see today<br/>(and those you will not see today)"),
+        ("unseen","Unseen<br/>all", False  , "blue", "Cards that have never been answered", "absolute", "subdeck"),
+        ("new", "New<br/>today", False , "blue", "Unseen cards you will see today<br/>(what anki calls new cards)", "absolute", "subdeck"),
+        ("unseen new","New<br/>(Unseen)", True, "blue", "Unseen cards you will see today<br/>(and those you will not see today)", "absolute", "subdeck"),
         ##General count
-        ("buried", "Buried", True, "grey","number of buried cards,<br/>(cards you decided not to see today)"),        
-        ("suspended", "Suspended", True, "brown", "number of suspended cards,<br/>(cards you will never see<br/>unless you unsuspend them in the browser)"),
-        ("total", "Total", False, "black", "Number of cards in the deck"),
-        ("total note", "Total<br/>Card/Note", True, "black", "Number of cards in the deck (and of note)"),
-        ("today", "Today", True, "red", "Number of review you will see today<br/>(new, review and learning)"),
+        ("buried", "Buried", True, "grey","number of buried cards,<br/>(cards you decided not to see today)", "absolute", "subdeck"),        
+        ("suspended", "Suspended", True, "brown", "number of suspended cards,<br/>(cards you will never see<br/>unless you unsuspend them in the browser)", "absolute", "subdeck"),
+        ("total", "Total", False, "black", "Number of cards in the deck", "absolute", "subdeck"),
+        ("total note", "Total<br/>Card/Note", True, "black", "Number of cards/note in the deck", "absolute", "subdeck"), #percent makes no sens in this line. 
+        ("today", "Today", True, "red", "Number of review you will see today<br/>(new, review and learning)", "absolute", "subdeck"),
+        ("undue", "Undue", False, "purple", "Number of cards reviewed, not yet due", "absolute", "subdeck"),
+        ("mature", "Mature", True, "purple", "Number of cards reviewed, with interval at least 3 weeks", "percent", "subdeck"),
+        ("young", "Young", True, "pink", "Number of cards reviewed, with interval less than 3 weeks", "percent", "subdeck"),
     ],
 
     ######
@@ -178,45 +178,55 @@ class DeckNode:
             --review due today
             sum(case when queue = 2 and due <= ? then 1 else 0 end),
             --note
-            count (distinct nid)
-            from cards where did=?""", cutoff, today, today, self.did)
+            count (distinct nid),
+            --review undue
+            sum(case when queue = 2 and due >  ? then 1 else 0 end),
+            --review young
+            sum(case when queue = 2 and due >  ? and ivl <21 then 1 else 0 end),
+            --review mature
+            sum(case when queue = 2 and due >  ? and ivl >=21 then 1 else 0 end)
+            from cards where did=?""", cutoff, today, today, today, today, today, self.did)
         
-        
+        #filling the absolute value of each possible column of the table        
         self.count={
-            "flat":
-            {
-                "learning repetition" : result[0] or 0,
-                "learning card" : result[1] or 0,
-                "learning now count" : result[2] or 0,
-                "learn > day" : result[3] or 0,
-                "buried" : result[4] or 0,
-                "suspended" : result[5] or 0,
-                "unseen" : result[7] or 0,
-                "total" : result[8] or 0,
-                "review due" : result[9] or 0,
-                "note" : result[10] or 0,
+            "absolute":{
+                "deck":{
+                    "learning repetition" : result[0] or 0,
+                    "learning card" : result[1] or 0,
+                    "learning now count" : result[2] or 0,
+                    "learn > day" : result[3] or 0,
+                    "buried" : result[4] or 0,
+                    "suspended" : result[5] or 0,
+                    "unseen" : result[7] or 0,
+                    "total" : result[8] or 0,
+                    "review due" : result[9] or 0,
+                    "note" : result[10] or 0,
+                    "undue" : result[11] or 0,
+                    "young" : result[12] or 0,
+                    "mature" : result[13] or 0,
+                }
             }
         }
-        self.timeDue= {"flat": result[6], "rec":result[6]} #can be null,
-        self.count["rec"] = {name: self.count["flat"][name] for name in self.count["flat"]}
+        self.timeDue= {"deck": result[6], "subdeck":result[6]} #can be null,
+        self.count["absolute"]["subdeck"] = {name: self.count["absolute"]["deck"][name] for name in self.count["absolute"]["deck"]}
         self.children = [DeckNode(mw, oldChild, ignoreEmpty) for oldChild in oldChildren]
-        self.isEmpty = self.count["flat"]["unseen"]==0 and not ignoreEmpty
+        self.isEmpty = self.count["absolute"]["deck"]["unseen"]==0 and not ignoreEmpty
         self.hasEmptyDescendant = False
-        self.today = self.dueRevCards + self.dueLrnReps+self.count["flat"]["learning repetition"]
+        self.today = self.dueRevCards + self.dueLrnReps+self.count["absolute"]["deck"]["learning repetition"]
         for child in self.children:
             self.notesRec.update(child.notesRec)
-            for name in [ "learning repetition", "learning card", "learning now count", "learn > day", "buried", "suspended", "unseen", "total", "review due"]:
-                self.count["rec"][name] += child.count["rec"][name]
-            if self.timeDue["rec"]:
-                if child.timeDue["rec"]:
-                    self.timeDue["rec"]= min(self.timeDue["rec"],child.timeDue["rec"])
+            for name in [ "learning repetition", "learning card", "learning now count", "learn > day", "buried", "suspended", "unseen", "total", "review due", "undue", "young", "mature"]:
+                self.count["absolute"]["subdeck"][name] += child.count["absolute"]["subdeck"][name]
+            if self.timeDue["subdeck"]:
+                if child.timeDue["subdeck"]:
+                    self.timeDue["subdeck"]= min(self.timeDue["subdeck"],child.timeDue["subdeck"])
             else:
-                self.timeDue["rec"] = child.timeDue["rec"]
+                self.timeDue["subdeck"] = child.timeDue["subdeck"]
             self.isEmpty = self.isEmpty and child.isEmpty
             self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
-        self.count["flat"]["learning later"]= self.count["flat"]["learning repetition"]-self.count["flat"]["learning now count"]
-        self.count["rec"]["note"]= len(self.notesRec)
-
+        self.count["absolute"]["deck"]["learning later"]= self.count["absolute"]["deck"]["learning repetition"]-self.count["absolute"]["deck"]["learning now count"]
+        self.count["absolute"]["subdeck"]["note"]= len(self.notesRec)
+       
         if ignoreEmpty:
             self.hasEmptyDescendant = False
         if self.isEmpty:
@@ -225,25 +235,36 @@ class DeckNode:
             self.color = userOption["color empty descendant"]
         else:
             self.color = userOption["default color"]
-        for c in ["flat","rec"]:
-            self.count[c]["learning later"]= (self.count[c]["learning repetition"]-self.count[c]["learning now count"])
-            self.count[c]["review today"]=(self.dueRevCards)
-            reviewLater=(self.count[c]["review due"]-self.count[c]["review today"])
-            self.count[c]["review"]="%d%s" %((self.count[c]["review today"])," (+"+str(reviewLater)+")" if reviewLater else "")
-            self.count[c]["new"]=self.newCards
-            unseenLater = self.count[c]["unseen"]-self.count[c]["new"]
-            self.count[c]["unseen new"] = "%d%s"%((self.count[c]["new"])," (+"+str(unseenLater)+")" if unseenLater else "")
-            self.count[c]["today"] = self.count[c]["new"]+self.dueRevCards+self.dueLrnReps
-            if not  self.count[c]["learning now count"] and self.timeDue[c] is not None:
+        for c in ["deck","subdeck"]:
+            self.count["absolute"][c]["learning later"]= (self.count["absolute"][c]["learning repetition"]-self.count["absolute"][c]["learning now count"])
+            self.count["absolute"][c]["review today"]=(self.dueRevCards)
+            self.count["absolute"][c]["review later"]=(self.count["absolute"][c]["review due"]-self.count["absolute"][c]["review today"])
+            self.count["absolute"][c]["new"]=self.newCards
+            self.count["absolute"][c]["unseen later"] = self.count["absolute"][c]["unseen"]-self.count["absolute"][c]["new"]
+            self.count["absolute"][c]["today"] = self.count["absolute"][c]["new"]+self.dueRevCards+self.dueLrnReps
+
+        #filling the relative value of each possible column of the table
+        self.count["percent"]={
+            kind:{
+                column:(str(100*self.count["absolute"][kind][column]/self.count["absolute"][kind]["total"])+ "%" if self.count["absolute"][kind]["total"] else "")
+                for column in self.count["absolute"][kind]
+            }
+            for kind in ["deck","subdeck"]
+        }
+        #The one with text
+        for number in ["absolute","percent"]:
+            self.count[number][c]["review"]=str(self.count[number][c]["review today"])+ (" (+"+str(self.count[number][c]["review later"])+")" if self.count["absolute"][c]["review later"] else "")
+            self.count[number][c]["unseen new"] = str(self.count[number][c]["new"])+(" (+"+str(self.count[number][c]["unseen"])+")" if self.count["absolute"][c]["unseen later"] else "")
+            if not  self.count["absolute"][c]["learning now count"] and self.timeDue[c] is not None:
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
-                    self.count[c]["learning now"] = "[%d]" % remainingSeconds / 60
+                    self.count[number][c]["learning now"] = "[%dm]" % (remainingSeconds / 60)
                 else :
-                    self.count[c]["learning now"] = "[%d]" % remainingSeconds
+                    self.count[number][c]["learning now"] = "[%ds]" % remainingSeconds
             else:
-                self.count[c]["learning now"]=self.count[c]["learning now count"]
-            self.count[c]["total note"] = "%d/%d" %(self.count[c]["total"], self.count[c]["note"])
-            self.count[c]["learning now later"]= "%d%s"%((self.count[c]["learning now"])," (+"+str(self.count[c]["learning later"])+")" if self.count[c]["learning later"] else "")
+                self.count[number][c]["learning now"]=self.count[number][c]["learning now count"]
+            self.count[number][c]["total note"] = str(self.count[number][c]["total"])+"/"+ str(self.count[number][c]["note"])
+            self.count[number][c]["learning now later"]= "%s%s"%((self.count[number][c]["learning now"])," (+"+str(self.count[number][c]["learning later"])+")" if self.count["absolute"][c]["learning later"] else "")
             
     def makeRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
@@ -286,9 +307,9 @@ class DeckNode:
         <td class=decktd colspan=5>%s%s<a class="deck %s" href='open:%d'><font color='%s'>%s</font></a></td>"""% (
             indent(), collapse, extraclass, did, node.color,node.name)
 
-        for (name, _, present, colour, description) in userOption["columns"]:
+        for (name, _, present, colour, description, number, deck) in userOption["columns"]:
             if present:
-                contents = self.count["flat" if userOption["Do not count subdeck's card"] else "rec"][name]
+                contents = self.count[number][deck][name]
                 if contents == 0 or contents == "0":
                     colour = "#e0e0e0"
                 buf +=( "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"% (colour, contents, description))
@@ -332,7 +353,7 @@ def renderDeckTree(self, nodes, depth=0):
         }
         </style>
         <tr><th colspan=5 align=left>%s</th>""" % (_("Deck"),)
-        for (__ ,heading, present, __, __) in userOption["columns"]:
+        for (__ ,heading, present, __, __, __, __) in userOption["columns"]:
             if present:
                 buf += "<th class=count>%s</th>" % (_(heading),)
         buf += "<th class=count></th>" #for deck's option
