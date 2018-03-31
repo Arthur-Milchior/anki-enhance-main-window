@@ -137,6 +137,18 @@ def cap(n):
             return str(c) + "+"
         return str(n)
 
+def conditionString(cond,string=None, parenthesis = False):
+    res = "(" if parenthesis else ""
+    if cond:
+        if string is None:
+            res += str(cond)
+        else:
+            res+= str(string)
+    else:
+        return ""
+    res += ")" if parenthesis else ""
+    return res
+
 class DeckNode:
     "A node in the new more advanced deck tree."
     def __init__(self, mw, oldNode, ignoreEmpty=False):
@@ -246,22 +258,22 @@ class DeckNode:
         #filling the relative value of each possible column of the table
         self.count["percent"]={
             kind:{
-                column:(str(100*self.count["absolute"][kind][column]/self.count["absolute"][kind]["total"])+ "%" if self.count["absolute"][kind][column] and self.count["absolute"][kind]["total"] else "")
+                column:conditionString(self.count["absolute"][kind][column],str(100*self.count["absolute"][kind][column]/self.count["absolute"][kind]["total"])+ "%") if self.count["absolute"][kind]["total"] else ""
                 for column in self.count["absolute"][kind]
             }
             for kind in self.count["absolute"]
         }
         self.count["both"]={
             kind:{
-                column:(str(self.count["absolute"][kind][column])+ "|"+self.count["percent"][kind][column]  if self.count["absolute"][kind][column] else "")
+                column:conditionString(self.count["absolute"][kind][column],str(self.count["absolute"][kind][column])+ "|"+self.count["percent"][kind][column])
                 for column in self.count["absolute"][kind]
             }
             for kind in self.count["absolute"]
         }
         #The one with text
         for number in self.count:
-            self.count[number][c]["review"]=str(self.count[number][c]["review today"])+ (" (+"+str(self.count[number][c]["review later"])+")" if self.count["absolute"][c]["review later"] else "")
-            self.count[number][c]["unseen new"] = str(self.count[number][c]["new"])+(" (+"+str(self.count[number][c]["unseen"])+")" if self.count["absolute"][c]["unseen later"] else "")
+            self.count[number][c]["review"]=conditionString(self.count[number][c]["review today"])+ conditionString(self.count["absolute"][c]["review later"],parenthesis=True)
+            self.count[number][c]["unseen new"] = conditionString(self.count[number][c]["new"])+conditionString(self.count["absolute"][c]["unseen later"], parenthesis=True)
             if not  self.count["absolute"][c]["learning now count"] and self.timeDue[c] is not None:
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
@@ -270,8 +282,8 @@ class DeckNode:
                     self.count[number][c]["learning now"] = "[%ds]" % remainingSeconds
             else:
                 self.count[number][c]["learning now"]=self.count[number][c]["learning now count"]
-            self.count[number][c]["total note"] = str(self.count[number][c]["total"])+"/"+ str(self.count[number][c]["note"]) if self.count[number][c]["note"] and self.count[number][c]["total"] else ""
-            self.count[number][c]["learning now later"]= "%s%s"%((self.count[number][c]["learning now"])," (+"+str(self.count[number][c]["learning later"])+")" if self.count["absolute"][c]["learning later"] else "")
+            self.count[number][c]["total note"] = conditionString(self.count[number][c]["note"] and self.count[number][c]["total"],str(self.count[number][c]["total"])+"/"+ str(self.count[number][c]["note"]))
+            self.count[number][c]["learning now later"]= conditionString(self.count[number][c]["learning now"])+conditionString(self.count["absolute"][c]["learning later"],parenthesis=True)
             
     def makeRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
