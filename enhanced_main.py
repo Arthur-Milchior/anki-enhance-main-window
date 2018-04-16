@@ -55,34 +55,34 @@ userOption = {
     # Remove the symbol # before a line to add a column in anki as described in the line of code
     #-Long name of the column
     #-Header of the column
-    #-Color of the number
+    #-Color of the number shown in this column
     #-Description of the column
     #-Whether you want absolute number "absolute" or percent "percent"
     #-Whether you want to consider subdeck "subdeck" or not "deck"
     "columns" :[
         ##Learning:
         #This number is the sum of the two numbers below.
-        #("learning card", "Learning<br/>(card)" , "orange", "Cards in learning<br/>(either new cards you have seen once,<br/>or cards which you have forgotten recently.<br/>Assuming those cards didn't graduate)", "absolute", "subdeck"),
-        #("learning later", "Learning<br/>later (review)" , "orange", "Review which will happen later.<br/>Either because a review happened recently,<br/>or because the card have many review left.", "absolute", "subdeck"),
-        #("learning now", "Learning<br/>now" , "orange", "Cards in learning which are due now.<br/>If there are no such cards,<br/>the time in minutes<br/>or seconds until another learning card is due", "absolute", "subdeck"),
-        ("learning now later", "Learning<br/>now<br/>(later)", "orange", "Cards in learning which are due now<br/>(and in parenthesis, the number of reviews<br/>which are due later)", "absolute", "subdeck"),
+        #(_("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("(either new cards you have seen once,")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("Assuming those cards didn't graduate)"), "absolute", "subdeck"),
+        #(_("learning later"), _("Learning")+"<br/>"+_("later (review)") ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
+        #(_("learning now"), _("Learning")+"<br/>"+_("now") ,"orange", _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"), "absolute", "subdeck"),
+        (_("learning now later"), _("Learning")+"<br/>"+_("now")+"<br/>"+_("(later)"),"orange", _("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"), "absolute", "subdeck"),
         ##Review cards:
-        #("review due", "Due<br/>all" , "green", "Review cards which are due today<br/>(not counting the one in learning)", "absolute", "subdeck"),
-        #("review today", "Due<br/>today" , "green", "Review cards you will see today", "absolute", "subdeck"),
-        ("review", "Due<br/>today (all)", "green", "Review cards cards you will see today<br/>(and the ones you will not see today)", "absolute", "subdeck"),
+        #(_("review due"), _("Due")+"<br/>"+_("all") ,"green", _("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"), "absolute", "subdeck"),
+        #(_("review today"), _("Due")+"<br/>"+_("today") ,"green", _("Review cards you will see today"), "absolute", "subdeck"),
+        (_("review"), _("Due")+"<br/>"+_("today (all)"),"green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
         ##Unseen cards
-        #("unseen","Unseen<br/>all"  , "blue", "Cards that have never been answered", "absolute", "subdeck"),
-        #("new", "New<br/>today" , "blue", "Unseen cards you will see today<br/>(what anki calls new cards)", "absolute", "subdeck"),
-        ("unseen new","New<br/>(Unseen)", "blue", "Unseen cards you will see today<br/>(and those you will not see today)", "absolute", "subdeck"),
+        #(_("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
+        #(_("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen cards you will see today")+"<br/>"+_("(what anki calls new cards)"), "absolute", "subdeck"),
+        (_("unseen new"),_("New")+"<br/>"+_("(Unseen)"),"blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
         ##General count
-        ("buried", "Buried", "grey","number of buried cards,<br/>(cards you decided not to see today)", "absolute", "subdeck"),        
-        ("suspended", "Suspended", "brown", "number of suspended cards,<br/>(cards you will never see<br/>unless you unsuspend them in the browser)", "absolute", "subdeck"),
-        #("total", "Total", "black", "Number of cards in the deck", "absolute", "subdeck"),
-        ("total note", "Total<br/>Card/Note", "black", "Number of cards/note in the deck", "absolute", "subdeck"), #percent makes no sens in this line. 
-        ("today", "Today", "red", "Number of review you will see today<br/>(new, review and learning)", "absolute", "subdeck"),
-        #("undue", "Undue", "purple", "Number of cards reviewed, not yet due", "absolute", "subdeck"),
-        ("mature", "Mature", "purple", "Number of cards reviewed, with interval at least 3 weeks", "both", "subdeck"),
-        ("young", "Young", "pink", "Number of cards reviewed, with interval less than 3 weeks", "both", "subdeck"),
+        (_("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),        
+        (_("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
+        #(_("total"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
+        (_("total note"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
+        (_("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
+        #(_("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
+        (_("mature"), _("Mature"),"purple", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
+        (_("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
     ],
 
     ######
@@ -151,7 +151,7 @@ def conditionString(cond,string=None, parenthesis = False):
 
 class DeckNode:
     "A node in the new more advanced deck tree."
-    def __init__(self, mw, oldNode, ignoreEmpty=False):
+    def __init__(self, mw, oldNode, ignoreEmptyParent=False):
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
         self.mw = mw
         self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCards, oldChildren = oldNode
@@ -164,7 +164,7 @@ class DeckNode:
         else:
             self.confName="Filtered"
 
-        ignoreEmpty = ignoreEmpty or userOption["hide symbol"]  in self.name
+        self.ignoreEmpty = ignoreEmptyParent or (userOption["hide symbol"]  in self.name)
         today = mw.col.sched.today
         #dayCutoff = mw.col.sched.dayCutoff
         self.notesRec = set(mw.col.db.list("""select  nid from cards where did=?""", self.did))
@@ -221,9 +221,7 @@ class DeckNode:
         }
         self.timeDue= {"deck": result[6], "subdeck":result[6]} #can be null,
         self.count["absolute"]["subdeck"] = {name: self.count["absolute"]["deck"][name] for name in self.count["absolute"]["deck"]}
-        self.children = [DeckNode(mw, oldChild, ignoreEmpty) for oldChild in oldChildren]
-        self.isEmpty = self.count["absolute"]["deck"]["unseen"]==0 and not ignoreEmpty
-        self.hasEmptyDescendant = False
+        self.children = [DeckNode(mw, oldChild, self.ignoreEmpty) for oldChild in oldChildren]
         self.today = self.dueRevCards + self.dueLrnReps+self.count["absolute"]["deck"]["learning repetition"]
         for child in self.children:
             self.notesRec.update(child.notesRec)
@@ -234,14 +232,20 @@ class DeckNode:
                     self.timeDue["subdeck"]= min(self.timeDue["subdeck"],child.timeDue["subdeck"])
             else:
                 self.timeDue["subdeck"] = child.timeDue["subdeck"]
-            self.isEmpty = self.isEmpty and child.isEmpty
-            self.hasEmptyDescendant = self.hasEmptyDescendant or child.hasEmptyDescendant or child.isEmpty
+
+        ##is empty
+        self.isEmpty = self.count["absolute"]["subdeck"]["unseen"]==0
+
+        #Empty descendant (considering itself)
+        self.hasEmptyDescendant = self.isEmpty
+        for child in self.children:
+            self.hasEmptyDescendant = self.hasEmptyDescendant or (child.hasEmptyDescendant and not child.ignoreEmpty)
         self.count["absolute"]["deck"]["learning later"]= self.count["absolute"]["deck"]["learning repetition"]-self.count["absolute"]["deck"]["learning now count"]
         self.count["absolute"]["subdeck"]["note"]= len(self.notesRec)
        
-        if ignoreEmpty:
-            self.hasEmptyDescendant = False
-        if self.isEmpty:
+        if self.ignoreEmpty:
+            self.color = userOption["default color"]
+        elif self.isEmpty:
             self.color= userOption["color empty"]
         elif self.hasEmptyDescendant:
             self.color = userOption["color empty descendant"]
