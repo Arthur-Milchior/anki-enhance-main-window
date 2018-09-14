@@ -145,6 +145,7 @@ userOption = {
 ###########################
 #code beginning
 #################
+debug=False
 import time
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
@@ -450,8 +451,9 @@ class DeckNode:
             )
 
     def addCount(self,absoluteOrPercent,c,name,value):
-        if absoluteOrPercent=="absolute":
-            print(f"Adding {c} {name}= {value}")
+        # if absoluteOrPercent=="absolute":
+        #     print(f"Adding {c} {name}= {value}")
+        #     pass
         self.count[absoluteOrPercent][c][name]=value
 
     def objectDescription(self):
@@ -493,16 +495,18 @@ class DeckNode:
         else:
             collapse = "<span class=collapse></span>"
         if deck['dyn']:
-            extraclass = "filtered"
+            extraclass = " filtered"
         else:
             extraclass = ""
         cssStyle = ""
         for name, value in node.style.items():
             cssStyle +="%s:%s;" %(name,value)
-        buf += """
+        buf += f"""
     
-        <td class=decktd colspan=5>%s%s<a class="deck %s" onclick="pycmd('open:%d')"><font style='%s' class='tooltip'>%s<span class='tooltiptext'>%s</span></font></a></td>"""% (
-            "&nbsp;"*6*depth, collapse, extraclass, did, cssStyle,node.name,self.objectDescription())
+        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="pycmd('open:{did}')">"""
+        # buf+=f"""debug<font style='{cssStyle}' class='tooltip'>{node.name}<span class='tooltiptext'>{self.objectDescription()}</span></font>"""
+        buf+=f"""<font style='{cssStyle}'>{node.name}</font>"""
+        buf+="""</a></td>"""
 
         for (name, _, colour, description, number, deck) in userOption["columns"]:
                 contents = self.text[number][deck][name]
@@ -511,8 +515,8 @@ class DeckNode:
                 buf +=( "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"% (colour, contents, description))
 
         # options
-        buf += "<td align=right class=opts>%s</td>" % col.mw.button(
-            link="opts:%d"%did, name="<img valign=bottom src='/_anki/imgs/gears.svg'>"+downArrow())
+        button=col.mw.button(link="opts:%d"%did, name="<img valign=bottom src='/_anki/imgs/gears.svg' class=gears>"+downArrow())
+        buf += f"<td align=right class=opts>{button}</td>"
         if userOption["option"]:
             buf += "<td>%s</td>"% self.param["confName"]
         # children
