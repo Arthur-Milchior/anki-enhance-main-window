@@ -413,7 +413,7 @@ class DeckNode:
         #filling the relative value of each possible column of the table
         self.count["percent"]={
             kind:{
-                column:conditionString(self.count["absolute"][kind][column],str(100*self.count["absolute"][kind][column]/self.count["absolute"][kind]["total"])+ "%") if self.count["absolute"][kind]["total"] else ""
+                column:conditionString(self.count["absolute"][kind][column],str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["total"])+ "%") if self.count["absolute"][kind]["total"] else ""
                 for column in self.count["absolute"][kind]
             }
             for kind in self.count["absolute"]
@@ -433,7 +433,7 @@ class DeckNode:
             if not  self.text["absolute"][c]["learning now"] and "learn soonest" in valueToCompute and self.timeDue[c] is not 0:
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
-                    self.text[absoluteOrPercent][c]["learning now"] = "[%dm]" % (remainingSeconds / 60)
+                    self.text[absoluteOrPercent][c]["learning now"] = "[%dm]" % (remainingSeconds // 60)
                 else :
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
             else:
