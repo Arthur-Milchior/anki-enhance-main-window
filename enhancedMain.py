@@ -65,18 +65,18 @@ userOption = {
     "columns" :[
         ##Learning:
         #This number is the sum of the two numbers below.
-        #(_("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("""(either new cards you have seen once,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""), "absolute", "subdeck"),
-        #(_("learning later"), _("Learning")+"<br/>"+_("later (review)") ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
+        #(_("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""), "absolute", "subdeck"),
+        #(_("learning later"), _("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
         #(_("learning now"), _("Learning")+"<br/>"+_("now") ,"orange", _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"), "absolute", "subdeck"),
         (_("learning all"), _("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))","orange", _("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"), "absolute", "subdeck" ),
         ##Review cards:
         #(_("review due"), _("Due")+"<br/>"+_("all") ,"green", _("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"), "absolute", "subdeck"),
         #(_("review today"), _("Due")+"<br/>"+_("today") ,"green", _("Review cards you will see today"), "absolute", "subdeck"),
-        (_("review"), _("Due")+"<br/>"+_("today (all)"),"green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
+        (_("review"), _("Due")+"<br/>"+_("today")+" ("+_("all")+")","green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
         ##Unseen cards
         #(_("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
-        #(_("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen cards you will see today")+"<br/>"+_("(what anki calls new cards)"), "absolute", "subdeck"),
-        (_("unseen new"),_("New")+"<br/>"+_("(Unseen)"),"blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
+        #(_("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls )+_("new cards"), "absolute", "subdeck"),
+        (_("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
         ##General count
         (_("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
         # (_("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
@@ -84,8 +84,8 @@ userOption = {
         (_("total note"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
         (_("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
         # (_("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
-        # (_("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
-        # (_("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
+        (_("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
+        (_("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
         (_("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
     ],
     
@@ -147,6 +147,7 @@ userOption = {
 #################
 debug=False
 import time
+from .html import *
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
 from aqt.utils import downArrow
@@ -175,6 +176,7 @@ addRequirement("learning later",dependances=["learning later today","learning fu
 addRequirement("learning later today future",dependances=["learning future","learning later today"])#number of cards in learning, which can't be seen now
 addRequirement("learning today",dependances=["learning later today","learning future","learning now"])#number of cards in learning, which will be seen today
 addRequirement("learning all",dependances=["learning today","learning future","learning later"])#number of cards in learning, of all kinds
+addRequirement("learning card", dependances=["learning all"])
 
 addRequirement("learning today repetition",reqs={"learning today repetition from today","learning today repetition from past"})#Number of repetition of learning cards you'll see today
 addRequirement("learning repetition",reqs={"learning repetition from today","learning repetition from past"})#Number of repetition of learning cards you'll see
@@ -304,6 +306,8 @@ class DeckNode:
             self.addCount("absolute","deck","learning now",self.count["absolute"]["deck"]["learning now from today"]+self.count["absolute"]["deck"]["learning today from past"])
         if "learning later" in valueToCompute:
             self.addCount("absolute","deck","learning later",self.count["absolute"]["deck"]["learning later today"]+self.count["absolute"]["deck"]["learning future"])
+        if "learning card" in valueToCompute:
+            self.addCount("absolute","deck","learning card",self.count["absolute"]["deck"]["learning now"]+self.count["absolute"]["deck"]["learning later"])
         if "learning today" in valueToCompute:
             self.addCount("absolute","deck","learning today",self.count["absolute"]["deck"]["learning later today"]+self.count["absolute"]["deck"]["learning now"])
         if "learning all" in valueToCompute:
@@ -488,12 +492,12 @@ class DeckNode:
             klass = 'deck current'
         else:
             klass = 'deck'
-        buf = "<tr class='%s' id='%d'>" % (klass, did)
+        buf = start_line(klass,did)
         # deck link
         if children:
-            collapse = """<a class=collapse onclick='pycmd("collapse:%d")' id="%s" href="#%s" >%s</a>""" % (did, deck["name"], deck["name"], prefix)
+            collapse = collapse_children_html(did,deck["name"],prefix) 
         else:
-            collapse = "<span class=collapse></span>"
+            collapse = collapse_no_child
         if deck['dyn']:
             extraclass = " filtered"
         else:
@@ -501,26 +505,21 @@ class DeckNode:
         cssStyle = ""
         for name, value in node.style.items():
             cssStyle +="%s:%s;" %(name,value)
-        buf += f"""
-    
-        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="pycmd('open:{did}')">"""
-        # buf+=f"""debug<font style='{cssStyle}' class='tooltip'>{node.name}<span class='tooltiptext'>{self.objectDescription()}</span></font>"""
-        buf+=f"""<font style='{cssStyle}'>{node.name}</font>"""
-        buf+="""</a></td>"""
+        buf += deck_name(depth,collapse,extraclass,did,cssStyle,node.name)
 
         for (name, _, colour, description, number, deck) in userOption["columns"]:
                 contents = self.text[number][deck][name]
                 if contents == 0 or contents == "0":
                     colour = "#e0e0e0"
-                buf +=( "<td align='right' class='tooltip'><font color='%s'>%s</font><span class='tooltiptext'>%s</span></td>"% (colour, contents, description))
+                buf +=number_cell(colour, contents, description)
 
         # options
-        button=col.mw.button(link="opts:%d"%did, name="<img valign=bottom src='/_anki/imgs/gears.svg' class=gears>"+downArrow())
-        buf += f"<td align=right class=opts>{button}</td>"
+        button=col.mw.button(link="opts:%d"%did, name=deck_button_image+downArrow())
+        buf += deck_button(button)
         if userOption["option"]:
-            buf += "<td>%s</td>"% self.param["confName"]
+            buf += deck_option_name(self.param["confName"])
         # children
-        buf += "</tr>"
+        buf += end_line
         buf += col._renderDeckTree(children, depth+1)
         return buf
 
@@ -540,35 +539,13 @@ def renderDeckTree(self, nodes, depth=0):
         return ""
     if depth == 0:
                 
-        buf = """<style>
-        /* Tooltip container */
-        
-        /* Tooltip text */
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-            
-            /* Position the tooltip text - see examples below! */
-            position: absolute;
-            z-index: 1;
-        }
-
-        /* Show the tooltip text when you mouse over the tooltip container */
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-        }
-        </style>
-        <tr><th colspan=5 align=left>%s</th>""" % (_("Deck"),)
+        buf = f"""<style>{css}</style>{start_header}{deck_header}"""
         for (__ ,heading, __, __, __, __) in userOption["columns"]:
-                buf += "<th class=count>%s</th>" % (_(heading),)
-        buf += "<th class=count></th>" #for deck's option
+                buf += column_header(heading)
+        buf += option_header #for deck's option
         if userOption["option"]:
-            buf += "<td></td>"
-        buf +="</tr>"
+            buf += option_name_header
+        buf +=end_header
         
         #convert nodes
         nodes = [make(self.mw, node) for node in nodes]
