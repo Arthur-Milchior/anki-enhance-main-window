@@ -1,7 +1,9 @@
 from aqt.qt import *
 
 css="""/* Tooltip container */
-        
+        a:hover{
+         cursor: pointer;
+        }        
         /* Tooltip text */
         .tooltip .tooltiptext {
             visibility: hidden;
@@ -37,7 +39,7 @@ end_header="""</tr>"""
 #deck's html #
 ##############
 def start_line(klass,did):
-    return "<tr class='{klass}' id='{did}'>"
+    return f"<tr class='{klass}' id='{did}'>"
 
 def collapse_children_html(did,name,prefix):
     return f"""<a class=collapse onclick='pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
