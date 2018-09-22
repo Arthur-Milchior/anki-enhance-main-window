@@ -21,11 +21,17 @@ css="""/* Tooltip container */
         /* Show the tooltip text when you mouse over the tooltip container */
         .tooltip:hover .tooltiptext {
             visibility: visible;
-        }"""
+        }
+
+	/* padding-left for header columns except deck-column */
+	th.count {padding-left:15px;
+	}
+	
+	"""
 ######################
 #header related html #
 ######################
-start_header="""<tr>"""
+start_header="""<tr style="vertical-align:text-top">"""
 deck_header=f"""<th colspan=5 align=left>{_("Deck")}</th>"""
 def column_header(heading):
     return f"<th class=count>{_(heading)}</th>"
