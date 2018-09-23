@@ -208,7 +208,7 @@ def number_cell(colour,contents,description):
 
 
 def gear(did):
-    return """<td align=center class=opts><a onclick='pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
+    return f"""<td align=center class=opts><a onclick='pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
 
 def deck_option_name(option):
     return f"<td>{option}</td>"
