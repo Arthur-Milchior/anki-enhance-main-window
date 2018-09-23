@@ -142,12 +142,84 @@ userOption = {
     #This action is similar to the one of given up.s
     "pause symbol" :"=",
 }
+########################################################################################
+########################################################################################
+#HTML code here (so, if you know html, you can edit the html part without knowing python)
+########################################################################################
+########################################################################################
+css="""/* Tooltip container */
+        a:hover{
+         cursor: pointer;
+        }        
+
+        /* Tooltip text */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+
+	/* padding-left for header columns except deck-column */
+	th.count {padding-left:15px;
+	}
+	
+	"""
+######################
+#header related html #
+######################
+start_header="""<tr style="vertical-align:text-top">"""
+deck_header=f"""<th colspan=5 align=left>{_("Deck")}</th>"""
+def column_header(heading):
+    return f"<th class=count>{_(heading)}</th>"
+
+option_header="<th class=count></th>"
+option_name_header="""<td></td>"""
+end_header="""</tr>"""
+
+
+##############
+#deck's html #
+##############
+def start_line(klass,did):
+    return f"<tr class='{klass}' id='{did}'>"
+
+def collapse_children_html(did,name,prefix):
+    return f"""<a class=collapse onclick='pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
+collapse_no_child="<span class=collapse></span>"
+
+def deck_name(depth,collapse,extraclass,did,cssStyle,name):
+    return f"""
+    
+        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="pycmd('open:{did}')"><font style='{cssStyle}'>{name}</font></a></td>"""
+def number_cell(colour,contents,description):
+    return f"<td align='right' class='tooltip'><font color='{colour}'>{contents}</font><span class='tooltiptext'>{description}</span></td>"
+
+
+def gear(did):
+    return """<td align=center class=opts><a onclick='pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
+
+def deck_option_name(option):
+    return f"<td>{option}</td>"
+
+end_line="</tr>"
+
 ###########################
-#code beginning
+#Python code beginning
 #################
 debug=False
 import time
-from .html import *
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
 from aqt.utils import downArrow
@@ -514,8 +586,7 @@ class DeckNode:
                 buf +=number_cell(colour, contents, description)
 
         # options
-        button=col.mw.button(link="opts:%d"%did, name=deck_button_image+downArrow())
-        buf += deck_button(button)
+        buf += gear(did)
         if userOption["option"]:
             buf += deck_option_name(self.param["confName"])
         # children
