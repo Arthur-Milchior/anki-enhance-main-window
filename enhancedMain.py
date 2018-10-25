@@ -80,7 +80,7 @@ userOption = {
         ##General count
         (_("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
         # (_("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
-        # (_("total"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
+        #(_("total cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
         (_("total note"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
         (_("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
         # (_("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
@@ -233,15 +233,25 @@ from anki.sched import Scheduler
 globalCount = dict()
 
 requirements = dict()
-#Associate to each field which we want to consider the name of the query we need to query
-def addRequirement(name, reqs=set(),dependances=set()):
+def addRequirement(name, dependances=set()):
+    """Associate to each field which we want to consider the name of the query we need to query.
+
+    name -- the value we want to compute
+    dependances -- the set of value required to compute the value name
+    """
     requirements[name]={name}
-    requirements[name]|=reqs
     for dependance in dependances:
-        requirements[name]|={dependance}
-        requirements[name]|=requirements[dependance]
-        
-addRequirement("learning now",reqs={"learn soonest","learning now from today","learning today from past"})#number of cards in learning, ready to be seen again
+        #requirements[name]|={dependance}
+        dep=requirements.get(dependance)
+        if dep is None:
+            raise Exception(name, dependance)
+        requirements[name]|=dep
+
+
+addRequirement("learn soonest")
+addRequirement("learning now from today")
+addRequirement("learning today from past")
+addRequirement("learning now",dependances={"learn soonest","learning now from today","learning today from past"})#number of cards in learning, ready to be seen again
 addRequirement("learning later today")#number of cards in learning, seen again today, but not now
 addRequirement("learning future")#number of cards in learning, not seen again today
 addRequirement("learning later",dependances=["learning later today","learning future"])#number of cards in learning, seen again but not now
@@ -250,31 +260,35 @@ addRequirement("learning today",dependances=["learning later today","learning fu
 addRequirement("learning all",dependances=["learning today","learning future","learning later"])#number of cards in learning, of all kinds
 addRequirement("learning card", dependances=["learning all"])
 
-addRequirement("learning today repetition",reqs={"learning today repetition from today","learning today repetition from past"})#Number of repetition of learning cards you'll see today
-addRequirement("learning repetition",reqs={"learning repetition from today","learning repetition from past"})#Number of repetition of learning cards you'll see
-addRequirement("learning future repetition",reqs={"learning repetition","learning today repetition"})#Number of repetition of learning cards you'll see another day
+addRequirement("learning today repetition from today")
+addRequirement("learning today repetition from past")
+addRequirement("learning today repetition",dependances={"learning today repetition from today","learning today repetition from past"})#Number of repetition of learning cards you'll see today
+addRequirement("learning repetition from today")
+addRequirement("learning repetition from past")
+addRequirement("learning repetition",dependances={"learning repetition from today","learning repetition from past"})#Number of repetition of learning cards you'll see
+addRequirement("learning future repetition",dependances={"learning repetition","learning today repetition"})#Number of repetition of learning cards you'll see another day
 
 addRequirement("review due",dependances=["learning repetition"])#number of cards which are due today 
-addRequirement("review today",reqs={"review due"})#number of cards which are due and will be seen today (it requires both the review due, and the limit)
+addRequirement("review today",dependances={"review due"})#number of cards which are due and will be seen today (it requires both the review due, and the limit)
 addRequirement("review later",dependances=["review due","review today"])#number of cards which are due but, because of limits, can't be seen today
 addRequirement("review",dependances=["review today","review later"])#number of cards which are due today
-addRequirement("unseen",reqs={"unseen"})#Number of unseen card
+addRequirement("unseen",dependances={"unseen"})#Number of unseen card
 addRequirement("new",set())#number of new cards which should be seen today if there are enough unseen cards (Depends only of limit, and not of db)
-addRequirement("unseen later",reqs={"review new","review unseen"},dependances=["unseen","new"])#Number of unseen card which will not be seen today
+addRequirement("unseen later",dependances={"unseen","new"})#Number of unseen card which will not be seen today
 addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
 addRequirement("buried")#number of bured card
 addRequirement("suspended")#number of suspended cards
-addRequirement("total")#number of cards
+addRequirement("total cards")#number of cards
 addRequirement("note")#number of cards
-addRequirement("total note",reqs={"note","total"},dependances=["note","total"])#number of cards and of note
+addRequirement("total note",dependances={"note","total cards"})#number of cards and of note
 addRequirement("today", dependances=["new"])#number of due cards today
 addRequirement("undue")#number of cards which are not due today
 addRequirement("mature")#number of mature cards
 addRequirement("young" )#number of young cards
-addRequirement("note",set() )#number of notes
-addRequirement("marked",reqs={ "note"})# number of marked cards
+addRequirement("note" )#number of notes
+addRequirement("marked",dependances={ "note"})# number of marked cards
 
-valueToCompute=set()
+valueToCompute={"total cards"}#total cards is always useful to calcul percent
 for  (name,description,color,description,absolute,subdec) in userOption["columns"]:
     valueToCompute|=requirements[name]
     valueToCompute|={name}
@@ -327,7 +341,7 @@ class DeckNode:
             ("unseen","sum(case when queue = 0 then 1 else 0 end)"),
             ("buried", "sum(case when queue = -2  or queue = -3 then 1 else 0 end)"),
             ("suspended", "sum(case when queue = -1 then 1 else 0 end)"),
-            ("total","sum(1)"),
+            ("total cards","sum(1)"),
             ("note","count (distinct nid)"),
             ("undue","sum(case when queue = 2 and due >  "+str(today)+" then 1 else 0 end)"), #Sum of the two next
             ("mature","sum(case when queue = 2 and due >  "+str(today)+" and ivl >=21 then 1 else 0 end)" ),
@@ -431,7 +445,7 @@ class DeckNode:
                          "buried",
                          "suspended",
                          "unseen",
-                         "total",
+                         "total cards",
                          "review due",
                          "undue",
                          "young",
@@ -487,13 +501,17 @@ class DeckNode:
             self.addCount("absolute",c,"today" , self.count["absolute"][c]["new"]+self.dueRevCards+self.dueLrnReps)
 
         #filling the relative value of each possible column of the table
-        self.count["percent"]={
-            kind:{
-                column:conditionString(self.count["absolute"][kind][column],str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["total"])+ "%") if self.count["absolute"][kind]["total"] else ""
-                for column in self.count["absolute"][kind]
-            }
-            for kind in self.count["absolute"]
-        }
+        self.count["percent"]={}
+        for kind in self.count["absolute"]:
+            self.count["percent"][kind]={}
+            for column in self.count["absolute"][kind]:
+                s1=self.count["absolute"][kind][column]
+                if self.count["absolute"][kind]["total cards"]:
+                    s2=str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["total cards"]) + "%"
+                else:
+                    s2= ""
+                s=conditionString(s1,s2)
+                self.count["percent"][kind][column]=s
         self.count["both"]={
             kind:{
                 column:conditionString(self.count["absolute"][kind][column],str(self.count["absolute"][kind][column])+ "|"+self.count["percent"][kind][column])
@@ -514,7 +532,7 @@ class DeckNode:
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
             else:
                 self.text[absoluteOrPercent][c]["learning now"]=self.text[absoluteOrPercent][c]["learning now"]
-            self.text[absoluteOrPercent][c]["total note"] = conditionString(self.text[absoluteOrPercent][c]["note"] and self.text[absoluteOrPercent][c]["total"],str(self.text[absoluteOrPercent][c]["total"])+"/"+ str(self.text[absoluteOrPercent][c]["note"]))
+            self.text[absoluteOrPercent][c]["total note"] = conditionString(self.text[absoluteOrPercent][c]["note"] and self.text[absoluteOrPercent][c]["total cards"],str(self.text[absoluteOrPercent][c]["total cards"])+"/"+ str(self.text[absoluteOrPercent][c]["note"]))
             self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
             future = self.text[absoluteOrPercent][c]["learning future"]
             if future:
