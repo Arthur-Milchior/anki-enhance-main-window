@@ -65,29 +65,29 @@ userOption = {
     "columns" :[
         ##Learning:
         #This number is the sum of the two numbers below.
-        #(_("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""), "absolute", "subdeck"),
-        #(_("learning later"), _("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
-        #(_("learning now"), _("Learning")+"<br/>"+_("now") ,"orange", _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"), "absolute", "subdeck"),
-        (_("learning all"), _("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))","orange", _("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"), "absolute", "subdeck" ),
+        #(("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""), "absolute", "subdeck"),
+        #(("learning later"), _("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
+        #(("learning now"), _("Learning")+"<br/>"+_("now") ,"orange", _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"), "absolute", "subdeck"),
+        (("learning all"), _("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))","orange", _("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"), "absolute", "subdeck" ),
         ##Review cards:
-        #(_("review due"), _("Due")+"<br/>"+_("all") ,"green", _("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"), "absolute", "subdeck"),
-        #(_("review today"), _("Due")+"<br/>"+_("today") ,"green", _("Review cards you will see today"), "absolute", "subdeck"),
-        (_("review"), _("Due")+"<br/>"+_("today")+" ("+_("all")+")","green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
+        #(("review due"), _("Due")+"<br/>"+_("all") ,"green", _("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"), "absolute", "subdeck"),
+        #(("review today"), _("Due")+"<br/>"+_("today") ,"green", _("Review cards you will see today"), "absolute", "subdeck"),
+        (("review"), _("Due")+"<br/>"+_("today")+" ("+_("all")+")","green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
         ##Unseen cards
-        #(_("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
-        #(_("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls )+_("new cards"), "absolute", "subdeck"),
-        (_("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
+        #(("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
+        #(("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls )+_("new cards"), "absolute", "subdeck"),
+        (("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
         ##General count
-        (_("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
-        # (_("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
-        #(_("cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
-        (_("notes/cards"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
-        #(_("notes"), _("Total")+"<br/>"+_("Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
-        (_("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
-        # (_("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
-        (_("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
-        (_("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
-        #(_("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
+        (("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
+        # (("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
+        #(("cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
+        (("notes/cards"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
+        #(("notes"), _("Total")+"<br/>"+_("Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
+        (("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
+        # (("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
+        (("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
+        (("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
+        (("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
     ],
     
 
