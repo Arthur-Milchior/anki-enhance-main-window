@@ -80,13 +80,14 @@ userOption = {
         ##General count
         (_("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
         # (_("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
-        #(_("total cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
-        (_("total note"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
+        #(_("cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
+        (_("notes/cards"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
+        #(_("notes"), _("Total")+"<br/>"+_("Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
         (_("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
         # (_("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
         (_("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
         (_("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
-        (_("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
+        #(_("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
     ],
     
 
@@ -278,17 +279,16 @@ addRequirement("unseen later",dependances={"unseen","new"})#Number of unseen car
 addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
 addRequirement("buried")#number of bured card
 addRequirement("suspended")#number of suspended cards
-addRequirement("total cards")#number of cards
-addRequirement("note")#number of cards
-addRequirement("total note",dependances={"note","total cards"})#number of cards and of note
+addRequirement("cards")#number of cards
+addRequirement("notes")#number of cards and of note
+addRequirement("notes/cards",dependances=["notes","cards"])#number of cards and of note
 addRequirement("today", dependances=["new"])#number of due cards today
 addRequirement("undue")#number of cards which are not due today
 addRequirement("mature")#number of mature cards
 addRequirement("young" )#number of young cards
-addRequirement("note" )#number of notes
-addRequirement("marked",dependances={ "note"})# number of marked cards
+addRequirement("marked",dependances={"notes"})# number of marked cards
 
-valueToCompute={"total cards"}#total cards is always useful to calcul percent
+valueToCompute={"cards"}#cards is always useful to calcul percent
 for  (name,description,color,description,absolute,subdec) in userOption["columns"]:
     valueToCompute|=requirements[name]
     valueToCompute|={name}
@@ -341,8 +341,8 @@ class DeckNode:
             ("unseen","sum(case when queue = 0 then 1 else 0 end)"),
             ("buried", "sum(case when queue = -2  or queue = -3 then 1 else 0 end)"),
             ("suspended", "sum(case when queue = -1 then 1 else 0 end)"),
-            ("total cards","sum(1)"),
-            ("note","count (distinct nid)"),
+            ("cards","sum(1)"),
+            ("notes","count (distinct nid)"),
             ("undue","sum(case when queue = 2 and due >  "+str(today)+" then 1 else 0 end)"), #Sum of the two next
             ("mature","sum(case when queue = 2 and due >  "+str(today)+" and ivl >=21 then 1 else 0 end)" ),
             ("young","sum(case when queue = 2 and due >  "+str(today)+" and ivl <21 then 1 else 0 end)" ),
@@ -383,10 +383,10 @@ class DeckNode:
                 }
             }
         }
-        if "note" in valueToCompute: 
+        if "notes" in valueToCompute: 
             self.notes = set(mw.col.db.list("""select  nid from cards where did=?""", self.did))
             self.notesRec = self.notes
-            self.addCount("absolute","deck","note", len(self.notes))
+            self.addCount("absolute","deck","notes", len(self.notes))
         #we now compute the interesting value using the queried values
         if "learning now" in valueToCompute:
             self.addCount("absolute","deck","learning now",self.count["absolute"]["deck"]["learning now from today"]+self.count["absolute"]["deck"]["learning today from past"])
@@ -420,7 +420,7 @@ class DeckNode:
             childNode = make(mw, oldChild, self.param["ended"], self.param["givenUp"], self.param["pause"]) 
             self.children.append(childNode)
         for child in self.children:
-            if "note" in valueToCompute:
+            if "notes" in valueToCompute:
                 child_notesRec=child.notesRec
                 self.notesRec.update(child_notesRec)
             if "marked" in valueToCompute: 
@@ -445,7 +445,7 @@ class DeckNode:
                          "buried",
                          "suspended",
                          "unseen",
-                         "total cards",
+                         "cards",
                          "review due",
                          "undue",
                          "young",
@@ -465,8 +465,8 @@ class DeckNode:
         self.param["hasEmptyDescendant"] = self.param["isEmpty"]
         for child in self.children:
             self.param["hasEmptyDescendant"] = self.param["hasEmptyDescendant"] or (child.param["hasEmptyDescendant"] and (not child.param["ended"]) and (not child.param["givenUp"]) and (not child.param["pause"]))
-        if "note" in valueToCompute: 
-            self.addCount("absolute","subdeck","note", len(self.notesRec))
+        if "notes" in valueToCompute: 
+            self.addCount("absolute","subdeck","notes", len(self.notesRec))
         if "marked" in valueToCompute:
             self.markedNotes = set(mw.col.db.list("""select  id from notes where tags like '%marked%' and (not (tags like '%notMain%')) and id in """+ ids2str(self.notes)))
             self.markedNotesRec |= self.markedNotes
@@ -506,8 +506,8 @@ class DeckNode:
             self.count["percent"][kind]={}
             for column in self.count["absolute"][kind]:
                 s1=self.count["absolute"][kind][column]
-                if self.count["absolute"][kind]["total cards"]:
-                    s2=str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["total cards"]) + "%"
+                if self.count["absolute"][kind]["cards"]:
+                    s2=str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["cards"]) + "%"
                 else:
                     s2= ""
                 s=conditionString(s1,s2)
@@ -532,7 +532,8 @@ class DeckNode:
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
             else:
                 self.text[absoluteOrPercent][c]["learning now"]=self.text[absoluteOrPercent][c]["learning now"]
-            self.text[absoluteOrPercent][c]["total note"] = conditionString(self.text[absoluteOrPercent][c]["note"] and self.text[absoluteOrPercent][c]["total cards"],str(self.text[absoluteOrPercent][c]["total cards"])+"/"+ str(self.text[absoluteOrPercent][c]["note"]))
+            if "notes/cards" in valueToCompute:
+                self.text[absoluteOrPercent][c]["notes/cards"] = conditionString(self.text[absoluteOrPercent][c]["notes"] and self.text[absoluteOrPercent][c]["cards"],str(self.text[absoluteOrPercent][c]["cards"])+"/"+ str(self.text[absoluteOrPercent][c]["notes"]))
             self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
             future = self.text[absoluteOrPercent][c]["learning future"]
             if future:
