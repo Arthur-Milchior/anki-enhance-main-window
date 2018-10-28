@@ -76,7 +76,7 @@ userOption = {
         ##Unseen cards
         #(("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
         #(("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls )+_("new cards"), "absolute", "subdeck"),
-        (("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
+        #(("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
         ##General count
         (("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
         # (("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
@@ -273,7 +273,7 @@ addRequirement("review due",dependances=["learning repetition"])#number of cards
 addRequirement("review today",dependances={"review due"})#number of cards which are due and will be seen today (it requires both the review due, and the limit)
 addRequirement("review later",dependances=["review due","review today"])#number of cards which are due but, because of limits, can't be seen today
 addRequirement("review",dependances=["review today","review later"])#number of cards which are due today
-addRequirement("unseen",dependances={"unseen"})#Number of unseen card
+addRequirement("unseen")#Number of unseen card
 addRequirement("new",set())#number of new cards which should be seen today if there are enough unseen cards (Depends only of limit, and not of db)
 addRequirement("unseen later",dependances={"unseen","new"})#Number of unseen card which will not be seen today
 addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
@@ -288,7 +288,11 @@ addRequirement("mature")#number of mature cards
 addRequirement("young" )#number of young cards
 addRequirement("marked",dependances={"notes"})# number of marked cards
 
-valueToCompute={"cards"}#cards is always useful to calcul percent
+
+#Compute 
+#cards is always useful to calcul percent
+#unseen is used to see whether a deck has new card or not.
+valueToCompute={"cards", "unseen"}
 for  (name,description,color,description,absolute,subdec) in userOption["columns"]:
     valueToCompute|=requirements[name]
     valueToCompute|={name}
