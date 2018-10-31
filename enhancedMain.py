@@ -75,7 +75,7 @@ userOption = {
         (("review"), _("Due")+"<br/>"+_("today")+" ("+_("all")+")","green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
         ##Unseen cards
         #(("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
-        #(("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls )+_("new cards"), "absolute", "subdeck"),
+        #(("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"), "absolute", "subdeck"),
         #(("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
         ##General count
         (("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
