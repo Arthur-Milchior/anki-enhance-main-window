@@ -1,81 +1,3 @@
-# anki-enhance-main-window
-Heavily based on Helen Foster's code, from add-on "Deck_Counts_Now_Later"
-Github: https://github.com/Arthur-Milchior/anki-enhance-main-window
-
-Adds a lot of features to the main window. Allows to configure those features. Configurations are explained at the end of this document.
-
-Update 8th november 2018: you can configure the add-on using anki 2.1's configuration method. The configuration won't be lost during next update of the add-on !
-# Features
-
-## Column
-Most features offered by this add-on are related to some column. 
-### Name of the (sub)deck
-There is not a lot of change in this column, apart from the decks's color.
-####Empty decks
-If a (sub)deck is empty, it turns red. (You can configure the color.)
-
-This may not be useful for everybody. But if you want to know when a deck is empty in order to add new notes in it, it avoids to check in every deck the number of new cards. For example, if you want to learn guitar chords, it will let you know that it is time to add new chords to anki.
-
-Better ! If you use subdecks, the ancestors of a empty subdeck becomes blue (also configurable). This allows you to find deck with an empty subdeck. Hence, it helps finding empty subdecks without having to uncollapse every top-level decks.
-
-Note that, in some case, you don't want the name to become red. E.g. you wanted to learn the name of the greek letters. When you know all of them, you won't add any new note ever. You just have to add a semicolon (;) (it is configurable) to the name of the deck, and it will not turn red. 
-####Marked cards
-Decks with marked card has a blue background (configurable). And if furthermore, the deck's name contains a semicolon (i.e. as explained above, the deck is ended), then the background become yellow.
-
-
-### Learning
-The number of review of cards in learning. By default you will see the number of review that can be done now, and in parenthesis the number of review which can be done later today.
-
-### Review
-The number of cards which you have seen in the past, and that you should see today. By default, the number of cards you will see today. And in parenthesis the number of cards you should see today, but that you will not see today because of your limite.
-
-
-### New
-Nothing changed here. New means «number of new cards you will see today». With the caveat that it is not exactly true for subdecks.
-
-### Due
-By default, this column is hidden. Indeed, it becames two columns «due now» and «later». We recall that, in Anki, a due card is a card which is not new, and that you have to view again today.
-
-### Unseen
-The number of cards which you have never answered. Most of these cards are cards you have never seens. But it also consider cards you have seens and buried. You may have seen it and buried it. By default, the number of unseen cards which you will discover today, and in parenthesis the number of unseen cards you will not see today.
-
-### Young
-The number of cards whose delay is less than 3 weak
-
-### Mature
-The number of cards whose delay is least at least 3 weak
-
-
-### Buried
-The number of Buried cards. Recall that a buried card is a card you will never see again, unless you unbury it manually (using the browser)
-
-### Suspended
-The number of Buried cards. Recall that a buried card is a card you will not see today. Either because you did press the «bury» button. Or because you saw another card of the same note, so it was automatically buried.
-
-### Total
-The number of cards in this deck. It is not the sum of the preceding column, since it contains also cards you have already seen and which are not yet due. (and it counts only once a card with multiple reviews)
-
-### Today
-The total number of review you will see today (assuming you always press good)
-
-### Configuration
-The last column states which configurations is used for the current deck. This avoids the pain to open the menu to see the option names. Really usefull when you have a lot of decks and want to see which is the last deck which used this old configuration you want to delete.
-
-## Capping
-By default, Anki does not show any number greater than 1000. Instead it shows 1000+.
-You can now edit this limit. Or remove it entirely (by using a negative number). If you set the limit to 0, you will either see a 0, or "+".
-
-
-How to configure this add-on
-===========================
-Most options are configurable. If some option is not, send me an email, I'll see what I can do.
-
-In order to configure this add-on,(hence, to configure what is shown in the main window) Go to Tools>add-ons>[name of this add-on]>Config. You'll see the configuration file. It will also display in a small window a display of the configuration's rule. We copy them below
-
-
-#Configuration file
-
-
 #Configuration of anki's addon Enhanced Main
 
 1. We first discuss the various small configurations related to the whole add-on.
@@ -112,6 +34,7 @@ The first value is a description, which will tell you what the column represent.
 
 ###Description
 A description of the content of the column. This is not used by anki, it allows you to decide whether you want the column or not while you edit the configuration.
+
 
 ###Present
 The value for the key "present" is either true or false. If the value is true, the column will be displayed. Otherwise, it will not. Note that you can also delete the entire column from the configuration, instead of changing the value to false.

@@ -45,104 +45,24 @@ met. Allows to turn off this coloring by adding a special symbol in
 the name of the deck (by default ";")
 
 """
+debug=False
+import time
+from aqt.deckbrowser import DeckBrowser
+from aqt.qt import *
+from aqt.utils import downArrow
+from anki.utils import intTime, ids2str
+from aqt import mw
+from anki.notes import Note
+from anki.decks import DeckManager
+import copy
+from anki.sched import Scheduler
 
 ####################
 #USER CONFIGURATION#
 ####################
-#Write False or True depending on whether you want to see the name of the option group
+#If you were used to do user configuration here, be happy. You won't have to edit this file every single time an update occur ! Now you just have to use the add-on manager and do the edition there once.
 
-userOption = {
-    ###
-    #List of columns. Reorder the elements to change the order fo the columns.
-    # Remove the symbol # before a line to add a column in anki as described in the line of code
-    #1-Long name of the column
-    #2-Header of the column
-    #3-Color of the number shown in this column
-    #4-Description of the column
-    #5-Whether you want absolute number "absolute" or percent "percent"
-    #6-Whether you want to consider subdeck "subdeck" or not "deck"
-    # last column list required information. Used in conjonction with queries table. Do not touch.
-    "columns" :[
-        ##Learning:
-        #This number is the sum of the two numbers below.
-        #(("learning card"), _("Learning")+"<br/>"+_("(card)") ,"orange", _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""), "absolute", "subdeck"),
-        #(("learning later"), _("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,"orange", _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."), "absolute", "subdeck"),
-        #(("learning now"), _("Learning")+"<br/>"+_("now") ,"orange", _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"), "absolute", "subdeck"),
-        (("learning all"), _("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))","orange", _("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"), "absolute", "subdeck" ),
-        ##Review cards:
-        #(("review due"), _("Due")+"<br/>"+_("all") ,"green", _("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"), "absolute", "subdeck"),
-        #(("review today"), _("Due")+"<br/>"+_("today") ,"green", _("Review cards you will see today"), "absolute", "subdeck"),
-        (("review"), _("Due")+"<br/>"+_("today")+" ("+_("all")+")","green", _("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"), "absolute", "subdeck"),
-        ##Unseen cards
-        #(("unseen"),_("Unseen")+"<br/>"+_("all")  ,"blue", _("Cards that have never been answered"), "absolute", "subdeck"),
-        #(("new"), _("New")+"<br/>"+_("today") ,"blue", _("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"), "absolute", "subdeck"),
-        #(("unseen new"),_("New")+"<br/>"+"("+_("Unseen")+")","blue", _("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"), "absolute", "subdeck"),
-        ##General count
-        (("buried"), _("Buried"),"grey",_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"), "absolute", "subdeck"),
-        # (("suspended"), _("Suspended"),"brown", _("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"), "absolute", "subdeck"),
-        #(("cards"), _("Total"),"black", _("Number of cards in the deck"), "absolute", "subdeck"),
-        (("notes/cards"), _("Total")+"<br/>"+_("Card/Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
-        #(("notes"), _("Total")+"<br/>"+_("Note"),"black", _("Number of cards/note in the deck"), "absolute", "subdeck"), #percent makes no sens in this line. 
-        (("today"), _("Today"),"red", _("Number of review you will see today")+"<br/>"+_("(new, review and learning)"), "absolute", "subdeck"),
-        # (("undue"), _("Undue"),"purple", _("Number of cards reviewed, not yet due"), "absolute", "subdeck"),
-        (("mature"), _("Mature"),"", _("Number of cards reviewed, with interval at least 3 weeks"), _("both"), "subdeck"),
-        (("young"), _("Young"),"pink", _("Number of cards reviewed, with interval less than 3 weeks"), _("both"), "subdeck"),
-        (("marked"), _("Marked"),"purple", _("Number of marked note"), _("absolute"), "subdeck"),
-    ],
-    
 
-    ######
-    #Other options
-    #Show the name of the deck's option:
-    "option" : True,
-
-    #Change the color of (sub)decks without new cards to color_empty (you can edit it below)
-    #change also the color of the (sub)decks with a descendant without new cards to color_empty_descendant (you can edit it below)
-    "no_new": True,
-
-    #the number of seconds between two refresh of the screen
-    "refresh rate": 30,
-
-    #To which value numbers should be capped.
-    #If this value is 0, you only see 0 or +
-    #If this value is negative, there is no capping
-    "cap value" : -1,
-
-    
-    ####Considering deck without unseen cards
-
-    #The color of deck who does not contains unseen cards
-    "color empty" : "red",
-
-    #The color of deck who have a subdeck which does not contains unseen cards
-    "color empty descendant" : "green",
-
-    #The color of deck who have marked cards not satysfying preceding condition
-    "marked backgroud color" : "powderblue",
-
-    #The color of ended deck who have marked cards 
-    "ended marked background color" : "yellow",
-
-    # #the color of deck not satysfying preceding condition
-    # "default color" :"black",
-
-    #Intuitively, this symbol means that the deck has ended. No new card will ever be added to it. E.g. the deck contains the set of greek letters, or the content of a book. We expect no new letters, nor new page in the book. However, notes may still be corrected if required.
-    #In this case, the presence or absence of unseen cards will not change the color of the names
-    #If there are no unseen cards, but they are marked cards, the back-ground color will change. So that you know you really need to check those notes.
-    "end symbol" :";",
-
-    #Intuitively, this symbol means that this deck represents a books. The subdecks represents part of the books. Normally, they should be parts which does not heavily depend on any other part, so they can be learned simultaneously.
-    #In this case, the "marked card in an ended deck" signal will not be transmitted. Indeed, it is not usefull, since those cards will be seen next you add note in the deck.
-    "book symbol" :"{",
-
-    #Intuitively, this symbol means that the deck could be considered as dead. No new card will be added, and it is not ended either. It is kept because it's already here.
-    #In this case, this deck will not transmit any alert from empty descendant.
-    "given up symbol" :"/",
-
-    #Intuitively, this symbol means the deck should restart later. It is probably to soon to really use this deck, its matter is too complicated, other things must be learn first. No point in considering marked cards yet.
-    #This action is similar to the one of given up.s
-    "pause symbol" :"=",
-}
 ########################################################################################
 ########################################################################################
 #HTML code here (so, if you know html, you can edit the html part without knowing python)
@@ -190,6 +110,7 @@ option_name_header="""<td></td>"""
 end_header="""</tr>"""
 
 
+
 ##############
 #deck's html #
 ##############
@@ -215,21 +136,69 @@ def deck_option_name(option):
     return f"<td>{option}</td>"
 
 end_line="</tr>"
+###########################
+#Associating default header and description
+###########################
+header={
+    "learning card":_("Learning")+"<br/>"+_("(card)"), 
+    "learning later":_("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,
+    "learning now":_("Learning")+"<br/>"+_("now") ,
+    "learning all":_("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))",
+    "review due":_("Due")+"<br/>"+_("all") ,
+    "review today":_("Due")+"<br/>"+_("today") ,
+    "review":_("Due")+"<br/>"+_("today")+" ("+_("all")+")",
+    "unseen":_("Unseen")+"<br/>"+_("all")  ,
+    "new":_("New")+"<br/>"+_("today") ,
+    "unseen new":_("New")+"<br/>"+"("+_("Unseen")+")",
+    "buried":_("Buried"),
+    "suspended":_("Suspended"),
+    "cards":_("Total"),
+    "notes/cards":_("Total")+"<br/>"+_("Card/Note"),
+    "notes":_("Total")+"<br/>"+_("Note"),
+    "today":_("Today"),
+    "undue":_("Undue"),
+    "mature":_("Mature"),
+    "young": _("Young"),
+    "marked":_("Marked"),
+}
+def getConfAux(conf,field,dic):
+    headerConf=conf.get(field)
+    if headerConf is not None:
+        return headerConf
+    else:
+        return dic[conf["name"]]
+
+def getHeader(conf):
+    return getConfAux(conf,"header",header)
+
+overlay={
+    "learning card":_("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""),
+    "learning later":_("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
+    "learning now":_("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
+    "learning all":_("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"),
+    "review due":_("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"),
+    "review today":_("Review cards you will see today"),
+    "review":_("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"),
+    "unseen":_("Cards that have never been answered"),
+    "new":_("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"),
+    "unseen new":_("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"),
+    "buried":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"),
+    "suspended":_("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"),
+    "cards":_("Number of cards in the deck"),
+    "notes/cards":_("Number of cards/note in the deck"),
+    "notes":_("Number of cards/note in the deck"),
+    "today":_("Number of review you will see today")+"<br/>"+_("(new, review and learning)"),
+    "undue":_("Number of cards reviewed, not yet due"),
+    "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
+    "young": _("Number of cards reviewed, with interval less than 3 weeks"), 
+    "marked":_("Number of marked note")
+}
+def getOverlay(conf):
+    return getConfAux(conf,"overlay",overlay)
 
 ###########################
 #Python code beginning
 #################
-debug=False
-import time
-from aqt.deckbrowser import DeckBrowser
-from aqt.qt import *
-from aqt.utils import downArrow
-from anki.utils import intTime, ids2str
-from aqt import mw
-from anki.notes import Note
-from anki.decks import DeckManager
-import copy
-from anki.sched import Scheduler
 
 globalCount = dict()
 
@@ -248,55 +217,64 @@ def addRequirement(name, dependances=set()):
             raise Exception(name, dependance)
         requirements[name]|=dep
 
+started=False
+def start():
+    global userOption, started, valueToCompute
+    if started:
+        return
+    started=True
+    userOption=mw.addonManager.getConfig(__name__)
+    refreshTimer = mw.progress.timer(userOption.get("refresh rate",30)*1000, onRefreshTimer, True)
+    addRequirement("learn soonest")
+    addRequirement("learning now from today")
+    addRequirement("learning today from past")
+    addRequirement("learning now",dependances={"learn soonest","learning now from today","learning today from past"})#number of cards in learning, ready to be seen again
+    addRequirement("learning later today")#number of cards in learning, seen again today, but not now
+    addRequirement("learning future")#number of cards in learning, not seen again today
+    addRequirement("learning later",dependances=["learning later today","learning future"])#number of cards in learning, seen again but not now
+    addRequirement("learning later today future",dependances=["learning future","learning later today"])#number of cards in learning, which can't be seen now
+    addRequirement("learning today",dependances=["learning later today","learning future","learning now"])#number of cards in learning, which will be seen today
+    addRequirement("learning all",dependances=["learning today","learning future","learning later"])#number of cards in learning, of all kinds
+    addRequirement("learning card", dependances=["learning all"])
+    
+    addRequirement("learning today repetition from today")
+    addRequirement("learning today repetition from past")
+    addRequirement("learning today repetition",dependances={"learning today repetition from today","learning today repetition from past"})#Number of repetition of learning cards you'll see today
+    addRequirement("learning repetition from today")
+    addRequirement("learning repetition from past")
+    addRequirement("learning repetition",dependances={"learning repetition from today","learning repetition from past"})#Number of repetition of learning cards you'll see
+    addRequirement("learning future repetition",dependances={"learning repetition","learning today repetition"})#Number of repetition of learning cards you'll see another day
+    
+    addRequirement("review due",dependances=["learning repetition"])#number of cards which are due today 
+    addRequirement("review today",dependances={"review due"})#number of cards which are due and will be seen today (it requires both the review due, and the limit)
+    addRequirement("review later",dependances=["review due","review today"])#number of cards which are due but, because of limits, can't be seen today
+    addRequirement("review",dependances=["review today","review later"])#number of cards which are due today
+    addRequirement("unseen")#Number of unseen card
+    addRequirement("new",set())#number of new cards which should be seen today if there are enough unseen cards (Depends only of limit, and not of db)
+    addRequirement("unseen later",dependances={"unseen","new"})#Number of unseen card which will not be seen today
+    addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
+    addRequirement("buried")#number of bured card
+    addRequirement("suspended")#number of suspended cards
+    addRequirement("cards")#number of cards
+    addRequirement("notes")#number of cards and of note
+    addRequirement("notes/cards",dependances=["notes","cards"])#number of cards and of note
+    addRequirement("today", dependances=["new"])#number of due cards today
+    addRequirement("undue")#number of cards which are not due today
+    addRequirement("mature")#number of mature cards
+    addRequirement("young" )#number of young cards
+    addRequirement("marked",dependances={"notes"})# number of marked cards
 
-addRequirement("learn soonest")
-addRequirement("learning now from today")
-addRequirement("learning today from past")
-addRequirement("learning now",dependances={"learn soonest","learning now from today","learning today from past"})#number of cards in learning, ready to be seen again
-addRequirement("learning later today")#number of cards in learning, seen again today, but not now
-addRequirement("learning future")#number of cards in learning, not seen again today
-addRequirement("learning later",dependances=["learning later today","learning future"])#number of cards in learning, seen again but not now
-addRequirement("learning later today future",dependances=["learning future","learning later today"])#number of cards in learning, which can't be seen now
-addRequirement("learning today",dependances=["learning later today","learning future","learning now"])#number of cards in learning, which will be seen today
-addRequirement("learning all",dependances=["learning today","learning future","learning later"])#number of cards in learning, of all kinds
-addRequirement("learning card", dependances=["learning all"])
 
-addRequirement("learning today repetition from today")
-addRequirement("learning today repetition from past")
-addRequirement("learning today repetition",dependances={"learning today repetition from today","learning today repetition from past"})#Number of repetition of learning cards you'll see today
-addRequirement("learning repetition from today")
-addRequirement("learning repetition from past")
-addRequirement("learning repetition",dependances={"learning repetition from today","learning repetition from past"})#Number of repetition of learning cards you'll see
-addRequirement("learning future repetition",dependances={"learning repetition","learning today repetition"})#Number of repetition of learning cards you'll see another day
-
-addRequirement("review due",dependances=["learning repetition"])#number of cards which are due today 
-addRequirement("review today",dependances={"review due"})#number of cards which are due and will be seen today (it requires both the review due, and the limit)
-addRequirement("review later",dependances=["review due","review today"])#number of cards which are due but, because of limits, can't be seen today
-addRequirement("review",dependances=["review today","review later"])#number of cards which are due today
-addRequirement("unseen")#Number of unseen card
-addRequirement("new",set())#number of new cards which should be seen today if there are enough unseen cards (Depends only of limit, and not of db)
-addRequirement("unseen later",dependances={"unseen","new"})#Number of unseen card which will not be seen today
-addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
-addRequirement("buried")#number of bured card
-addRequirement("suspended")#number of suspended cards
-addRequirement("cards")#number of cards
-addRequirement("notes")#number of cards and of note
-addRequirement("notes/cards",dependances=["notes","cards"])#number of cards and of note
-addRequirement("today", dependances=["new"])#number of due cards today
-addRequirement("undue")#number of cards which are not due today
-addRequirement("mature")#number of mature cards
-addRequirement("young" )#number of young cards
-addRequirement("marked",dependances={"notes"})# number of marked cards
-
-
-#Compute 
-#cards is always useful to calcul percent
-#unseen is used to see whether a deck has new card or not.
-valueToCompute={"cards", "unseen"}
-for  (name,description,color,description,absolute,subdec) in userOption["columns"]:
-    valueToCompute|=requirements[name]
-    valueToCompute|={name}
-requested ={name for (name,description,color,description,absolute,subdec) in userOption["columns"]}
+    #Compute 
+    #cards is always useful to calcul percent
+    #unseen is used to see whether a deck has new card or not.
+    valueToCompute={"cards", "unseen"}
+    for conf in userOption["columns"]:
+      if conf.get("present",True):
+        name=conf["name"]
+        valueToCompute|=requirements[name]
+        valueToCompute|={name}
+        
 
 def idFromOldNode(node):
     #Look at aqt/deckbrowser.py for a description of node
@@ -304,12 +282,13 @@ def idFromOldNode(node):
     return did
 
 def cap(n):
-    if userOption["cap value"]==0:
+    capValue=userOption.get("cap value",0)
+    if capValue==0:
         if n==0:
             return "0"
         else:
             return "+"
-        if n >= userOption["cap value"] and userOption["cap value"] >0:
+        if n >= capValue and capValue >0:
             return str(c) + "+"
         return str(n)
 
@@ -365,10 +344,10 @@ class DeckNode:
             self.param["isFiltered"] = True
             self.param["confName"]="Filtered"
 
-        self.param["containsEndSymbol"] = userOption["end symbol"]  in self.name
-        self.param["containsPauseSymbol"] = userOption["pause symbol"]  in self.name
-        self.param["containsBookSymbol"] = userOption["book symbol"]  in self.name
-        self.param["containsGivenUpSymbol"] = userOption["given up symbol"]  in self.name
+        self.param["containsEndSymbol"] = "end symbol" in userOption and userOption["end symbol"]  in self.name
+        self.param["containsPauseSymbol"] = "pause symbol" in userOption and userOption["pause symbol"]  in self.name
+        self.param["containsBookSymbol"] = "book symbol" in userOption and userOption["book symbol"]  in self.name
+        self.param["containsGivenUpSymbol"] = "given up symbol" in userOption and userOption["given up symbol"]  in self.name
         self.param["endedParent"] = endedParent
         self.param["givenUpParent"] = givenUpParent
         self.param["pauseParent"] = pauseParent
@@ -487,18 +466,19 @@ class DeckNode:
         if not self.param["isFiltered"]:
           if not self.param["ended"] and not self.param["givenUp"] and not self.param["pause"]:
             if self.param["isEmpty"]:
-                self.style["color"]=userOption["color empty"]
+                self.style["color"]=userOption.get("color empty","black")
             elif self.param["hasEmptyDescendant"]:
-                self.style["color"]=userOption["color empty descendant"]
+                self.style["color"]=userOption.get("color empty descendant","black")
           if self.param["someMarked"]:
             if self.param["endedMarkedDescendant"]:
-                self.style["background-color"]=userOption["ended marked background color"]
+                self.style["background-color"]=userOption.get("ended marked background color")
             else:
-                self.style["background-color"]=userOption["marked backgroud color"]
+                self.style["background-color"]=userOption.get("marked backgroud color")
         for c in ["deck","subdeck"]:
             self.addCount("absolute",c,"review today",(self.dueRevCards))
             self.addCount("absolute",c,"review later",(self.count["absolute"][c]["review due"]-self.count["absolute"][c]["review today"]))
-            self.addCount("absolute","deck","learning future",self.count["absolute"]["deck"]["learning now from today"]+self.count["absolute"]["deck"]["learning today from past"])
+            if "learning future" in valueToCompute:
+                self.addCount("absolute","deck","learning future",self.count["absolute"]["deck"]["learning now from today"]+self.count["absolute"]["deck"]["learning today from past"])
 
             self.addCount("absolute",c,"new",self.newCards)
             self.addCount("absolute",c,"unseen later" , self.count["absolute"][c]["unseen"]-self.count["absolute"][c]["new"])
@@ -528,26 +508,27 @@ class DeckNode:
         for absoluteOrPercent in self.text:
             self.text[absoluteOrPercent][c]["review"]=conditionString(self.text[absoluteOrPercent][c]["review today"])+ conditionString(self.text[absoluteOrPercent][c]["review later"],parenthesis=True)
             self.text[absoluteOrPercent][c]["unseen new"] = conditionString(self.text[absoluteOrPercent][c]["new"])+conditionString(self.text[absoluteOrPercent][c]["unseen later"], parenthesis=True)
-            if not  self.text["absolute"][c]["learning now"] and "learn soonest" in valueToCompute and self.timeDue[c] is not 0:
+            if (("learning now" in valueToCompute) and (not  self.text["absolute"][c]["learning now"])) and ("learn soonest" in valueToCompute) and (self.timeDue[c] is not 0):
                 remainingSeconds = self.timeDue[c] - intTime()
                 if remainingSeconds >= 60:
                     self.text[absoluteOrPercent][c]["learning now"] = "[%dm]" % (remainingSeconds // 60)
                 else :
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
-            else:
-                self.text[absoluteOrPercent][c]["learning now"]=self.text[absoluteOrPercent][c]["learning now"]
             if "notes/cards" in valueToCompute:
                 self.text[absoluteOrPercent][c]["notes/cards"] = conditionString(self.text[absoluteOrPercent][c]["notes"] and self.text[absoluteOrPercent][c]["cards"],str(self.text[absoluteOrPercent][c]["cards"])+"/"+ str(self.text[absoluteOrPercent][c]["notes"]))
-            self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
-            future = self.text[absoluteOrPercent][c]["learning future"]
-            if future:
+            if "learning today" in valueToCompute:
+                self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
+            if "learning future" in valueToCompute:
+              future = self.text[absoluteOrPercent][c]["learning future"]
+              if future:
                 later=conditionString(str(self.text[absoluteOrPercent][c]["learning later today"])+conditionString(future,parenthesis=True),parenthesis=True)
-            else:
+              else:
                 later=conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
-            self.text[absoluteOrPercent][c]["learning all"]=(
-                conditionString(self.text[absoluteOrPercent][c]["learning now"])+
-                later
-            )
+            if "learning all" in valueToCompute:
+                self.text[absoluteOrPercent][c]["learning all"]=(
+                    conditionString(self.text[absoluteOrPercent][c]["learning now"])+
+                    later
+                )
 
     def addCount(self,absoluteOrPercent,c,name,value):
         # if absoluteOrPercent=="absolute":
@@ -602,15 +583,24 @@ class DeckNode:
             cssStyle +="%s:%s;" %(name,value)
         buf += deck_name(depth,collapse,extraclass,did,cssStyle,node.name)
 
-        for (name, _, colour, description, number, deck) in userOption["columns"]:
-                contents = self.text[number][deck][name]
-                if contents == 0 or contents == "0":
-                    colour = "#e0e0e0"
-                buf +=number_cell(colour, contents, description)
+        for conf in userOption["columns"]:
+          if conf.get("present",True):
+            name=conf["name"]
+            if conf.get("percent",False):
+                if conf.get("absolute",False):
+                    number= "both"
+                else:
+                    number="percent"
+            else:
+                number="absolute"
+            contents = self.text[number]["subdeck" if conf.get("subdeck",False) else "deck"][conf["name"]]
+            if contents == 0 or contents == "0":
+                colour = "#e0e0e0"
+            buf +=number_cell(conf.get("color","black"), contents, getOverlay(conf))
 
         # options
         buf += gear(did)
-        if userOption["option"]:
+        if userOption.get("option"):
             buf += deck_option_name(self.param["confName"])
         # children
         buf += end_line
@@ -628,16 +618,18 @@ def make(mw, oldNode, endedParent=False, givenUpParent=False, pauseParent = Fals
         
 #based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._renderDeckTree
 def renderDeckTree(self, nodes, depth=0):
+    start()
     #Look at aqt/deckbrowser.py for a description of oldNode
     if not nodes:
         return ""
     if depth == 0:
                 
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
-        for (__ ,heading, __, __, __, __) in userOption["columns"]:
-                buf += column_header(heading)
+        for conf in userOption["columns"]:
+          if conf.get("present",True):
+                buf += column_header(getHeader(conf))
         buf += option_header #for deck's option
-        if userOption["option"]:
+        if userOption.get("option"):
             buf += option_name_header
         buf +=end_header
         
@@ -677,7 +669,6 @@ DeckBrowser._deckRow = deckRow
 DeckBrowser.refresh = refreshDoNothing
 
 #refresh according to the refresh_rate parametr
-refreshTimer = mw.progress.timer(userOption["refresh rate"]*1000, onRefreshTimer, True)
 
 oldNoteFluh =Note.flush
 def noteFlush(note, mod=None):
