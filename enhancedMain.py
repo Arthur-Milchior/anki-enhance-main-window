@@ -484,6 +484,10 @@ class DeckNode:
             self.addCount("absolute",c,"unseen later" , self.count["absolute"][c]["unseen"]-self.count["absolute"][c]["new"])
             self.addCount("absolute",c,"today" , self.count["absolute"][c]["new"]+self.dueRevCards+self.dueLrnReps)
 
+        if not userOption.get("color empty",False):
+            self.style["color"]="black"
+        if "background-color" in self.style and not userOption.get("color marked",False):
+            del self.style["background-color"]
         #filling the relative value of each possible column of the table
         self.count["percent"]={}
         for kind in self.count["absolute"]:
