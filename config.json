@@ -232,5 +232,7 @@
     "end symbol" :";",
     "book symbol" :"{",
     "given up symbol" :"/",
-    "pause symbol" :"="
+    "pause symbol" :"=",
+    "color empty": true,
+    "color marked":true
 }
