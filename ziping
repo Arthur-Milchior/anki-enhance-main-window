@@ -1,1 +1,1 @@
-zip em.zip config.{json,md} {enhancedMain,__init__}.py LICENSE README.md 
+zip *.zip config.{json,md}  LICENSE README.md ziping
