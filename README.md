@@ -37,17 +37,17 @@ By default, this column is hidden. Indeed, it becames two columns «due now» an
 The number of cards which you have never answered. Most of these cards are cards you have never seens. But it also consider cards you have seens and buried. You may have seen it and buried it. By default, the number of unseen cards which you will discover today, and in parenthesis the number of unseen cards you will not see today.
 
 ### Young
-The number of cards whose delay is less than 3 weak
+The number of cards whose delay is less than 3 weeks
 
 ### Mature
-The number of cards whose delay is least at least 3 weak
+The number of cards whose delay is least at least 3 weeks
 
 
 ### Buried
-The number of Buried cards. Recall that a buried card is a card you will never see again, unless you unbury it manually (using the browser)
+The number of Buried cards. Recall that a buried card is a card you will not see today. Either because you did press the «bury» button. Or because you saw another card of the same note, so it was automatically buried.
 
 ### Suspended
-The number of Buried cards. Recall that a buried card is a card you will not see today. Either because you did press the «bury» button. Or because you saw another card of the same note, so it was automatically buried.
+The number of Suspended cards. Recall that a suspended card is a card you will never see again, unless you unsuspend it manually (using the browser)
 
 ### Total
 The number of cards in this deck. It is not the sum of the preceding column, since it contains also cards you have already seen and which are not yet due. (and it counts only once a card with multiple reviews)
@@ -56,7 +56,7 @@ The number of cards in this deck. It is not the sum of the preceding column, sin
 The total number of review you will see today (assuming you always press good)
 
 ### Configuration
-The last column states which configurations is used for the current deck. This avoids the pain to open the menu to see the option names. Really usefull when you have a lot of decks and want to see which is the last deck which used this old configuration you want to delete.
+The last column states which options group is used for the current deck. This avoids the pain to open the menu to see the option names. Really usefull when you have a lot of decks and want to see which is the last deck which used this old configuration you want to delete.
 
 ## Capping
 By default, Anki does not show any number greater than 1000. Instead it shows 1000+.
@@ -73,7 +73,7 @@ In order to configure this add-on,(hence, to configure what is shown in the main
 # Configuration file
 
 
-# Configuration of anki's addon Enhanced Main
+# Configuration of Anki's addon Enhanced Main
 
 1. We first discuss the various small configurations related to the whole add-on.
 1. We then explain how to configure each column.
@@ -84,14 +84,14 @@ In order to configure this add-on,(hence, to configure what is shown in the main
 In this section, we describe various small configurations related to the whole add-on.
 
 ### Refresh rate
-How many time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown. 
+How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown. 
 
 ### Option
-Whether you want to display the deck's option's name, at the end of its line.
+Whether you want to display the deck's Option group's name, at the end of its line.
 
 
 ### cap value
-By default, without add-on, anki never show number greater than a thousand. Instead, it shows 1000+. You can decide to change a thousand by an arbitrary number. Or leave this value to null, and always show the real value.
+By default, without add-on, Anki never shows number greater than a thousand. Instead, it shows 1000+. You can decide to change a thousand by an arbitrary number. Or leave this value to null, and always show the real value.
 
 Note that capping to a thousand does not usually make the rendering quicker.
 
