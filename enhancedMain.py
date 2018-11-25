@@ -45,7 +45,7 @@ met. Allows to turn off this coloring by adding a special symbol in
 the name of the deck (by default ";")
 
 """
-debug=False
+
 import time
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
@@ -57,6 +57,9 @@ from anki.decks import DeckManager
 import copy
 from anki.sched import Scheduler
 
+def debug(t):
+    #print(t)
+    pass
 ####################
 #USER CONFIGURATION#
 ####################
@@ -536,7 +539,7 @@ class DeckNode:
 
     def addCount(self,absoluteOrPercent,c,name,value):
         # if absoluteOrPercent=="absolute":
-        #     print(f"Adding {c} {name}= {value}")
+        #     debug(f"Adding {c} {name}= {value}")
         #     pass
         self.count[absoluteOrPercent][c][name]=value
 
@@ -677,13 +680,13 @@ DeckBrowser.refresh = refreshDoNothing
 oldNoteFluh =Note.flush
 def noteFlush(note, mod=None):
     globalCount.clear()
-    print("flush")
+    debug("flush")
     oldNoteFluh(note,mod=mod)
 Note.flush = noteFlush
 oldDeckSave =DeckManager.save
 def deckSave(self, g=None, mainChange=True):
     if mainChange:
-        print("change main deck")
+        debug("change main deck")
         globalCount.clear()
     oldDeckSave(self,g=g)
 
@@ -704,14 +707,14 @@ def rebuidDyn(self, did=None):
 # oldExecute =DB.execute
 # def execute(self, sql, *a, **ka):
 #     globalCount.clear()
-#     print("reset globalCount")
+#     debug("reset globalCount")
 #     return oldExecute(self, sql, *a, **ka)
 
 # DB.execute = execute
 # oldExecutemany =DB.executemany
 # def executemany(self, sql, l):
 #     globalCount.clear()
-#     print("reset globalCount")
+#     debug("reset globalCount")
 #     return oldExecutemany(self, sql, l)
 
 # DB.executemany = executemany

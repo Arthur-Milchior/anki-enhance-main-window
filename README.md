@@ -176,7 +176,13 @@ By default, this symbol is "/".To the author, it means that no new card will be 
 #### Pause symbol"
 By default, this symbol is "=". To the author, it means that more new card will be added latter, but right now it does not want anki to change the color of the deck's name. In a future version, there may be an option to change the color of those decks.
 
-
+## Internals
+* In ```aqt.deckbrowser```, change ```DeckBrowser._renderDeckTree```, ```DeckBrowser.refresh``` and
+  ```DeckBrowser._deckRow```. The former methods are not called.
+* In ```Anki.notes```, change ```Note.flush```. The new method calls
+  the former one. 
+* In ```anki.decks``` change ```DeckManager.save```, calling the former
+  method. Changing ```DeckManager.collaps```, not calling the former method.
 ## Links, licence and credits
 
 Key         |Value
@@ -184,6 +190,6 @@ Key         |Value
 Copyright   |Arthur Milchior <arthur@milchior.fr>
 Based on    |Anki code by Damien Elmes <anki@ichi2.net>
 Based on    |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
-License     |GNU AGPL, version 3 or later; http|//www.gnu.org/licenses/agpl.html
+License     |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 Source in   | https://github.com/Arthur-Milchior/anki-enhance-main-window
 Addon number| [877182321](https://ankiweb.net/shared/info/877182321)
