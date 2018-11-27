@@ -154,13 +154,15 @@ header={
     "new":_("New")+"<br/>"+_("today") ,
     "unseen new":_("New")+"<br/>"+"("+_("Unseen")+")",
     "buried":_("Buried"),
+    "buried/suspended":_("Buried")+"/<br/>"+_("Suspended"),
     "suspended":_("Suspended"),
     "cards":_("Total"),
-    "notes/cards":_("Total")+"<br/>"+_("Card/Note"),
+    "notes/cards":_("Total")+"/<br/>"+_("Card/Note"),
     "notes":_("Total")+"<br/>"+_("Note"),
     "today":_("Today"),
     "undue":_("Undue"),
     "mature":_("Mature"),
+    "mature/young":_("Mature"+"/<br/>"+_("Young"),),
     "young": _("Young"),
     "marked":_("Marked"),
 }
@@ -186,12 +188,14 @@ overlay={
     "new":_("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"),
     "unseen new":_("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"),
     "buried":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"),
+    "buried/suspended":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)")+_("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"),
     "suspended":_("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"),
     "cards":_("Number of cards in the deck"),
     "notes/cards":_("Number of cards/note in the deck"),
     "notes":_("Number of cards/note in the deck"),
     "today":_("Number of review you will see today")+"<br/>"+_("(new, review and learning)"),
     "undue":_("Number of cards reviewed, not yet due"),
+    "mature/young":_("Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks"),
     "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
     "young": _("Number of cards reviewed, with interval less than 3 weeks"), 
     "marked":_("Number of marked note")
@@ -220,12 +224,12 @@ def addRequirement(name, dependances=set()):
             raise Exception(name, dependance)
         requirements[name]|=dep
 
-started=False
+# started=False
 def start():
     global userOption, started, valueToCompute
-    if started:
-        return
-    started=True
+    # if started:
+    #     return
+    # started=True
     userOption=mw.addonManager.getConfig(__name__)
     refreshTimer = mw.progress.timer(userOption.get("refresh rate",30)*1000, onRefreshTimer, True)
     addRequirement("learn soonest")
@@ -258,6 +262,7 @@ def start():
     addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
     addRequirement("buried")#number of bured card
     addRequirement("suspended")#number of suspended cards
+    addRequirement("buried/suspended", dependances={"buried","suspended"})#number of bured card
     addRequirement("cards")#number of cards
     addRequirement("notes")#number of cards and of note
     addRequirement("notes/cards",dependances=["notes","cards"])#number of cards and of note
@@ -265,6 +270,7 @@ def start():
     addRequirement("undue")#number of cards which are not due today
     addRequirement("mature")#number of mature cards
     addRequirement("young" )#number of young cards
+    addRequirement("mature/young", dependances=["mature","young"])#number of mature cards
     addRequirement("marked",dependances={"notes"})# number of marked cards
 
 
@@ -521,8 +527,12 @@ class DeckNode:
                     self.text[absoluteOrPercent][c]["learning now"] = "[%dm]" % (remainingSeconds // 60)
                 else :
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
+            if "mature/young" in valueToCompute:
+                self.text[absoluteOrPercent][c]["mature/young"] = conditionString(self.text[absoluteOrPercent][c]["mature"] and self.text[absoluteOrPercent][c]["young"],str(self.text[absoluteOrPercent][c]["young"])+"/"+ str(self.text[absoluteOrPercent][c]["mature"]))
             if "notes/cards" in valueToCompute:
                 self.text[absoluteOrPercent][c]["notes/cards"] = conditionString(self.text[absoluteOrPercent][c]["notes"] and self.text[absoluteOrPercent][c]["cards"],str(self.text[absoluteOrPercent][c]["cards"])+"/"+ str(self.text[absoluteOrPercent][c]["notes"]))
+            if "buried/suspended" in valueToCompute:
+                self.text[absoluteOrPercent][c]["buried/suspended"] = conditionString(self.text[absoluteOrPercent][c]["buried"] and self.text[absoluteOrPercent][c]["suspended"],str(self.text[absoluteOrPercent][c]["buried"])+"/"+ str(self.text[absoluteOrPercent][c]["suspended"]))
             if "learning today" in valueToCompute:
                 self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
             if "learning future" in valueToCompute:
