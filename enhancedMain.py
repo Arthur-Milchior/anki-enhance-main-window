@@ -121,19 +121,19 @@ def start_line(klass,did):
     return f"<tr class='{klass}' id='{did}'>"
 
 def collapse_children_html(did,name,prefix):
-    return f"""<a class=collapse onclick='pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
+    return f"""<a class=collapse onclick='return pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
 collapse_no_child="<span class=collapse></span>"
 
 def deck_name(depth,collapse,extraclass,did,cssStyle,name):
     return f"""
     
-        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="pycmd('open:{did}')"><font style='{cssStyle}'>{name}</font></a></td>"""
+        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="return pycmd('open:{did}')"><font style='{cssStyle}'>{name}</font></a></td>"""
 def number_cell(colour,contents,description):
     return f"<td align='right' class='tooltip'><font color='{colour}'>{contents}</font><span class='tooltiptext'>{description}</span></td>"
 
 
 def gear(did):
-    return f"""<td align=center class=opts><a onclick='pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
+    return f"""<td align=center class=opts><a onclick='return pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
 
 def deck_option_name(option):
     return f"<td>{option}</td>"
@@ -224,12 +224,12 @@ def addRequirement(name, dependances=set()):
             raise Exception(name, dependance)
         requirements[name]|=dep
 
-# started=False
+started=False
 def start():
     global userOption, started, valueToCompute
-    # if started:
-    #     return
-    # started=True
+    if started:
+        return
+    started=True
     userOption=mw.addonManager.getConfig(__name__)
     refreshTimer = mw.progress.timer(userOption.get("refresh rate",30)*1000, onRefreshTimer, True)
     addRequirement("learn soonest")
