@@ -23,9 +23,9 @@
             "subdeck":true
         },
         {
-            "description":"Cards in learning which are due now. If there are no such cards, the time in minutes or seconds until another learning card is due",
+            "description":"Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)",
             "present":false,
-            "name":"learning now",
+            "name":"learning all",
             "header":null, 
             "color":"orange",
             "overlay":null,
@@ -33,12 +33,13 @@
             "percent":false,
             "subdeck":true
         },
+        
         {
-            "description":"Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)",
-            "present":false,
-            "name":"learning all",
+            "description":"Review cards cards you will see today (and the ones you will not see today)",
+            "present":true,
+            "name":"review",
             "header":null, 
-            "color":"orange",
+            "color":"green",
             "overlay":null,
             "absolute":true,
             "percent":false,
@@ -66,20 +67,20 @@
             "percent":false,
             "subdeck":true
         },
+        
         {
-            "description":"Review cards cards you will see today (and the ones you will not see today)",
+            "description":"Unseen cards you will see today, not buried nor suspended.(what anki calls new cards). Followed by the unseen cards not buried nor suspended that you will not see today.",
             "present":true,
-            "name":"review",
+            "name":"unseen new",
             "header":null, 
-            "color":"green",
+            "color":"blue",
             "overlay":null,
             "absolute":true,
             "percent":false,
             "subdeck":true
         },
-        
         {
-            "description":"Cards that have never been answered",
+            "description":"Cards that have never been answered. Neither buried nor suspended.",
             "present":false,
             "name":"unseen",
             "header":null, 
@@ -90,7 +91,7 @@
             "subdeck":true
         },
         {
-            "description":"Unseen+ cards+ you will see today (what anki calls +new cards",
+            "description":"Unseen cards you will see today, not buried nor suspended. (what anki calls new cards)",
             "present":false,
             "name":"new",
             "header":null, 
@@ -100,12 +101,13 @@
             "percent":false,
             "subdeck":true
         },
+        
         {
-            "description":"Unseen cards you will see today (and those you will not see today)",
-            "present":false,
-            "name":"unseen new",
+            "description":"number of buried (cards you decided not to see today)/number of suspended cards, (cards you will never see unless you unsuspend them in the browser)",
+            "present":true,
+            "name":"buried/suspended",
             "header":null, 
-            "color":"blue",
+            "color":"grey",
             "overlay":null,
             "absolute":true,
             "percent":false,
@@ -113,7 +115,7 @@
         },
         {
             "description":"number of buried cards, (cards you decided not to see today)",
-            "present":true,
+            "present":false,
             "name":"buried",
             "header":null, 
             "color":"grey",
@@ -124,7 +126,7 @@
         },
         {
             "description":"number of suspended cards, (cards you will never see unless you unsuspend them in the browser)",
-            "present":true,
+            "present":false,
             "name":"suspended",
             "header":null, 
             "color":"brown",
@@ -133,6 +135,18 @@
             "percent":false,
             "subdeck":true
         },
+        
+        {
+            "description":"Number of cards/notes in the deck",
+            "present":true,
+            "name":"notes/cards",
+            "header":null, 
+            "color":"black",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        }, 
         {
             "description":"Number of cards in the deck",
             "present":false,
@@ -145,18 +159,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of cards/note in the deck",
-            "present":true,
-            "name":"notes/cards",
-            "header":null, 
-            "color":"black",
-            "overlay":null,
-            "absolute":true,
-            "percent":false,
-            "subdeck":true
-        }, 
-        {
-            "description":"Number of cards/note in the deck",
+            "description":"Number of notes in the deck",
             "present":false,
             "name":"notes",
             "header":null, 
@@ -166,6 +169,7 @@
             "percent":false, 
             "subdeck":true
         },
+        
         {
             "description":"Number of review you will see today (new, review and learning)",
             "present":true,
@@ -177,9 +181,21 @@
             "percent":false,
             "subdeck":true
         },
+
+        {
+            "description":"Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks ",
+            "present":true,
+            "name":"mature/young",
+            "header":null, 
+            "color":"",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        },
         {
             "description":"Number of cards reviewed, not yet due",
-            "present":true,
+            "present":false,
             "name":"undue",
             "header":null, 
             "color":"purple",
@@ -190,17 +206,18 @@
         },
         {
             "description":"Number of cards reviewed, with interval at least 3 weeks",
-            "present":true,
+            "present":false,
             "name":"mature",
             "header":null, 
             "color":"",
             "overlay":null,
             "absolute":true,
             "percent":false,
-            "subdeck":true},
+            "subdeck":true
+        },
         {
             "description":" Number of cards reviewed, with interval less than 3 weeks,",
-            "present":true,
+            "present":false,
             "name":"young",
             "header":null, 
             "color":"pink",
@@ -209,6 +226,7 @@
             "percent":false,
             "subdeck":true
         },
+        
         {
             "description":"Number of marked note",
             "present":true,
@@ -232,5 +250,7 @@
     "end symbol" :";",
     "book symbol" :"{",
     "given up symbol" :"/",
-    "pause symbol" :"="
+    "pause symbol" :"=",
+    "color empty": true,
+    "color marked":true
 }

@@ -45,7 +45,7 @@ met. Allows to turn off this coloring by adding a special symbol in
 the name of the deck (by default ";")
 
 """
-debug=False
+
 import time
 from aqt.deckbrowser import DeckBrowser
 from aqt.qt import *
@@ -57,6 +57,9 @@ from anki.decks import DeckManager
 import copy
 from anki.sched import Scheduler
 
+def debug(t):
+    #print(t)
+    pass
 ####################
 #USER CONFIGURATION#
 ####################
@@ -118,19 +121,19 @@ def start_line(klass,did):
     return f"<tr class='{klass}' id='{did}'>"
 
 def collapse_children_html(did,name,prefix):
-    return f"""<a class=collapse onclick='pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
+    return f"""<a class=collapse onclick='return pycmd("collapse:{did}")' id="{name}" href="#{name}" >{prefix}</a>"""
 collapse_no_child="<span class=collapse></span>"
 
 def deck_name(depth,collapse,extraclass,did,cssStyle,name):
     return f"""
     
-        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="pycmd('open:{did}')"><font style='{cssStyle}'>{name}</font></a></td>"""
+        <td class=decktd colspan=5>{"&nbsp;"*6*depth}{collapse}<a class="deck{extraclass}" onclick="return pycmd('open:{did}')"><font style='{cssStyle}'>{name}</font></a></td>"""
 def number_cell(colour,contents,description):
     return f"<td align='right' class='tooltip'><font color='{colour}'>{contents}</font><span class='tooltiptext'>{description}</span></td>"
 
 
 def gear(did):
-    return f"""<td align=center class=opts><a onclick='pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
+    return f"""<td align=center class=opts><a onclick='return pycmd(\"opts:{int(did)}\");'><img src='/_anki/imgs/gears.svg' class=gears></a></td>"""
 
 def deck_option_name(option):
     return f"<td>{option}</td>"
@@ -151,13 +154,15 @@ header={
     "new":_("New")+"<br/>"+_("today") ,
     "unseen new":_("New")+"<br/>"+"("+_("Unseen")+")",
     "buried":_("Buried"),
+    "buried/suspended":_("Buried")+"/<br/>"+_("Suspended"),
     "suspended":_("Suspended"),
     "cards":_("Total"),
-    "notes/cards":_("Total")+"<br/>"+_("Card/Note"),
+    "notes/cards":_("Total")+"/<br/>"+_("Card/Note"),
     "notes":_("Total")+"<br/>"+_("Note"),
     "today":_("Today"),
     "undue":_("Undue"),
     "mature":_("Mature"),
+    "mature/young":_("Mature"+"/<br/>"+_("Young"),),
     "young": _("Young"),
     "marked":_("Marked"),
 }
@@ -183,12 +188,14 @@ overlay={
     "new":_("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"),
     "unseen new":_("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"),
     "buried":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"),
+    "buried/suspended":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)")+_("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"),
     "suspended":_("number of suspended cards,")+"<br/>"+_("(cards you will never see")+"<br/>"+_("unless you unsuspend them in the browser)"),
     "cards":_("Number of cards in the deck"),
     "notes/cards":_("Number of cards/note in the deck"),
     "notes":_("Number of cards/note in the deck"),
     "today":_("Number of review you will see today")+"<br/>"+_("(new, review and learning)"),
     "undue":_("Number of cards reviewed, not yet due"),
+    "mature/young":_("Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks"),
     "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
     "young": _("Number of cards reviewed, with interval less than 3 weeks"), 
     "marked":_("Number of marked note")
@@ -255,6 +262,7 @@ def start():
     addRequirement("unseen new",dependances=["unseen later","new"])#Number of unseen cards, both seen today, and seen another day
     addRequirement("buried")#number of bured card
     addRequirement("suspended")#number of suspended cards
+    addRequirement("buried/suspended", dependances={"buried","suspended"})#number of bured card
     addRequirement("cards")#number of cards
     addRequirement("notes")#number of cards and of note
     addRequirement("notes/cards",dependances=["notes","cards"])#number of cards and of note
@@ -262,6 +270,7 @@ def start():
     addRequirement("undue")#number of cards which are not due today
     addRequirement("mature")#number of mature cards
     addRequirement("young" )#number of young cards
+    addRequirement("mature/young", dependances=["mature","young"])#number of mature cards
     addRequirement("marked",dependances={"notes"})# number of marked cards
 
 
@@ -484,6 +493,10 @@ class DeckNode:
             self.addCount("absolute",c,"unseen later" , self.count["absolute"][c]["unseen"]-self.count["absolute"][c]["new"])
             self.addCount("absolute",c,"today" , self.count["absolute"][c]["new"]+self.dueRevCards+self.dueLrnReps)
 
+        if not userOption.get("color empty",False):
+            self.style["color"]="black"
+        if "background-color" in self.style and not userOption.get("color marked",False):
+            del self.style["background-color"]
         #filling the relative value of each possible column of the table
         self.count["percent"]={}
         for kind in self.count["absolute"]:
@@ -514,8 +527,12 @@ class DeckNode:
                     self.text[absoluteOrPercent][c]["learning now"] = "[%dm]" % (remainingSeconds // 60)
                 else :
                     self.text[absoluteOrPercent][c]["learning now"] = "[%ds]" % remainingSeconds
+            if "mature/young" in valueToCompute:
+                self.text[absoluteOrPercent][c]["mature/young"] = conditionString(self.text[absoluteOrPercent][c]["mature"] and self.text[absoluteOrPercent][c]["young"],str(self.text[absoluteOrPercent][c]["young"])+"/"+ str(self.text[absoluteOrPercent][c]["mature"]))
             if "notes/cards" in valueToCompute:
                 self.text[absoluteOrPercent][c]["notes/cards"] = conditionString(self.text[absoluteOrPercent][c]["notes"] and self.text[absoluteOrPercent][c]["cards"],str(self.text[absoluteOrPercent][c]["cards"])+"/"+ str(self.text[absoluteOrPercent][c]["notes"]))
+            if "buried/suspended" in valueToCompute:
+                self.text[absoluteOrPercent][c]["buried/suspended"] = conditionString(self.text[absoluteOrPercent][c]["buried"] and self.text[absoluteOrPercent][c]["suspended"],str(self.text[absoluteOrPercent][c]["buried"])+"/"+ str(self.text[absoluteOrPercent][c]["suspended"]))
             if "learning today" in valueToCompute:
                 self.text[absoluteOrPercent][c]["learning today"]= conditionString(self.text[absoluteOrPercent][c]["learning now"])+conditionString(self.text[absoluteOrPercent][c]["learning later today"],parenthesis=True)
             if "learning future" in valueToCompute:
@@ -532,7 +549,7 @@ class DeckNode:
 
     def addCount(self,absoluteOrPercent,c,name,value):
         # if absoluteOrPercent=="absolute":
-        #     print(f"Adding {c} {name}= {value}")
+        #     debug(f"Adding {c} {name}= {value}")
         #     pass
         self.count[absoluteOrPercent][c][name]=value
 
@@ -674,13 +691,13 @@ DeckBrowser.refresh = refreshDoNothing
 oldNoteFluh =Note.flush
 def noteFlush(note, mod=None):
     globalCount.clear()
-    print("flush")
+    debug("flush")
     oldNoteFluh(note,mod=mod)
 Note.flush = noteFlush
 oldDeckSave =DeckManager.save
 def deckSave(self, g=None, mainChange=True):
     if mainChange:
-        print("change main deck")
+        debug("change main deck")
         globalCount.clear()
     oldDeckSave(self,g=g)
 
@@ -701,14 +718,14 @@ def rebuidDyn(self, did=None):
 # oldExecute =DB.execute
 # def execute(self, sql, *a, **ka):
 #     globalCount.clear()
-#     print("reset globalCount")
+#     debug("reset globalCount")
 #     return oldExecute(self, sql, *a, **ka)
 
 # DB.execute = execute
 # oldExecutemany =DB.executemany
 # def executemany(self, sql, l):
 #     globalCount.clear()
-#     print("reset globalCount")
+#     debug("reset globalCount")
 #     return oldExecutemany(self, sql, l)
 
 # DB.executemany = executemany
