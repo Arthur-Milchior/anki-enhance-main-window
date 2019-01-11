@@ -654,7 +654,8 @@ def refreshDoNothing(self):
 
 #based on Anki 2.0.45 aqt/main.py AnkiQt.onRefreshTimer
 def onRefreshTimer():
-    if mw.state == "deckBrowser":
+    if mw.state == "deckBrowser" and hasattr(mw.col,"sched"):
+        #If a new collection is charged, there is no scheduler, and refresh is impossible. This avoid a bug which occurs while importing a profile.
         mw.deckBrowser._renderPage()  #was refresh, but we're disabling that
 
 def addon_reloader_teardown():
