@@ -73,6 +73,7 @@ class DeckNode:
         self.pauseParent = pauseParent
         self.givenUpParent = givenUpParent
         self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCards, oldChildren = oldNode
+        print(f"Init node {self.name}")
         self.deck = mw.col.decks.get(self.did)
         self.setConfParameters()
         

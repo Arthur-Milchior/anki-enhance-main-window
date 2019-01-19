@@ -22,5 +22,5 @@ def conditionString(cond,string = None, parenthesis = False):
     else:
         ret = str(cond)
     if parenthesis:
-        ret = f"({ret})"
+        ret = f"(+{ret})"
     return ret
