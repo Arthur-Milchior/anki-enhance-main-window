@@ -1,3 +1,5 @@
+from .config import getUserOption
+
 # Associate to each column its title
 header = {
     "learning card":_("Learning")+"<br/>"+_("(card)"), 
@@ -24,7 +26,7 @@ header = {
     "marked":_("Marked"),
 }
 def getConfAux(conf,field,dic):
-    """If field is in headerConf, returns its value.
+    """If field is in conf, returns its value.
     otherwise, return the value associated to this configuration's name in dic
 
     conf -- a configuration from json
@@ -42,7 +44,7 @@ def getHeader(conf):
     return getConfAux(conf,"header",header)
 
 # Associate to each column its overlay
-overlay = {
+defaultOverlay = {
     "learning card":_("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""),
     "learning later":_("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
     "learning now":_("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
@@ -68,5 +70,10 @@ overlay = {
 }
 def getOverlay(conf):
     """The overlay for the configuration in argument"""
-    return getConfAux(conf,"overlay",overlay)
+    if "overlay" not in conf:
+        return None
+    overlay =  conf["overlay"]
+    if overlay is None:
+        return defaultOverlay[conf["name"]]
+    return overlay
 

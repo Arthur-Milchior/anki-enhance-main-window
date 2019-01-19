@@ -59,7 +59,11 @@ def deck_name(depth,collapse,extraclass,did,cssStyle,name):
         <td class = decktd colspan = 5>{"&nbsp;"*6*depth}{collapse}<a class = "deck{extraclass}" onclick = "return pycmd('open:{did}')"><font style = '{cssStyle}'>{name}</font></a></td>"""
 
 def number_cell(colour,contents,description):
-    return f"<td align = 'right' class = 'tooltip'><font color = '{colour}'>{contents}</font><span class = 'tooltiptext'>{description}</span></td>"
+    if description is None or description is False:
+        description = ""
+    else:
+        description = f"<span class = 'tooltiptext'>{description}</span>"
+    return f"<td align = 'right' class = 'tooltip'><font color = '{colour}'>{contents}</font>{description}</td>"
 
 
 def gear(did):

@@ -241,13 +241,11 @@ class DeckNode:
         if self.isEmpty:
             if not self.ended and not self.givenUp and not self.pause:
                 self.style["color"] = getUserOption("color empty","black")
-                print(f"{self.name} is empty, not ended, not givenUp, not in pause. Its color is set to {self.style['color']}")
             return
         for child in self.children:
             if (child.hasEmptyDescendant and (not child.ended) and (not child.givenUp) and (not child.pause)):
                 self.hasEmptyDescendant = True
                 self.style['color'] = getUserOption("color empty descendant","black")
-                print(f"{self.name} is not empty but has empty descendant. Its color is set to {self.style['color']}")
                 return
                 
     def _setPercentAndBoth(self, kind, column, base):

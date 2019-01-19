@@ -45,7 +45,7 @@ If this value is absent, by default, it is assumed that it should be true.
 The header of the column. If you leave «null» then the default header will be used. This description will be translated as much as it is possible to do it automatically. However, you can also choose to write your own description. You can use html in this description. I.e. you should use "<br/>" when you want a newline.
 
 ###Overlay
-The text shown when your mouse is over a number. It will describe what this number represent. You can remove this key if you want no description to be present. And leave this value to null if you want to use the default value.
+The text shown when your mouse is over a number. It will describe what this number represent. You can remove this key or set it to false if you want no description to be present. And leave this value to null if you want to use the default value.
 
 ###Color
 The color in which the number is written in this column. You can use any color acceptable in an HTML document. The most standard color's name should work.
