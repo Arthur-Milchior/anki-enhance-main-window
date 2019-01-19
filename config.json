@@ -252,5 +252,7 @@
     "given up symbol" :"/",
     "pause symbol" :"=",
     "color empty": true,
-    "color marked":true
+    "color marked":true,
+
+    "css": null
 }

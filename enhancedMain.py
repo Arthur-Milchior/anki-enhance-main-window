@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-# New code copyright Helen Foster and Arthur Milchior <Arthur@Milchior.fr> Some idea from Juda Kaleta <juda.kaleta@gmail.com>
+# Maintener Arthur Milchior <Arthur@Milchior.fr>
+# Previous code copyright Helen Foster
+# Some idea from Juda Kaleta <juda.kaleta@gmail.com>
+# Some CSS edited by cjdduarte 
 # Github: https://github.com/Arthur-Milchior/anki-enhance-main-window
 # Original code from Anki, copyright Damien Elmes <anki@ichi2.net>
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
@@ -56,6 +59,7 @@ from anki.notes import Note
 from anki.decks import DeckManager
 import copy
 from anki.sched import Scheduler
+from .config import getUserOption
 
 def debug(t):
     #print(t)
@@ -71,7 +75,7 @@ def debug(t):
 #HTML code here (so, if you know html, you can edit the html part without knowing python)
 ########################################################################################
 ########################################################################################
-css="""/* Tooltip container */
+defaultCSS = """/* Tooltip container */
         a:hover{
          cursor: pointer;
         }        
@@ -100,6 +104,7 @@ css="""/* Tooltip container */
 	}
 	
 	"""
+css=getUserOption("css", defaultCSS)
 ######################
 #header related html #
 ######################
@@ -226,12 +231,11 @@ def addRequirement(name, dependances=set()):
 
 started=False
 def start():
-    global userOption, started, valueToCompute
+    global started, valueToCompute
     if started:
         return
     started=True
-    userOption=mw.addonManager.getConfig(__name__)
-    refreshTimer = mw.progress.timer(userOption.get("refresh rate",30)*1000, onRefreshTimer, True)
+    refreshTimer = mw.progress.timer(getUserOption("refresh rate",30)*1000, onRefreshTimer, True)
     addRequirement("learn soonest")
     addRequirement("learning now from today")
     addRequirement("learning today from past")
@@ -278,7 +282,7 @@ def start():
     #cards is always useful to calcul percent
     #unseen is used to see whether a deck has new card or not.
     valueToCompute={"cards", "unseen"}
-    for conf in userOption["columns"]:
+    for conf in getUserOption()["columns"]:
       if conf.get("present",True):
         name=conf["name"]
         valueToCompute|=requirements[name]
@@ -291,7 +295,7 @@ def idFromOldNode(node):
     return did
 
 def cap(n):
-    capValue=userOption.get("cap value",0)
+    capValue=getUserOption("cap value",0)
     if capValue==0:
         if n==0:
             return "0"
@@ -353,10 +357,10 @@ class DeckNode:
             self.param["isFiltered"] = True
             self.param["confName"]="Filtered"
 
-        self.param["containsEndSymbol"] = "end symbol" in userOption and userOption["end symbol"]  in self.name
-        self.param["containsPauseSymbol"] = "pause symbol" in userOption and userOption["pause symbol"]  in self.name
-        self.param["containsBookSymbol"] = "book symbol" in userOption and userOption["book symbol"]  in self.name
-        self.param["containsGivenUpSymbol"] = "given up symbol" in userOption and userOption["given up symbol"]  in self.name
+        self.param["containsEndSymbol"] = "end symbol" in getUserOption() and getUserOption()["end symbol"]  in self.name
+        self.param["containsPauseSymbol"] = "pause symbol" in getUserOption() and getUserOption()["pause symbol"]  in self.name
+        self.param["containsBookSymbol"] = "book symbol" in getUserOption() and getUserOption()["book symbol"]  in self.name
+        self.param["containsGivenUpSymbol"] = "given up symbol" in getUserOption() and getUserOption()["given up symbol"]  in self.name
         self.param["endedParent"] = endedParent
         self.param["givenUpParent"] = givenUpParent
         self.param["pauseParent"] = pauseParent
@@ -475,14 +479,14 @@ class DeckNode:
         if not self.param["isFiltered"]:
           if not self.param["ended"] and not self.param["givenUp"] and not self.param["pause"]:
             if self.param["isEmpty"]:
-                self.style["color"]=userOption.get("color empty","black")
+                self.style["color"]=getUserOption("color empty","black")
             elif self.param["hasEmptyDescendant"]:
-                self.style["color"]=userOption.get("color empty descendant","black")
+                self.style["color"]=getUserOption("color empty descendant","black")
           if self.param["someMarked"]:
             if self.param["endedMarkedDescendant"]:
-                self.style["background-color"]=userOption.get("ended marked background color")
+                self.style["background-color"]=getUserOption("ended marked background color")
             else:
-                self.style["background-color"]=userOption.get("marked backgroud color")
+                self.style["background-color"]=getUserOption("marked backgroud color")
         for c in ["deck","subdeck"]:
             self.addCount("absolute",c,"review today",(self.dueRevCards))
             self.addCount("absolute",c,"review later",(self.count["absolute"][c]["review due"]-self.count["absolute"][c]["review today"]))
@@ -493,9 +497,9 @@ class DeckNode:
             self.addCount("absolute",c,"unseen later" , self.count["absolute"][c]["unseen"]-self.count["absolute"][c]["new"])
             self.addCount("absolute",c,"today" , self.count["absolute"][c]["new"]+self.dueRevCards+self.dueLrnReps)
 
-        if not userOption.get("color empty",False):
+        if not getUserOption("color empty",False):
             self.style["color"]="black"
-        if "background-color" in self.style and not userOption.get("color marked",False):
+        if "background-color" in self.style and not getUserOption("color marked",False):
             del self.style["background-color"]
         #filling the relative value of each possible column of the table
         self.count["percent"]={}
@@ -600,7 +604,7 @@ class DeckNode:
             cssStyle +="%s:%s;" %(name,value)
         buf += deck_name(depth,collapse,extraclass,did,cssStyle,node.name)
 
-        for conf in userOption["columns"]:
+        for conf in getUserOption()["columns"]:
           if conf.get("present",True):
             name=conf["name"]
             if conf.get("percent",False):
@@ -617,7 +621,7 @@ class DeckNode:
 
         # options
         buf += gear(did)
-        if userOption.get("option"):
+        if getUserOption("option"):
             buf += deck_option_name(self.param["confName"])
         # children
         buf += end_line
@@ -642,11 +646,11 @@ def renderDeckTree(self, nodes, depth=0):
     if depth == 0:
                 
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
-        for conf in userOption["columns"]:
+        for conf in getUserOption()["columns"]:
           if conf.get("present",True):
                 buf += column_header(getHeader(conf))
         buf += option_header #for deck's option
-        if userOption.get("option"):
+        if getUserOption("option"):
             buf += option_name_header
         buf +=end_header
         
@@ -671,8 +675,7 @@ def refreshDoNothing(self):
 
 #based on Anki 2.0.45 aqt/main.py AnkiQt.onRefreshTimer
 def onRefreshTimer():
-    if mw.state == "deckBrowser" and hasattr(mw.col,"sched"):
-        #If a new collection is charged, there is no scheduler, and refresh is impossible. This avoid a bug which occurs while importing a profile.
+    if mw.state == "deckBrowser":
         mw.deckBrowser._renderPage()  #was refresh, but we're disabling that
 
 def addon_reloader_teardown():

@@ -1,9 +1,13 @@
 # anki-enhance-main-window
 Adds a lot of features to the main window. Allows to configure those features. Configurations are explained at the end of this document.
 
-Update 8th november 2018: you can configure the add-on using anki 2.1's configuration method. The configuration won't be lost during next update of the add-on !
-# Features
+Update 8th november 2018: you can configure the add-on using anki
+2.1's configuration method. The configuration won't be lost during
+next update of the add-on !
 
+Update: 19th January 2019: many bugs corrected. Configuration can be
+changed without restarting anki.
+# Features
 ## Column
 Most features offered by this add-on are related to some column. 
 ### Name of the (sub)deck
@@ -81,7 +85,14 @@ In order to configure this add-on,(hence, to configure what is shown in the main
 1. We finally explain how to configure coloring related to marked cards.
 
 ## Miscelaneous
-In this section, we describe various small configurations related to the whole add-on.
+In this section, we describe various small configurations related to
+the whole add-on.
+
+### CSS
+If the value is ```null``` then the default css is used. Otherwise,
+you can put the CSS you want here.  Use the add-on (Newline in strings
+in add-ons configurations)[https://ankiweb.net/shared/info/112201952]
+if you want to use newline in JSON/CSS string.
 
 ### Refresh rate
 How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown. 
@@ -185,11 +196,13 @@ By default, this symbol is "=". To the author, it means that more new card will 
   method. Changing ```DeckManager.collaps```, not calling the former method.
 ## Links, licence and credits
 
-Key         |Value
-------------|-------------------------------------------------------------------
-Copyright   |Arthur Milchior <arthur@milchior.fr>
-Based on    |Anki code by Damien Elmes <anki@ichi2.net>
-Based on    |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
-License     |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
-Source in   | https://github.com/Arthur-Milchior/anki-enhance-main-window
-Addon number| [877182321](https://ankiweb.net/shared/info/877182321)
+Key          |Value
+-------------|-------------------------------------------------------------------
+Copyright    |Arthur Milchior <arthur@milchior.fr>
+Based on     |Anki code by Damien Elmes <anki@ichi2.net>
+Based on     |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
+Original idea| Juda Kaleta <juda.kaleta@gmail.com>
+Somme CSS    | Some idea from cjdduarte
+License      |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
+Source in    | https://github.com/Arthur-Milchior/anki-enhance-main-window
+Addon number | [877182321](https://ankiweb.net/shared/info/877182321)

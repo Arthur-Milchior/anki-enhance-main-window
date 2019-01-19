@@ -50,7 +50,7 @@ The text shown when your mouse is over a number. It will describe what this numb
 ###Color
 The color in which the number is written in this column. You can use any color acceptable in an HTML document. The most standard color's name should work.
 
-###Percent
+### Percent
 true or false whether you want to show the percent of cards satisfying this colun condition. For example, 23% of cards are new. Note that sometime, this would not make sens. For example, for the column «cards», the value will always be 100% (unless the deck is empty). For the column notes, the number would not really make any sens (formally, you'd get the percent of cards which is the first of its sibling in this deck).
 
 By default, if percent is absent, it is assumed to be false.
