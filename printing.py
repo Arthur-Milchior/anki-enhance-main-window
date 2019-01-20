@@ -24,3 +24,11 @@ def conditionString(cond,string = None, parenthesis = False):
     if parenthesis:
         ret = f"(+{ret})"
     return ret
+
+def nowLater(first, second = None):
+    first = conditionString(first)
+    second = conditionString(second, parenthesis = True)
+    return first+second
+
+
+    
