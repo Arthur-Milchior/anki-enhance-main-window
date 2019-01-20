@@ -25,9 +25,7 @@ def rebuidDyn(self, did = None):
 oldCollapse = DeckManager.collapse
 def collapse(self,did):
     deck = self.get(did)
-    print(f"Deck {did}'s collapse state was {deck['collapsed']}" )
     deck['collapsed'] = not deck['collapsed']
-    print(f"Deck {did}'s collapse state is now {deck['collapsed']}" )
     self.save(deck,mainChange = False)
     
 DeckManager.collapse = collapse
