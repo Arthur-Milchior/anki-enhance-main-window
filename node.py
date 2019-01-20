@@ -65,7 +65,6 @@ class DeckNode:
         #Look at aqt/deckbrowser.py for a description of oldNode
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
 
-        print("Calling init")
         # Associate each potentially interesting parameters of this node
         self.param = dict()
         #CSS Style
