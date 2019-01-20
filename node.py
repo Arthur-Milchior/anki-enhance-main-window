@@ -14,6 +14,7 @@ from .utils import debug, measureTime, printMeasures
 
 # Dict from deck id to deck node
 idToNode = dict()
+idToOldNode = dict()
 @measureTime(False)
 def idFromOldNode(node):
     #Look at aqt/deckbrowser.py for a description of node
@@ -64,6 +65,7 @@ class DeckNode:
         #Look at aqt/deckbrowser.py for a description of oldNode
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
 
+        print("Calling init")
         # Associate each potentially interesting parameters of this node
         self.param = dict()
         #CSS Style
@@ -396,9 +398,9 @@ class DeckNode:
                 if ((not  self.count["absolute"][kind]["learning now"])) and (self.timeDue[kind] is not 0):
                     remainingSeconds = self.timeDue[kind] - intTime()
                     if remainingSeconds >= 60:
-                        self.addCount(absoluteOrPercent, kind, ("learning now", "[%dm]" % (remainingSeconds // 60)))
+                        self.addCount(absoluteOrPercent, kind, "learning now", "[%dm]" % (remainingSeconds // 60))
                     else :
-                        self.addCount(absoluteOrPercent, kind, ("learning now", "[%ds]" % remainingSeconds))
+                        self.addCount(absoluteOrPercent, kind, "learning now", "[%ds]" % remainingSeconds)
                         
     @measureTime(True)
     def setPairs(self):
@@ -535,13 +537,15 @@ class DeckNode:
         )
 
 
+
 @measureTime(False) #number 1 time
 def make(oldNode, endedParent = False, givenUpParent = False, pauseParent = False):
     """Essentially similar to DeckNode, but return an element already computed if it exists in the base"""
     did = idFromOldNode(oldNode)
-    if did not in idToNode:
+    if oldNode is not idToOldNode.get(did):
        node = DeckNode(mw, oldNode, endedParent, givenUpParent, pauseParent)
        idToNode[did] = node
+       idToOldNode[did]=oldNode
     return idToNode[did]
         
 #based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._renderDeckTree
