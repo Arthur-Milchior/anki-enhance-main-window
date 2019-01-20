@@ -72,12 +72,14 @@ class DeckNode:
         self.endedParent = endedParent
         self.pauseParent = pauseParent
         self.givenUpParent = givenUpParent
-        self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCards, oldChildren = oldNode
+        self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCardsToday, self.oldChildren = oldNode
         self.deck = mw.col.decks.get(self.did)
         #print(f"Init node {self.name}")
         
+        self.initDicts()
+        self.setSymbolsParameters()
+        self.setChildren()
         self.setDeckLevel()
-        self.setChildren(oldChildren)
         self.setSubdeck()
         
         self.fromSetToCount()
@@ -88,14 +90,12 @@ class DeckNode:
         """Compute every informations which does not need access to
         children """
         self.setConfParameters()
-        self.setSymbolsParameters()
-        self.initDicts()
-        self.initFromAlreadyComputed()
         self.initCountFromDb() # count information of card from database
-        self.initCountSum() # basic some from database information
         self.initNid() # set of note from database
         self.initMarked() # set of marked notes
         self.initTimeDue()
+        self.initFromAlreadyComputed()
+        self.initCountSum() # basic some from database information
 
     #@measureTime(True)
     def setSubdeck(self):
@@ -159,9 +159,9 @@ class DeckNode:
         today = mw.col.sched.today
         queriesCardCount = [
             ("learning now from today", f"sum(case when queue = 1 and due <= {str(cutoff)} then 1 else 0 end)" ),
-            ("learning today from past", f"sum(case when queue = 3 and due <= {str(today)} then 1 else 0 end)" ),#"cards in learning to see today and which have waited at least a day"
+            ("learning today from past", f"sum(case when queue = 3 and due <= {str(today)} then 1 else 0 end)" ),
             ("learning later today", f"sum(case when queue = 1 and due > {str(cutoff)} then 1 else 0 end)" ),
-            ("learning future", f"sum(case when queue = 3 and due > {str(today)} then 1 else 0 end)" ),#"cards in learning such that this review will occur at least tomorrow"
+            ("learning future", f"sum(case when queue = 3 and due > {str(today)} then 1 else 0 end)" ),
             ("learning today repetition from today", f"sum(case when queue = 1 then left/1000 else 0 end)"),
             ("learning today repetition from past", f"sum(case when queue = 3 then left/1000 else 0 end)"),
             ("learning repetition from today", f"sum(case when queue = 1 then mod%1000 else 0 end)"),
@@ -171,10 +171,9 @@ class DeckNode:
             ("buried", f"sum(case when queue = -2  or queue = -3 then 1 else 0 end)"),
             ("suspended", f"sum(case when queue = -1 then 1 else 0 end)"),
             ("cards","sum(1)"),
-            ("notes","count (distinct nid)"),
-            ("undue", f"sum(case when queue = 2 and due >  {str(today)} then 1 else 0 end)"), #Sum of the two next
-            ("mature", f"sum(case when queue = 2 and due >  {str(today)} and ivl >= 21 then 1 else 0 end)" ),
-            ("young", f"sum(case when queue = 2 and due >  {str(today)} and ivl <21 then 1 else 0 end)" )]
+            ("undue", f"sum(case when queue = 2 and due >  {str(today)} then 1 else 0 end)"),
+            ("mature", f"sum(case when  ivl >= 21 then 1 else 0 end)" ),
+            ("young", f"sum(case when queue = 2 and 0<ivl and ivl <21 then 1 else 0 end)" )]
         conjunction = ",".join ([query for (name,query) in queriesCardCount])
         query = f"select {conjunction} from cards where did = ?"
         result = mw.col.db.first(query, str(self.did))
@@ -188,9 +187,12 @@ class DeckNode:
     @measureTime(True)
     def initFromAlreadyComputed(self):
         """Put in dict values already computed by anki"""
-        self.addCount("absolute","deck","review today",self.dueRevCards)
-        self.addCount("absolute","deck","new",self.newCards)
-        self.addCount("absolute","deck","LernReps", self.dueLrnReps)
+        for subdeckNumber, name in  [(self.dueRevCards, "review today"), (self.newCardsToday,"new today"),(self.dueLrnReps,"repetition of today learning")]:
+            deckNumber = subdeckNumber
+            for child in self.children:
+                deckNumber -= child.count["absolute"]["subdeck"][name]
+            self.addCount("absolute", "deck", name, deckNumber)
+            self.addCount("absolute", "subdeck", name, subdeckNumber)
         
     @measureTime(True)
     def absoluteDeckSum(self,newName, sum1, sum2, negate = False):
@@ -214,9 +216,11 @@ class DeckNode:
 
         # Review
         self.absoluteDeckSum("review later","review due","review today", negate=True)
-        self.absoluteDeckSum("unseen later", "unseen","new", negate=True)
-        self.absoluteDeckSum("seen todo today", "LernReps", "review today")
-        self.absoluteDeckSum("today", "seen todo today", "new")
+        self.absoluteDeckSum("unseen later", "unseen","new today", negate=True)
+        self.absoluteDeckSum("repetition seen today", "repetition of today learning", "review today")
+        self.absoluteDeckSum("repetition today", "repetition seen today", "new today")
+        self.absoluteDeckSum("cards seen today", "learning today sum", "review today")
+        self.absoluteDeckSum("today", "cards seen today", "new today")
 
 
     @measureTime(True)
@@ -252,11 +256,11 @@ class DeckNode:
         self.timeDue["deck"] = learn_soonest
 
     #@measureTime(True)
-    def setChildren(self,oldChildren):
+    def setChildren(self):
         """ create node from every child and save them in
         self.children """
         self.children = list()
-        for oldChild in oldChildren:
+        for oldChild in self.oldChildren:
             childNode = make(oldChild, self.ended, self.givenUp, self.pause) 
             self.children.append(childNode)
         
@@ -395,6 +399,7 @@ class DeckNode:
                         self.addCount(absoluteOrPercent, kind, ("learning now", "[%dm]" % (remainingSeconds // 60)))
                     else :
                         self.addCount(absoluteOrPercent, kind, ("learning now", "[%ds]" % remainingSeconds))
+                        
     @measureTime(True)
     def setPairs(self):
         """Set text for columns which are pair"""
@@ -412,11 +417,12 @@ class DeckNode:
         """ Set text for the pairs with cards to see now, and other to see later/another day"""
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
-                for name, value in [
-                    ("review", nowLater(self.count[absoluteOrPercent][kind]["review today"], self.count[absoluteOrPercent][kind]["review later"])),
-                    ("unseen new", nowLater(self.count[absoluteOrPercent][kind]["new"],conditionString(self.count[absoluteOrPercent][kind]["unseen later"]))),
-                    ("learning today", nowLater(self.count[absoluteOrPercent][kind]["learning now"],self.count[absoluteOrPercent][kind]["learning later today"])),
+                for name, left, right in [
+                    ("review",         "review today", "review later"),
+                    ("unseen new",     "new today",    "unseen later"),
+                    ("learning today", "learning now", "learning later today"),
                 ]:
+                    value = nowLater(self.count[absoluteOrPercent][kind][left], self.count[absoluteOrPercent][kind][right])
                     self.addCount(absoluteOrPercent,kind, name, value)
                 
     @measureTime(True)
@@ -469,6 +475,7 @@ class DeckNode:
 
     @measureTime(True)
     def getCollapse(self):
+        self.deck = mw.col.decks.get(self.did) # We reload the deck. The collapsed state may have changed.
         prefix = "+" if self.deck['collapsed'] else "-"
         # deck link
         if self.children:
@@ -513,7 +520,7 @@ class DeckNode:
         return ""
     
     @measureTime(True)
-    def makeRow(self, col, depth, cnt):
+    def htmlRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
         if self.emptyRow(cnt):
             return ""

@@ -1,7 +1,7 @@
 from .config import getUserOption
 
 # Associate to each column its title
-header = {
+defaultHeader = {
     "learning card":_("Learning")+"<br/>"+_("(card)"), 
     "learning later":_("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,
     "learning now":_("Learning")+"<br/>"+_("now") ,
@@ -18,6 +18,7 @@ header = {
     "cards":_("Total"),
     "notes/cards":_("Total")+"/<br/>"+_("Card/Note"),
     "notes":_("Total")+"<br/>"+_("Note"),
+    "new today":_("New")+"<br/>"+_("Today"),
     "today":_("Today"),
     "undue":_("Undue"),
     "mature":_("Mature"),
@@ -25,23 +26,14 @@ header = {
     "young": _("Young"),
     "marked":_("Marked"),
 }
-def getConfAux(conf,field,dic):
-    """If field is in conf, returns its value.
-    otherwise, return the value associated to this configuration's name in dic
-
-    conf -- a configuration from json
-    field -- a field name
-    dic -- a dictionnary containing the default values if the field is absent
-    """
-    headerConf = conf.get(field)
-    if headerConf is not None:
-        return headerConf
-    else:
-        return dic[conf["name"]]
-
 def getHeader(conf):
     """The header for the configuration in argument"""
-    return getConfAux(conf,"header",header)
+    if "header" not in conf:
+        return None
+    header = conf["header"]
+    if header is None:
+        return defaultHeader[conf["name"]]
+    return header
 
 # Associate to each column its overlay
 defaultOverlay = {
@@ -66,7 +58,8 @@ defaultOverlay = {
     "mature/young":_("Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks"),
     "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
     "young": _("Number of cards reviewed, with interval less than 3 weeks"), 
-    "marked":_("Number of marked note")
+    "marked":_("Number of marked note"),
+    "new today":_("Number of new cards you'll see today")
 }
 def getOverlay(conf):
     """The overlay for the configuration in argument"""

@@ -93,7 +93,7 @@
         {
             "description":"Unseen cards you will see today, not buried nor suspended. (what anki calls new cards)",
             "present":false,
-            "name":"new",
+            "name":"new today",
             "header":null, 
             "color":"blue",
             "overlay":null,
