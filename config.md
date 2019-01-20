@@ -8,9 +8,6 @@
 ##Miscelaneous
 In this section, we describe various small configurations related to the whole add-on.
 
-###Refresh rate
-How many time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown. 
-
 ###Option
 Whether you want to display the deck's option's name, at the end of its line.
 

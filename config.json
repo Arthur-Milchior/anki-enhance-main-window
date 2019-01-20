@@ -241,7 +241,6 @@
     ],
     
     "option" : true,
-    "refresh rate": 30,
     "cap value" : null,
     "color empty" : "red",
     "color empty descendant" : "green",

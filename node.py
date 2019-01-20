@@ -547,7 +547,6 @@ def make(oldNode, endedParent = False, givenUpParent = False, pauseParent = Fals
 #based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._renderDeckTree
 @measureTime(False) #number 3
 def renderDeckTree(self, nodes, depth = 0):
-    #mw.progress.timer(getUserOption("refresh rate",30)*1000, onRefreshTimer, True)
     #Look at aqt/deckbrowser.py for a description of oldNode
     if not nodes:
         return ""

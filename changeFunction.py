@@ -36,8 +36,3 @@ def deckRow(self, node, depth, cnt):
 DeckBrowser._deckRow = deckRow
 
 DeckBrowser._renderDeckTree = renderDeckTree
-#disable refresh - only ever called from the 10-minute timer
-#(intercepting here because the 10-min timer can't be disabled by addon)
-#DeckBrowser.refresh = refreshDoNothing
-
-#refresh according to the refresh_rate parametr
