@@ -1,12 +1,12 @@
 # anki-enhance-main-window
 Adds a lot of features to the main window. Allows to configure those features. Configurations are explained at the end of this document.
 
-Update 8th november 2018: you can configure the add-on using anki
+* Update: 19th January 2019: many bugs corrected. Configuration can be
+changed without restarting anki.
+* Update 8th november 2018: you can configure the add-on using anki
 2.1's configuration method. The configuration won't be lost during
 next update of the add-on !
 
-Update: 19th January 2019: many bugs corrected. Configuration can be
-changed without restarting anki.
 # Features
 ## Column
 Most features offered by this add-on are related to some column. 
