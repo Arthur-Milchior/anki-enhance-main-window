@@ -8,10 +8,7 @@ from .config import getUserOption
 from .html import *
 from .printing import conditionString
 from .strings import getHeader, getOverlay
-
-def debug(t):
-    #print(t)
-    pass
+from .utils import debug
 
 
 # Dict from deck id to deck node
@@ -77,16 +74,16 @@ class DeckNode:
         self.deck = mw.col.decks.get(self.did)
         self.setConfParameters()
         
+        self.setSymbolsParameters()
         self.setChildren(oldChildren)
         
-        self.setSymbolsParameters()
         self.initCountFromDb() # count information of card from database
         self.initCountSum() # basic some from database information
         self.setNid() # set of note from database
         self.setMarked() # set of marked notes
+        self.setEndedMarkedDescendant()
         self.setSubdeckCount() # Sum of subdecks value
         self.setSubdeckSets() #Union of subdecks set
-        self.setEndedMarkedDescendant()
         self.setTimeDue()
         self.setEmpty()
         self.setPercentAndBoth()
@@ -179,11 +176,6 @@ class DeckNode:
     def setMarked(self):
         self.addSet("deck","marked",set(mw.col.db.list("""select  id from notes where tags like '%marked%' and (not (tags like '%notMain%')) and id in """+ ids2str(self.noteSet["deck"]["notes"]))))
         self.someMarked = bool(self.noteSet["deck"]["marked"])
-        if self.someMarked and getUserOption("do color marked",False):
-            if self.endedMarkedDescendant: 
-                self.style["background-color"] = getUserOption("ended marked background color")
-            else:
-                self.style["background-color"] = getUserOption("marked backgroud color")
             
         
         # if self.containsBookSymbol:
@@ -209,7 +201,7 @@ class DeckNode:
         for name in self.noteSet["deck"]:
             newSet = self.noteSet["deck"][name]
             for child in self.children:
-                newSet += child.noteSet["subdeck"][name]
+                newSet |= child.noteSet["subdeck"][name]
             self.addSet("subdeck",name,newSet)
 
     def setEndedMarkedDescendant(self):
@@ -221,6 +213,11 @@ class DeckNode:
             if child.endedMarkedDescendant:
                 self.endedMarkedDescendant = True
                 return
+        if self.someMarked and getUserOption("do color marked",False):
+            if self.endedMarkedDescendant: 
+                self.style["background-color"] = getUserOption("ended marked background color")
+            else:
+                self.style["background-color"] = getUserOption("marked backgroud color")
             
     def setTimeDue(self):
         learn_soonest = mw.col.db.scalar("select min(case when queue = 1 then due else null end) from cards where did = ?", str(self.did))
@@ -250,20 +247,28 @@ class DeckNode:
                 return
                 
     def _setPercentAndBoth(self, kind, column, base):
-        s1 = self.count["absolute"][kind][column]
-        if self.count["absolute"][kind][base]:
-            s2 = str((100*self.count["absolute"][kind][column])//self.count["absolute"][kind]["cards"]) + "%"
+        ret = None
+        numerator = self.count["absolute"][kind][column]
+        denominator = self.count["absolute"][kind][base]
+        if numerator == 0:
+            self.addCount("percent",kind,column,"")
+        #base can't be empty since a subset of its is not empty, as ensured by the above test
         else:
-            s2 = ""
-        s = conditionString(s1,s2)
-        self.addCount("percent",kind,column,s)
+            if denominator ==0:
+                self.addCount("percent",kind,column, f"{numerator}/{denominator} ?")
+                ret = numerator
+            else:
+                self.addCount("percent",kind,column, str((100*numerator)//denominator) + "%")
         both = conditionString(self.count["absolute"][kind][column],str(self.count["absolute"][kind][column])+ "|"+self.count["percent"][kind][column])
         self.addCount("both",kind,column,both)
+        return ret
         
     def setPercentAndBoth(self):
         for kind in self.count["absolute"]:
             for column in self.count["absolute"][kind]:
-                self._setPercentAndBoth(kind,column,"cards")
+                ret = self._setPercentAndBoth(kind,column,"cards")
+                if ret is not None:
+                    print(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind]["cards"]))
 
     def setText(self):
         self.text = copy.deepcopy(self.count)
@@ -326,12 +331,11 @@ class DeckNode:
         if self.did == 1 and cnt > 1 and not self.children:
             # if the default deck is empty, hide it
             if not mw.col.db.scalar("select 1 from cards where did = 1"):
-                return ""
+                return True
         # parent toggled for collapsing
         for parent in mw.col.decks.parents(self.did):
             if parent['collapsed']:
-                buff = ""
-                return buff
+                return True
     
     def getOpenTr(self):
         if self.did == mw.col.conf['curDeck']:
@@ -349,7 +353,7 @@ class DeckNode:
         prefix = "+" if self.deck['collapsed'] else "-"
         # deck link
         if self.children:
-            return collapse_self.children_html(self.did,self.deck["name"],prefix) 
+            return collapse_children_html(self.did,self.deck["name"],prefix) 
         else:
             return collapse_no_child
         

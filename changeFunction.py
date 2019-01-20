@@ -3,11 +3,10 @@ from anki.notes import Note
 from anki.decks import DeckManager
 from anki.sched import Scheduler
 from aqt.deckbrowser import DeckBrowser
-
+from .utils import debug
 
 oldNoteFluh = Note.flush
 def noteFlush(note, mod = None):
-    globalCount.clear()
     debug("flush")
     oldNoteFluh(note,mod = mod)
 Note.flush = noteFlush
@@ -16,19 +15,19 @@ oldDeckSave = DeckManager.save
 def deckSave(self, g = None, mainChange = True):
     if mainChange:
         debug("change main deck")
-        globalCount.clear()
     oldDeckSave(self,g = g)
 DeckManager.save = deckSave
 
 oldRebuildDyn = Scheduler.rebuildDyn
 def rebuidDyn(self, did = None):
-    globalCount.clear()
     return oldRebuildDyn(self, did = None)
 
 oldCollapse = DeckManager.collapse
 def collapse(self,did):
     deck = self.get(did)
+    print(f"Deck {did}'s collapse state was {deck['collapsed']}" )
     deck['collapsed'] = not deck['collapsed']
+    print(f"Deck {did}'s collapse state is now {deck['collapsed']}" )
     self.save(deck,mainChange = False)
     
 DeckManager.collapse = collapse

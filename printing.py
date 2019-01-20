@@ -12,7 +12,7 @@ def cap(n):
 
 
 def conditionString(cond,string = None, parenthesis = False):
-    """If the condition cond holds: return the string if its not None, else the string.
+    """If the condition cond holds: return the string if it's not None, else the cond.
     If its not empty, add parenthesis arond them
     """
     if not cond:
