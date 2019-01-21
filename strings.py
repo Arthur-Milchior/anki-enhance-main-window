@@ -2,7 +2,7 @@ from .config import getUserOption
 
 # Associate to each column its title
 defaultHeader = {
-    "learning card":_("Learning")+"<br/>"+_("(card)"), 
+    "learning card":_("Learning")+"<br/>"+_("(card)"),
     "learning later":_("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,
     "learning now":_("Learning")+"<br/>"+_("now") ,
     "learning all":_("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))",
@@ -11,6 +11,7 @@ defaultHeader = {
     "review":_("Due")+"<br/>"+_("today")+" ("+_("all")+")",
     "unseen":_("Unseen")+"<br/>"+_("all")  ,
     "unseen later":_("Unseen")+"<br/>"+_("later")  ,
+    "review later":_("review")+"<br/>"+_("later")  ,
     "new":_("New")+"<br/>"+_("today") ,
     "unseen new":_("New")+"<br/>"+"("+_("Unseen")+")",
     "buried":_("Buried"),
@@ -47,6 +48,7 @@ defaultOverlay = {
     "review":_("Review cards cards you will see today")+"<br/>"+_("(and the ones you will not see today)"),
     "unseen":_("Cards that have never been answered"),
     "unseen later":_("Cards that have never been answered<br/>and you won't see today"),
+    "review later":_("Cards that you must review,<br/>but can't review now"),
     "new":_("Unseen")+ _("cards")+ _("you will see today")+"<br/>"+_("(what anki calls ")+_("new cards"),
     "unseen new":_("Unseen cards you will see today")+"<br/>"+_("(and those you will not see today)"),
     "buried":_("number of buried cards,")+"<br/>"+_("(cards you decided not to see today)"),
@@ -59,7 +61,7 @@ defaultOverlay = {
     "undue":_("Number of cards reviewed, not yet due"),
     "mature/young":_("Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks"),
     "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
-    "young": _("Number of cards reviewed, with interval less than 3 weeks"), 
+    "young": _("Number of cards reviewed, with interval less than 3 weeks"),
     "marked":_("Number of marked note"),
     "new today":_("Number of new cards you'll see today")
 }
@@ -71,4 +73,3 @@ def getOverlay(conf):
     if overlay is None:
         return defaultOverlay[conf["name"]]
     return overlay
-
