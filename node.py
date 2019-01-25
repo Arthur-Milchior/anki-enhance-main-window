@@ -396,7 +396,7 @@ class DeckNode:
         """set text for the time remaining before next card"""
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
-                self.count["absolute"][kind]["learning now"]= self.count["absolute"][kind]["learning now sum"]
+                self.addCount(absoluteOrPercent,kind,"learning now", self.count[absoluteOrPercent][kind]["learning now sum"])
                 if ((not self.count["absolute"][kind]["learning now"])) and (self.timeDue[kind] is not 0):
                     remainingSeconds = self.timeDue[kind] - intTime()
                     if remainingSeconds >= 60:
