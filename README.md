@@ -9,7 +9,7 @@ next update of the add-on !
 
 # Features
 ## Column
-Most features offered by this add-on are related to some column. 
+Most features offered by this add-on are related to some column.
 ### Name of the (sub)deck
 There is not a lot of change in this column, apart from the decks's color.
 #### Empty decks
@@ -19,7 +19,7 @@ This may not be useful for everybody. But if you want to know when a deck is emp
 
 Better ! If you use subdecks, the ancestors of a empty subdeck becomes blue (also configurable). This allows you to find deck with an empty subdeck. Hence, it helps finding empty subdecks without having to uncollapse every top-level decks.
 
-Note that, in some case, you don't want the name to become red. E.g. you wanted to learn the name of the greek letters. When you know all of them, you won't add any new note ever. You just have to add a semicolon (;) (it is configurable) to the name of the deck, and it will not turn red. 
+Note that, in some case, you don't want the name to become red. E.g. you wanted to learn the name of the greek letters. When you know all of them, you won't add any new note ever. You just have to add a semicolon (;) (it is configurable) to the name of the deck, and it will not turn red.
 #### Marked cards
 Decks with marked card has a blue background (configurable). And if furthermore, the deck's name contains a semicolon (i.e. as explained above, the deck is ended), then the background become yellow.
 
@@ -31,8 +31,15 @@ The number of review of cards in learning. By default you will see the number of
 The number of cards which you have seen in the past, and that you should see today. By default, the number of cards you will see today. And in parenthesis the number of cards you should see today, but that you will not see today because of your limite.
 
 
+### New today
+This column called new in Anki. It means New means «number of new
+cards you will see today». With the caveat that it is not exactly true
+for subdecks.
+
 ### New
-Nothing changed here. New means «number of new cards you will see today». With the caveat that it is not exactly true for subdecks.
+The column name "new" is deprecated. It is keep for
+retrocompatibility, but may be removed one day. It is the same thing
+as New Today.
 
 ### Due
 By default, this column is hidden. Indeed, it becames two columns «due now» and «later». We recall that, in Anki, a due card is a card which is not new, and that you have to view again today.
@@ -95,7 +102,7 @@ in add-ons configurations)[https://ankiweb.net/shared/info/112201952]
 if you want to use newline in JSON/CSS string.
 
 ### Refresh rate
-How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown. 
+How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown.
 
 ### Option
 Whether you want to display the deck's Option group's name, at the end of its line.
@@ -152,7 +159,7 @@ When you consider a deck which has subdecks, you may want to consider cards in s
 Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and anki won't be able to display the main window.
 
 ## Coloring decks
-The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant. 
+The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant.
 
 The author also want to know which deck has marked card. Thus, the background of the deck's name with marked card change color.
 
@@ -182,7 +189,7 @@ The first  three symbols currently has the same effect, but it may occur that on
 By default, this symbol is ";". It means that the deck is definitively done, and no new card may ever be added to it. When a deck has this symbol, neither itself nor its descendant will ever be colored.
 
 #### Given up symbol
-By default, this symbol is "/".To the author, it means that no new card will be added because this deck is either too hard, or not interesting enough. 
+By default, this symbol is "/".To the author, it means that no new card will be added because this deck is either too hard, or not interesting enough.
 
 #### Pause symbol"
 By default, this symbol is "=". To the author, it means that more new card will be added latter, but right now it does not want anki to change the color of the deck's name. In a future version, there may be an option to change the color of those decks.
@@ -191,7 +198,7 @@ By default, this symbol is "=". To the author, it means that more new card will 
 * In ```aqt.deckbrowser```, change ```DeckBrowser._renderDeckTree```, ```DeckBrowser.refresh``` and
   ```DeckBrowser._deckRow```. The former methods are not called.
 * In ```Anki.notes```, change ```Note.flush```. The new method calls
-  the former one. 
+  the former one.
 * In ```anki.decks``` change ```DeckManager.save```, calling the former
   method. Changing ```DeckManager.collaps```, not calling the former method.
 ## Links, licence and credits

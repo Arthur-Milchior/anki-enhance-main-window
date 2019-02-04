@@ -4,7 +4,8 @@ from aqt.utils import downArrow
 from anki.utils import intTime, ids2str
 from aqt import mw
 import copy
-from .config import getUserOption
+import sys
+from .config import getUserOption, writeConfig
 from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
@@ -20,6 +21,9 @@ def idFromOldNode(node):
     #Look at aqt/deckbrowser.py for a description of node
     (_,did,_,_,_,_) = node
     return did
+
+#The list of column in configuration which does not exists, and such that the user was already warned about it.
+warned = set()
 
 class DeckNode:
     """A node in the new more advanced deck tree.
@@ -511,7 +515,18 @@ class DeckNode:
                     number = "percent"
             else:
                 number = "absolute"
-            contents = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"][conf["name"]]
+            confName = conf["name"]
+            if confName == "new":
+                confName = "new today" #It used to be called "new". Introduced back for retrocomputability.
+                conf["name"] = "new today"
+                writeConfig()
+            countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"]
+            if confName not in countNumberKind:
+                if confName not in warned :
+                    warned.add(confName)
+                    print(f"The add-on enhance main window does not now any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+                continue
+            contents = countNumberKind[confName]
             if contents == 0 or contents == "0":
                 colour = "#e0e0e0"
             buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))

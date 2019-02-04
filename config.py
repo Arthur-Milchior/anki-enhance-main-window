@@ -18,8 +18,11 @@ def getUserOption(key = None, default = None):
         #print("key not in userOption. Returning default.")
         return default
 
+def writeConfig():
+    aqt.mw.addonManager.writeConfig(__name__,userOption)
+
 def update(_):
     global userOption
     userOption = None
-    
+
 mw.addonManager.setConfigUpdatedAction(__name__,update)
