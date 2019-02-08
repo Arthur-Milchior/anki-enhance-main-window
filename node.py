@@ -529,8 +529,8 @@ class DeckNode:
                     print(f"The add-on enhance main window does not now any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
                 continue
             contents = countNumberKind[confName]
-            if contents == 0 or contents == "0":
-                colour = "#e0e0e0"
+            if contents == 0 or contents == "0" or contents == "0%":
+                contents = ""#colour = "#e0e0e0"
             buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))
         return buf
 
