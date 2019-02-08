@@ -238,6 +238,18 @@
             "percent":true,
             "subdeck":true
         }
+		,
+        {
+            "description":"Number of review seen today",
+            "present":true,
+            "name":"reviewed today",
+            "header":null,
+            "color":"magenta",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        }
     ],
 
     "option" : true,

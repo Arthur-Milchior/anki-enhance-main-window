@@ -10,7 +10,7 @@ listRequirements =[
     ("learning today",{"learning later today","learning future","learning now"}),#number of cards in learning, which will be seen today
     ("learning all",{"learning today","learning future","learning later"}),#number of cards in learning, of all kinds
     ("learning card", {"learning all"}),
-    
+
     ("learning today repetition from today",{}),
     ("learning today repetition from past",{}),
     ("learning today repetition",{"learning today repetition from today","learning today repetition from past"}),#Number of repetition of learning cards you'll see today
@@ -18,9 +18,9 @@ listRequirements =[
     ("learning repetition from past",{}),
     ("learning repetition",{"learning repetition from today","learning repetition from past"}),#Number of repetition of learning cards you'll see
     ("learning future repetition",{"learning repetition","learning today repetition"}),#Number of repetition of learning cards you'll see another day
-    
-    ("review due",{"learning repetition"}),#number of cards which are due today 
-    ("review today",{"review due"}),#number of cards which are due and will be seen today (it requires both the review due, and the limit),
+
+    ("review due",{"learning repetition"}),#number of cards which are due today
+    ("reviewed today",{"review due"}),#number of cards which are due and will be seen today (it requires both the review due, and the limit),
     ("review later",{"review due","review today"}),#number of cards which are due but, because of limits, can't be seen today
     ("review",{"review today","review later"}),#number of cards which are due today
     ("unseen",{}),#Number of unseen card
@@ -63,7 +63,7 @@ started = False
 for name, dependances in listRequirements:
     addRequirement(name, dependances)
 
-    #Compute 
+    #Compute
     #cards is always useful to calcul percent
     #unseen is used to see whether a deck has new card or not.
     valueToCompute = {"cards", "unseen"}

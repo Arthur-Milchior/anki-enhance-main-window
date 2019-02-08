@@ -5,13 +5,13 @@ working on the code.
 
 ## Values already computed by basic anki
 ### review today
-The number of review cards to see today. 
+The number of review cards to see today.
 
 ### new today
-The number of new cards to learn today. 
+The number of new cards to learn today.
 
 ### Repetition of today learning
-Numbers of review you'll see of cards in learning today. 
+Numbers of review you'll see of cards in learning today.
 
 ## Numbers directly computed in the database
 ### learning now from today
@@ -32,21 +32,21 @@ of knowing whether its from today or from a past day)
 
 ### learning today repetition from today
 Number of repetition you'll see today of cards currently in learning
-such that last repetition was today. 
+such that last repetition was today.
 
 Similar to Repetition of today
 learning, restricting cards to the one seen today.
 
 ### learning today repetition from past
 Number of repetition you'll see today of cards currently in learning
-such that last repetition was NOT today. 
+such that last repetition was NOT today.
 
 Similar to last case, appart
 from the negation
 
 ### learning repetition from today
 Number of repetition you'll see ANY day of cards currently in learning
-such that last repetition was today. 
+such that last repetition was today.
 
 Similar to "learning today
 repetition from today" case, appart that we count repetition not to
@@ -54,7 +54,7 @@ see today.
 
 ### learning repetition from past
 Number of repetition you'll see ANY day of cards currently in learning
-such that last repetition was NOT today. 
+such that last repetition was NOT today.
 
 Similar to "learning today
 repetition from past" case, appart that we count repetition not to
@@ -93,11 +93,11 @@ any card already seen with an interval at one day at most 20 days
 ## Sum of previous values
 
 ### learning now
-Number of cards in learning ready to be seen (from today+from yesterday). 
+Number of cards in learning ready to be seen (from today+from yesterday).
 
 ### learning later
 Number of cards in learning not ready to be seen (to see later today,
-or in the future). 
+or in the future).
 
 ### learning card
 Number of cards in learning (now+later)
@@ -125,12 +125,17 @@ repetition minus repetition to do today)
 Cards to review, which are due, but won't be seen today because of
 deck's configuration's limit. (review due - review today)
 
+### reviewed today
+Cards whose last review was today. (A card deleted after review is not
+counted anymore. A card reviewed and moved is counted in its new
+deck. A card reviewed many time is counted once. )
+
 ### unseen later
 Cards never seen, and won't be seen today because of deck's
 configuration's limit. (unseen - new today)
 
 ### repetition seen today
-Number of repetition of cards to see today which are not new 
+Number of repetition of cards to see today which are not new
 
 ### repetition today
 Numbers of repetition of cards to see today
@@ -160,7 +165,7 @@ The set of nids from this deck
 ### marked
 the set of nids of marked notes in this deck
 
-# Texts 
+# Texts
 Here, we have columns content which is more than just text
 
 ## Time
@@ -175,7 +180,7 @@ Buried/suspend
 
 ## Now and later
 
-### Review 
+### Review
 review today (review later)
 
 ### unseen new

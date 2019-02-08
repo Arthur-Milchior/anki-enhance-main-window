@@ -172,6 +172,8 @@ class DeckNode:
             ("learning repetition from today", f"sum(case when queue = 1 then mod%1000 else 0 end)"),
             ("learning repetition from past", f"sum(case when queue = 3 then mod%1000 else 0 end)"),
             ("review due", f"sum(case when queue =  2 and due <= {str(today)} then 1 else 0 end)" ),
+#            ("reviewed today", f"sum(case when id in (select cid from revlog where time = {str(today)}) then 1 else 0 end)" ),
+            ("reviewed today", f"sum(case when due>0 and due-ivl = {str(today)} then 1 else 0 end)" ),
             ("unseen", f"sum(case when queue = 0 then 1 else 0 end)"),
             ("buried", f"sum(case when queue = -2  or queue = -3 then 1 else 0 end)"),
             ("suspended", f"sum(case when queue = -1 then 1 else 0 end)"),
