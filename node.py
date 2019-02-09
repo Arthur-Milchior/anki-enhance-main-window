@@ -9,7 +9,8 @@ from .config import getUserOption, writeConfig
 from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
-from .utils import debug, measureTime, printMeasures
+from .utils import measureTime, printMeasures
+from .debug import debug
 from . import tree
 
 
@@ -227,7 +228,7 @@ class DeckNode:
     def initTimeDue(self):
         """find the time before the first element in learning can be seen"""
         self.timeDue = dict()
-        self.timeDue["deck"] = tree.times[self.did] or 0
+        self.timeDue["deck"] = tree.times.get(self.did,0) or 0
 
 
     #@measureTime(True)
@@ -430,7 +431,7 @@ class DeckNode:
     def emptyRow(self, cnt):
         if self.did == 1 and cnt > 1 and not self.children:
             # if the default deck is empty, hide it
-            if not self.noteSet["subdeck"]["cards"]:
+            if not self.count["absolute"]["subdeck"]["cards"]:
                 return True
         # parent toggled for collapsing
         for parent in mw.col.decks.parents(self.did):

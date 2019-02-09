@@ -3,7 +3,7 @@ from anki.notes import Note
 from anki.decks import DeckManager
 from anki.sched import Scheduler
 from aqt.deckbrowser import DeckBrowser
-from .utils import debug
+from .debug import debug
 
 oldNoteFluh = Note.flush
 def noteFlush(note, mod = None):
@@ -27,7 +27,7 @@ def collapse(self,did):
     deck = self.get(did)
     deck['collapsed'] = not deck['collapsed']
     self.save(deck,mainChange = False)
-    
+
 DeckManager.collapse = collapse
 
 #based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._deckRow

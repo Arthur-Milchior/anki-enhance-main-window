@@ -1,9 +1,9 @@
 from anki.utils import intTime
 from aqt import mw
-from .utils import debug
+from .debug import debug
 values = dict()
 def computeValues():
-    print("Compute values")
+    debug("Compute values")
     cutoff = intTime() + mw.col.conf['collapseTime']
     today = mw.col.sched.today
     queriesCardCount = [
@@ -34,15 +34,15 @@ def computeValues():
             condition = f" where {condition}"
         query = f"select did, {element} from cards {condition} group by did"
         results = mw.col.db.all(query)
-        print(f"""For {name}: query "{query}".""")
+        debug("""For {name}: query "{query}".""")
         values[name] = dict()
         for did, value in results:
-            print(f"In deck {did} there are {value} cards of kind {name}")
+            debug("In deck {did} there are {value} cards of kind {name}")
             values[name][did] = value
 
 times = dict()
 def computeTime():
-    print("Compute times")
+    debug("Compute times")
     for did, time in mw.col.db.all("select did,min(case when queue = 1 then due else null end) from cards"):
-        debug(f"time for {did} is {time}")
+        debug("time for {did} is {time}")
         times[did]=time
