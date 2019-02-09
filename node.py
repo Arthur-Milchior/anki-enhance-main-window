@@ -11,7 +11,7 @@ from .printing import *
 from .strings import getHeader, getOverlay
 from .utils import debug
 
-
+debugWrongLine = debug
 
 # Dict from deck id to deck node
 idToNode = dict()
@@ -77,7 +77,6 @@ class DeckNode:
         self.givenUpParent = givenUpParent
         self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCardsToday, self.oldChildren = oldNode
         self.deck = mw.col.decks.get(self.did)
-        #print(f"Init node {self.name}")
 
         self.initDicts()
         self.setSymbolsParameters()
@@ -281,9 +280,9 @@ class DeckNode:
             for child in self.children:
                 childNb = child.count["absolute"]["subdeck"][name]
                 if not isinstance(childNb,int):
-                    print(f"For child {child.name}, the value of {name} is not an int but {childNb}")
+                    debugWrongLine("For child {child.name}, the value of {name} is not an int but {childNb}")
                 if not isinstance(childNb,int):
-                    print (f"childNb for «{name}» is «{childNb}»")
+                    debugWrongLine(f"childNb for «{name}» is «{childNb}»")
                 count += childNb
             self.addCount("absolute","subdeck",name,count)
 
@@ -354,7 +353,7 @@ class DeckNode:
             for column in self.count["absolute"][kind]:
                 ret = self._setPercentAndBoth(kind,column,"cards")
                 if ret is not None:
-                    print(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind]["cards"]))
+                    debugWrongLine(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind]["cards"]))
 
     def fromSetToCount(self):
         """Add numbers according to number of notes, for deck, subdeck, absolute, percent, both"""
