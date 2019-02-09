@@ -299,5 +299,7 @@
     "given up symbol" : "/",
     "pause symbol" : "=",
     "do color marked" : true,
-    "do color empty" : true
+    "do color empty" : true,
+	"dot in numbers":true
+
 }

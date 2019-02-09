@@ -26,9 +26,7 @@ def conditionString(cond,string = None, parenthesis = False):
     return ret
 
 def nowLater(first, second = None):
+    """A representation for the pair"""
     first = conditionString(first)
     second = conditionString(second, parenthesis = True)
     return first+second
-
-
-    

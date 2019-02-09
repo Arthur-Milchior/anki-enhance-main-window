@@ -17,6 +17,8 @@ By default, without add-on, anki never show number greater than a thousand. Inst
 
 Note that capping to a thousand does not usually make the rendering quicker.
 
+###Dot in number
+Whether you want a big number such as 34968 to be shown as 34.968 or as 34968.
 
 ##Columns
 
@@ -64,7 +66,7 @@ When you consider a deck which has subdecks, you may want to consider cards in s
 Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and anki won't be able to display the main window.
 
 ##Coloring decks
-The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant. 
+The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant.
 
 The author also want to know which deck has marked card. Thus, the background of the deck's name with marked card change color.
 
@@ -94,9 +96,7 @@ The first  three symbols currently has the same effect, but it may occur that on
 By default, this symbol is ";". It means that the deck is definitively done, and no new card may ever be added to it. When a deck has this symbol, neither itself nor its descendant will ever be colored.
 
 ####Given up symbol
-By default, this symbol is "/".To the author, it means that no new card will be added because this deck is either too hard, or not interesting enough. 
+By default, this symbol is "/".To the author, it means that no new card will be added because this deck is either too hard, or not interesting enough.
 
 ####Pause symbol"
 By default, this symbol is "=". To the author, it means that more new card will be added latter, but right now it does not want anki to change the color of the deck's name. In a future version, there may be an option to change the color of those decks.
-
-

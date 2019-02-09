@@ -7,7 +7,7 @@ def computeValues():
     cutoff = intTime() + mw.col.conf['collapseTime']
     today = mw.col.sched.today
     yesterdayLimit = (mw.col.sched.dayCutoff-86400)*1000
-    print(f"Yesterday limit is {yesterdayLimit}")
+    debug("Yesterday limit is {yesterdayLimit}")
     queriesCardCount = [
         ("learning now from today", f"queue = 1 and due <= {str(cutoff)}" ,"",""),
         ("learning today from past", f"queue = 3 and due <= {str(today)}" ,"",""),

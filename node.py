@@ -148,29 +148,31 @@ class DeckNode:
             self.count[absoluteOrPercent] = dict()
             for kind in ["deck","subdeck"]:
                 self.count[absoluteOrPercent][kind]= dict()
+                for isString in [True,False]:
+                    self.count[absoluteOrPercent][kind][isString]= dict()
         self.noteSet =  dict()
         for kind in ["deck","subdeck"]:
             self.noteSet[kind]= dict()
 
     def initCountFromDb(self):
         for name in tree.values:
-            self.addCount("absolute", "deck", name, tree.values[name].get(self.did,0))
+            self.addCount("absolute", "deck", False, name, tree.values[name].get(self.did,0))
 
     def initFromAlreadyComputed(self):
         """Put in dict values already computed by anki"""
         for subdeckNumber, name in  [(self.dueRevCards, "review today"), (self.newCardsToday,"new today"),(self.dueLrnReps,"repetition of today learning")]:
             deckNumber = subdeckNumber
             for child in self.children:
-                deckNumber -= child.count["absolute"]["subdeck"][name]
-            self.addCount("absolute", "deck", name, deckNumber)
-            self.addCount("absolute", "subdeck", name, subdeckNumber)
+                deckNumber -= child.count["absolute"]["subdeck"][False][name]
+            self.addCount("absolute", "deck", False, name, deckNumber)
+            self.addCount("absolute", "subdeck", False, name, subdeckNumber)
 
     def absoluteDeckSum(self,newName, sum1, sum2, negate = False):
-        sum1 = self.count["absolute"]["deck"][sum1]
-        sum2 = self.count["absolute"]["deck"][sum2]
+        sum1 = self.count["absolute"]["deck"][False][sum1]
+        sum2 = self.count["absolute"]["deck"][False][sum2]
         if negate:
             sum2 = -sum2
-        self.addCount("absolute","deck",newName,(sum1+sum2))
+        self.addCount("absolute","deck", False, newName,(sum1+sum2))
 
     def initCountSum(self):
         self.absoluteDeckSum("learning now sum","learning now from today","learning today from past")
@@ -245,16 +247,16 @@ class DeckNode:
 
     def setSubdeckCount(self):
         """Compute subdeck value, as the sum of deck, and children's subdeck value"""
-        for name in self.count["absolute"]["deck"]:
-            count = self.count["absolute"]["deck"][name]
+        for name in self.count["absolute"]["deck"][False]:
+            count = self.count["absolute"]["deck"][False][name]
             for child in self.children:
-                childNb = child.count["absolute"]["subdeck"][name]
+                childNb = child.count["absolute"]["subdeck"][False][name]
                 if not isinstance(childNb,int):
                     debugWrongLine("For child {child.name}, the value of {name} is not an int but {childNb}")
                 if not isinstance(childNb,int):
                     debugWrongLine(f"childNb for «{name}» is «{childNb}»")
                 count += childNb
-            self.addCount("absolute","subdeck",name,count)
+            self.addCount("absolute", "subdeck", False, name,count)
 
     def setSubdeckSets(self):
         """ Compute subdeck's set as union of the deck set and children subdecks set"""
@@ -279,7 +281,7 @@ class DeckNode:
         """Set value of isEmpty and hasEmptyDescendant. Set the colors appropriately."""
         if not getUserOption("do color empty"):
             return
-        self.isEmpty = self.count["absolute"]["subdeck"]["unseen"] == 0
+        self.isEmpty = self.count["absolute"]["subdeck"][False]["unseen"] == 0
         self.hasEmptyDescendant = self.isEmpty
 
         if self.isEmpty:
@@ -297,8 +299,8 @@ class DeckNode:
 
         Returns the numerator if its non null and there are no cards."""
         ret = None
-        numerator = self.count["absolute"][kind][column]
-        denominator = self.count["absolute"][kind][base]
+        numerator = self.count["absolute"][kind][False][column]
+        denominator = self.count["absolute"][kind][False][base]
         if numerator == 0:
             percent = ""
         #base can't be empty since a subset of its is not empty, as ensured by the above test
@@ -308,9 +310,9 @@ class DeckNode:
                 ret = numerator
             else:
                 percent = f"{(100*numerator)//denominator}%"
-        self.addCount("percent",kind,column, percent)
+        self.addCount("percent", kind, True, column, percent)
         both = conditionString(numerator,f"{numerator}|{percent}")
-        self.addCount("both",kind,column,both)
+        self.addCount("both", kind, True, column, both)
         return ret
 
     def setPercentAndBoth(self):
@@ -320,16 +322,16 @@ class DeckNode:
         Print in case of division by 0 for the percent computation.
         """
         for kind in self.count["absolute"]:
-            for column in self.count["absolute"][kind]:
+            for column in self.count["absolute"][kind][False]:
                 ret = self._setPercentAndBoth(kind,column,"cards")
                 if ret is not None:
-                    debugWrongLine(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind]["cards"]))
+                    debugWrongLine(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind][True]["cards"]))
 
     def fromSetToCount(self):
         """Add numbers according to number of notes, for deck, subdeck, absolute, percent, both"""
         for kind in ["deck","subdeck"]:
             for name in self.noteSet[kind]:
-                self.addCount("absolute",kind,name,len(self.noteSet[kind][name]))
+                self.addCount("absolute", kind, False, name,len(self.noteSet[kind][name]))
             for name in self.noteSet[kind]:
                 self._setPercentAndBoth(kind,name,"notes")
 
@@ -337,24 +339,24 @@ class DeckNode:
         """Set text for learning all"""
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
-                future = self.count[absoluteOrPercent][kind]["learning future"]
+                future = self.count[absoluteOrPercent][kind][True]["learning future"]
                 if future:
-                    later = nowLater(self.count[absoluteOrPercent][kind]["learning later today"],future)
+                    later = nowLater(self.count[absoluteOrPercent][kind][True]["learning later today"],future)
                 else:
-                    later = conditionString(self.count[absoluteOrPercent][kind]["learning later today"],parenthesis = True)
-                self.addCount(absoluteOrPercent,kind,"learning all", nowLater(self.count[absoluteOrPercent][kind]["learning now sum"],later))
+                    later = conditionString(self.count[absoluteOrPercent][kind][True]["learning later today"],parenthesis = True)
+                self.addCount(absoluteOrPercent, kind, True, "learning all", nowLater(self.count[absoluteOrPercent][kind][True]["learning now sum"],later))
 
     def setTextTime(self):
         """set text for the time remaining before next card"""
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
-                self.addCount(absoluteOrPercent,kind,"learning now", self.count[absoluteOrPercent][kind]["learning now sum"])
-                if ((not self.count["absolute"][kind]["learning now"])) and (self.timeDue[kind] is not 0):
+                self.addCount(absoluteOrPercent, kind, True, "learning now", self.count[absoluteOrPercent][kind][True]["learning now sum"])
+                if ((not self.count["absolute"][kind][True]["learning now"])) and (self.timeDue[kind] is not 0):
                     remainingSeconds = self.timeDue[kind] - intTime()
                     if remainingSeconds >= 60:
-                        self.addCount(absoluteOrPercent, kind, "learning now", "[%dm]" % (remainingSeconds // 60))
+                        self.addCount(absoluteOrPercent, kind, True, "learning now", "[%dm]" % (remainingSeconds // 60))
                     else :
-                        self.addCount(absoluteOrPercent, kind, "learning now", "[%ds]" % remainingSeconds)
+                        self.addCount(absoluteOrPercent, kind, True, "learning now", "[%ds]" % remainingSeconds)
 
     def setPairs(self):
         """Set text for columns which are pair"""
@@ -362,10 +364,10 @@ class DeckNode:
             for kind in ["deck", "subdeck"]:
                 for first,second in [("mature","young"),("notes","cards"), ("buried","suspended"), ("reviewed today","repeated today")]:
                     name = f"{first}/{second}"
-                    firstValue = self.count[absoluteOrPercent][kind][first]
-                    secondValue = self.count[absoluteOrPercent][kind][second]
+                    firstValue = self.count[absoluteOrPercent][kind][True][first]
+                    secondValue = self.count[absoluteOrPercent][kind][True][second]
                     values = conditionString(firstValue and secondValue, f"{firstValue}/{secondValue}")
-                    self.addCount(absoluteOrPercent, kind, name, values)
+                    self.addCount(absoluteOrPercent, kind, True, name, values)
 
     def setNowLaters(self):
         """ Set text for the pairs with cards to see now, and other to see later/another day"""
@@ -376,8 +378,8 @@ class DeckNode:
                     ("unseen new",     "new today",    "unseen later"),
                     ("learning today", "learning now", "learning later today"),
                 ]:
-                    value = nowLater(self.count[absoluteOrPercent][kind][left], self.count[absoluteOrPercent][kind][right])
-                    self.addCount(absoluteOrPercent,kind, name, value)
+                    value = nowLater(self.count[absoluteOrPercent][kind][True][left], self.count[absoluteOrPercent][kind][True][right])
+                    self.addCount(absoluteOrPercent, kind, True, name, value)
 
     def setText(self):
         self.setLearningAll()
@@ -389,9 +391,15 @@ class DeckNode:
     ###########
     # Initialization tool
 
-    def addCount(self,absoluteOrPercent,kind,name,value):
+    def addCount(self, absoluteOrPercent, kind, isString, name,  value):
         """Ensure that self.count[absoluteOrPercent][kind][name] is defined and equals value"""
-        self.count[absoluteOrPercent][kind][name] = value
+        debug("Adding {self.did}, {absoluteOrPercent}, {kind}, {isString}, {name}, {value}")
+        self.count[absoluteOrPercent][kind][isString][name] = value
+        if isString is False:
+            if value:
+                self.count[absoluteOrPercent][kind][True][name] = "{:,}".format(value)
+            else:
+                self.count[absoluteOrPercent][kind][True][name] = ""
 
     def addSet(self,kind,name,value):
         """Ensure that self.noteSet[kind][name] is defined and equals value"""
@@ -402,7 +410,7 @@ class DeckNode:
     def emptyRow(self, cnt):
         if self.did == 1 and cnt > 1 and not self.children:
             # if the default deck is empty, hide it
-            if not self.count["absolute"]["subdeck"]["cards"]:
+            if not self.count["absolute"]["subdeck"][False]["cards"]:
                 return True
         # parent toggled for collapsing
         for parent in mw.col.decks.parents(self.did):
@@ -456,7 +464,7 @@ class DeckNode:
                 confName = "new today" #It used to be called "new". Introduced back for retrocomputability.
                 conf["name"] = "new today"
                 writeConfig()
-            countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"]
+            countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"][True]
             if confName not in countNumberKind:
                 if confName not in warned :
                     warned.add(confName)
