@@ -9,7 +9,6 @@ from .config import getUserOption, writeConfig
 from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
-from .utils import measureTime, printMeasures
 from .debug import debug
 from . import tree
 
@@ -17,7 +16,6 @@ from . import tree
 # Dict from deck id to deck node
 idToNode = dict()
 idToOldNode = dict()
-@measureTime(False)
 def idFromOldNode(node):
     #Look at aqt/deckbrowser.py for a description of node
     (_,did,_,_,_,_) = node
@@ -66,7 +64,6 @@ class DeckNode:
     givenUp
     """
 
-    #@measureTime(True)
     def __init__(self, mw, oldNode, endedParent = False, givenUpParent = False, pauseParent = False):
         #Look at aqt/deckbrowser.py for a description of oldNode
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
@@ -92,7 +89,7 @@ class DeckNode:
         self.fromSetToCount()
         self.setText()
 
-    #@measureTime(True)
+
     def setDeckLevel(self):
         """Compute every informations which does not need access to
         children """
@@ -104,7 +101,7 @@ class DeckNode:
         self.initFromAlreadyComputed()
         self.initCountSum() # basic some from database information
 
-    #@measureTime(True)
+
     def setSubdeck(self):
         self.setEndedMarkedDescendant()
         self.setSubdeckCount() # Sum of subdecks value
@@ -114,7 +111,6 @@ class DeckNode:
         self.setPercentAndBoth()
 
 
-    @measureTime(True)
     def setConfParameters(self):
         """ Find the configuration and its name """
         if "conf" in self.deck:#a classical deck
@@ -126,7 +122,6 @@ class DeckNode:
             self.isFiltered = True
             self.confName = "Filtered"
 
-    @measureTime(True)
     def testSymbolInName(self, symbolName):
         """ Whether the symbol associate to symbol name in the
         configuration occurs in the deck's name"""
@@ -135,7 +130,6 @@ class DeckNode:
             return False
         return symbol in self.name
 
-    @measureTime(True)
     def setSymbolsParameters(self):
         """ Read the deck name and gather information from it"""
         self.containsEndSymbol = self.testSymbolInName("end symbol")
@@ -146,7 +140,6 @@ class DeckNode:
         self.givenUp = self.givenUpParent or self.containsGivenUpSymbol
         self.pause = self.pauseParent or self.containsPauseSymbol
 
-    @measureTime(True)
     def initDicts(self):
         """ Ensure that each dictionarry are created"""
         self.count =  dict()
@@ -158,12 +151,10 @@ class DeckNode:
         for kind in ["deck","subdeck"]:
             self.noteSet[kind]= dict()
 
-    @measureTime(True)
     def initCountFromDb(self):
         for name in tree.values:
             self.addCount("absolute", "deck", name, tree.values[name].get(self.did,0))
 
-    @measureTime(True)
     def initFromAlreadyComputed(self):
         """Put in dict values already computed by anki"""
         for subdeckNumber, name in  [(self.dueRevCards, "review today"), (self.newCardsToday,"new today"),(self.dueLrnReps,"repetition of today learning")]:
@@ -173,7 +164,6 @@ class DeckNode:
             self.addCount("absolute", "deck", name, deckNumber)
             self.addCount("absolute", "subdeck", name, subdeckNumber)
 
-    @measureTime(True)
     def absoluteDeckSum(self,newName, sum1, sum2, negate = False):
         sum1 = self.count["absolute"]["deck"][sum1]
         sum2 = self.count["absolute"]["deck"][sum2]
@@ -181,7 +171,6 @@ class DeckNode:
             sum2 = -sum2
         self.addCount("absolute","deck",newName,(sum1+sum2))
 
-    @measureTime(True)
     def initCountSum(self):
         self.absoluteDeckSum("learning now sum","learning now from today","learning today from past")
         self.absoluteDeckSum("learning later","learning later today","learning future")
@@ -202,12 +191,10 @@ class DeckNode:
         self.absoluteDeckSum("today", "cards seen today", "new today")
 
 
-    @measureTime(True)
     def initNid(self):
         """ set the set of nids of this deck"""
         self.addSet("deck", "notes",set(mw.col.db.list("""select  nid from cards where did = ?""", self.did)))
 
-    @measureTime(True)
     def initMarked(self):
         """ set the set of marked cards of this deck, and someMarked"""
         self.addSet("deck","marked",set(mw.col.db.list("""select  id from notes where tags like '%marked%' and (not (tags like '%notMain%')) and id in """+ ids2str(self.noteSet["deck"]["notes"]))))
@@ -224,14 +211,13 @@ class DeckNode:
 
         # self.endedMarkedDescendant = False
 
-    @measureTime(True)
     def initTimeDue(self):
         """find the time before the first element in learning can be seen"""
         self.timeDue = dict()
         self.timeDue["deck"] = tree.times.get(self.did,0) or 0
 
 
-    #@measureTime(True)
+
     def setChildren(self):
         """ create node from every child and save them in
         self.children """
@@ -240,7 +226,6 @@ class DeckNode:
             childNode = make(oldChild, self.ended, self.givenUp, self.pause)
             self.children.append(childNode)
 
-    @measureTime(True)
     def setEndedMarkedDescendant(self):
         """ check whether there is a descendant empty with marked note. Set background color appropriately"""
         self.endedMarkedDescendant = False
@@ -257,7 +242,6 @@ class DeckNode:
             else:
                 self.style["background-color"] = getUserOption("marked backgroud color")
 
-    @measureTime(True)
     def setSubdeckCount(self):
         """Compute subdeck value, as the sum of deck, and children's subdeck value"""
         for name in self.count["absolute"]["deck"]:
@@ -271,7 +255,6 @@ class DeckNode:
                 count += childNb
             self.addCount("absolute","subdeck",name,count)
 
-    @measureTime(True)
     def setSubdeckSets(self):
         """ Compute subdeck's set as union of the deck set and children subdecks set"""
         for name in self.noteSet["deck"]:
@@ -280,7 +263,6 @@ class DeckNode:
                 newSet |= child.noteSet["subdeck"][name]
             self.addSet("subdeck",name,newSet)
 
-    @measureTime(True)
     def setTimeDue(self):
         """Compute first time due for subdeck using the timedue of this deck,
         and the one of subdecks"""
@@ -292,7 +274,6 @@ class DeckNode:
             else:
                 self.timeDue["subdeck"] = child.timeDue["subdeck"]
 
-    @measureTime(True)
     def setEmpty(self):
         """Set value of isEmpty and hasEmptyDescendant. Set the colors appropriately."""
         if not getUserOption("do color empty"):
@@ -310,7 +291,6 @@ class DeckNode:
                 self.style['color'] = getUserOption("color empty descendant","black")
                 return
 
-    @measureTime(True)
     def _setPercentAndBoth(self, kind, column, base):
         """Set percent and both count values for this kind and column. In theory, column is a subset of base.
 
@@ -332,7 +312,6 @@ class DeckNode:
         self.addCount("both",kind,column,both)
         return ret
 
-    @measureTime(True)
     def setPercentAndBoth(self):
         """Set percent and both count values for each kind and column
         percent. Only considering cards.
@@ -345,7 +324,6 @@ class DeckNode:
                 if ret is not None:
                     print(f"""{self.name}.count["absolute"]["{kind}"]["{column}"] is {ret}, while for cards its 0: """+str(self.count["absolute"][kind]["cards"]))
 
-    @measureTime(True)
     def fromSetToCount(self):
         """Add numbers according to number of notes, for deck, subdeck, absolute, percent, both"""
         for kind in ["deck","subdeck"]:
@@ -354,7 +332,6 @@ class DeckNode:
             for name in self.noteSet[kind]:
                 self._setPercentAndBoth(kind,name,"notes")
 
-    @measureTime(True)
     def setLearningAll(self):
         """Set text for learning all"""
         for absoluteOrPercent in self.count:
@@ -366,7 +343,6 @@ class DeckNode:
                     later = conditionString(self.count[absoluteOrPercent][kind]["learning later today"],parenthesis = True)
                 self.addCount(absoluteOrPercent,kind,"learning all", nowLater(self.count[absoluteOrPercent][kind]["learning now sum"],later))
 
-    @measureTime(True)
     def setTextTime(self):
         """set text for the time remaining before next card"""
         for absoluteOrPercent in self.count:
@@ -379,7 +355,6 @@ class DeckNode:
                     else :
                         self.addCount(absoluteOrPercent, kind, "learning now", "[%ds]" % remainingSeconds)
 
-    @measureTime(True)
     def setPairs(self):
         """Set text for columns which are pair"""
         for absoluteOrPercent in self.count:
@@ -391,7 +366,6 @@ class DeckNode:
                     values = conditionString(firstValue and secondValue, f"{firstValue}/{secondValue}")
                     self.addCount(absoluteOrPercent, kind, name, values)
 
-    @measureTime(True)
     def setNowLaters(self):
         """ Set text for the pairs with cards to see now, and other to see later/another day"""
         for absoluteOrPercent in self.count:
@@ -404,7 +378,6 @@ class DeckNode:
                     value = nowLater(self.count[absoluteOrPercent][kind][left], self.count[absoluteOrPercent][kind][right])
                     self.addCount(absoluteOrPercent,kind, name, value)
 
-    @measureTime(True)
     def setText(self):
         self.setLearningAll()
         self.setTextTime()
@@ -415,19 +388,16 @@ class DeckNode:
     ###########
     # Initialization tool
 
-    @measureTime(True)
     def addCount(self,absoluteOrPercent,kind,name,value):
         """Ensure that self.count[absoluteOrPercent][kind][name] is defined and equals value"""
         self.count[absoluteOrPercent][kind][name] = value
 
-    @measureTime(True)
     def addSet(self,kind,name,value):
         """Ensure that self.noteSet[kind][name] is defined and equals value"""
         self.noteSet[kind][name] = value
 
     ########################
     # Printing
-    @measureTime(True)
     def emptyRow(self, cnt):
         if self.did == 1 and cnt > 1 and not self.children:
             # if the default deck is empty, hide it
@@ -438,21 +408,18 @@ class DeckNode:
             if parent['collapsed']:
                 return True
 
-    @measureTime(True)
     def getOpenTr(self):
         if self.did == mw.col.conf['curDeck']:
             klass = 'deck current'
         else:
             klass = 'deck'
         return start_line(klass,self.did)
-    @measureTime(True)
     def getCss(self):
         cssStyle = ""
         for name, value in self.style.items():
             cssStyle += "%s:%s;" %(name,value)
         return cssStyle
 
-    @measureTime(True)
     def getCollapse(self):
         self.deck = mw.col.decks.get(self.did) # We reload the deck. The collapsed state may have changed.
         prefix = "+" if self.deck['collapsed'] else "-"
@@ -462,18 +429,15 @@ class DeckNode:
         else:
             return collapse_no_child
 
-    @measureTime(True)
     def getExtraClass(self):
         if self.deck['dyn']:
             return " filtered"
         else:
             return ""
 
-    @measureTime(True)
     def getName(self, depth):
         return deck_name(depth,self.getCollapse(),self.getExtraClass(),self.did,self.getCss(),self.name)
 
-    @measureTime(True)
     def getNumberColumns(self):
         buf = ""
         for conf in getUserOption("columns"):
@@ -503,13 +467,11 @@ class DeckNode:
             buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))
         return buf
 
-    @measureTime(True)
     def getOptionName(self):
         if getUserOption("option"):
             return deck_option_name(self.confName)
         return ""
 
-    @measureTime(True)
     def htmlRow(self, col, depth, cnt):
         "Generate the HTML table cells for this row of the deck tree."
         if self.emptyRow(cnt):
@@ -526,7 +488,6 @@ class DeckNode:
 
 
 
-@measureTime(False) #number 1 time
 def make(oldNode, endedParent = False, givenUpParent = False, pauseParent = False):
     """Essentially similar to DeckNode, but return an element already computed if it exists in the base"""
     did = idFromOldNode(oldNode)
@@ -537,14 +498,17 @@ def make(oldNode, endedParent = False, givenUpParent = False, pauseParent = Fals
     return idToNode[did]
 
 #based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._renderDeckTree
-@measureTime(False) #number 3
 def renderDeckTree(self, nodes, depth = 0):
     #Look at aqt/deckbrowser.py for a description of oldNode
     if not nodes:
         return ""
     if depth == 0:
+<<<<<<< HEAD
         tree.computeValues()
         tree.computeTime()
+=======
+        start = time.time()
+>>>>>>> master
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
         for conf in getUserOption("columns"):
           if conf.get("present",True):
@@ -564,13 +528,13 @@ def renderDeckTree(self, nodes, depth = 0):
         buf += self._deckRow(node, depth, len(nodes))
     if depth == 0:
         buf += self._topLevelDragRow()
-    printMeasures()
+        end = time.time()
+        print(f"printing tree was done in {end - start}")
     return buf
 
 
 
 #based on Anki 2.0.45 aqt/main.py AnkiQt.onRefreshTimer
-@measureTime(False) #number 2
 def onRefreshTimer():
     if mw.state == "deckBrowser":
         mw.deckBrowser._renderPage()  #was refresh, but we're disabling that
