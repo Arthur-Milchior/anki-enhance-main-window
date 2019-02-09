@@ -503,12 +503,9 @@ def renderDeckTree(self, nodes, depth = 0):
     if not nodes:
         return ""
     if depth == 0:
-<<<<<<< HEAD
         tree.computeValues()
         tree.computeTime()
-=======
         start = time.time()
->>>>>>> master
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
         for conf in getUserOption("columns"):
           if conf.get("present",True):
