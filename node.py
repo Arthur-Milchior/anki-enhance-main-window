@@ -556,7 +556,7 @@ def renderDeckTree(self, nodes, depth = 0):
     if depth == 0:
         buf += self._topLevelDragRow()
         end = time.time()
-        print(f"printing tree was done in {end - start}")
+        debug("printing tree was done in {end - start}")
     return buf
 
 
