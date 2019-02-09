@@ -10,7 +10,7 @@ from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
 from .utils import debug, measureTime, printMeasures
-from .tree import values, times
+from . import tree
 
 
 # Dict from deck id to deck node
@@ -159,9 +159,8 @@ class DeckNode:
 
     @measureTime(True)
     def initCountFromDb(self):
-        for name in values:
-            for did in values[name]:
-                self.addCount("absolute", "deck", name, values[name][did])
+        for name in tree.values:
+            self.addCount("absolute", "deck", name, tree.values[name].get(self.did,0))
 
     @measureTime(True)
     def initFromAlreadyComputed(self):
@@ -228,7 +227,8 @@ class DeckNode:
     def initTimeDue(self):
         """find the time before the first element in learning can be seen"""
         self.timeDue = dict()
-        self.timeDue["deck"] = times[self.did]
+        self.timeDue["deck"] = tree.times[self.did] or 0
+
 
     #@measureTime(True)
     def setChildren(self):
@@ -539,11 +539,11 @@ def make(oldNode, endedParent = False, givenUpParent = False, pauseParent = Fals
 @measureTime(False) #number 3
 def renderDeckTree(self, nodes, depth = 0):
     #Look at aqt/deckbrowser.py for a description of oldNode
-    compute()
     if not nodes:
         return ""
     if depth == 0:
-
+        tree.computeValues()
+        tree.computeTime()
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
         for conf in getUserOption("columns"):
           if conf.get("present",True):
