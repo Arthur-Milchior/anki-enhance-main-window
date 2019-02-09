@@ -274,6 +274,18 @@
             "percent":false,
             "subdeck":true
         }
+		,
+        {
+            "description":"Number of time you saw a question from this deck",
+            "present":true,
+            "name":"repeated",
+            "header":null,
+            "color":"orange",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        }
     ],
 
     "option" : true,

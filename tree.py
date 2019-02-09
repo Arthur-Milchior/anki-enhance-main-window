@@ -20,6 +20,7 @@ def computeValues():
         ("review due", f"queue =  2 and due <= {str(today)}" ,"",""),
         ("reviewed today", f"due>0 and due-ivl = {str(today)}" ,"",""),
         ("repeated today", f"revlog.id>{yesterdayLimit}" ,"","revlog inner join cards on revlog.cid = cards.id"),
+        ("repeated", "" ,"","revlog inner join cards on revlog.cid = cards.id"),
         ("unseen", f"queue = 0","",""),
         ("buried", f"queue = -2  or queue = -3","",""),
         ("suspended", f"queue = -1","",""),

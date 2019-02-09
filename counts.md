@@ -131,9 +131,14 @@ counted anymore. A card reviewed and moved is counted in its new
 deck. A card reviewed many time is counted once. )
 
 ### repeated today
-Number of times you saw a question from this deck. (A card deleted
-after review is not counted anymore. A card reviewed and moved is
-counted in its new deck.)
+Number of times you saw today a question from this deck. (A card
+deleted after review is not counted anymore. A card reviewed and moved
+is counted in its new deck.)
+
+### repeated today
+Number of times you saw a question from this deck anytime in the
+past. (A card deleted after review is not counted anymore. A card
+reviewed and moved is counted in its new deck.)
 
 ### unseen later
 Cards never seen, and won't be seen today because of deck's
