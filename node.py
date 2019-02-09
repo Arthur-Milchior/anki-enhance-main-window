@@ -9,9 +9,11 @@ from .config import getUserOption, writeConfig
 from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
-from .utils import debug
+from .debug import debug
+from . import tree
 
 debugWrongLine = debug
+
 
 # Dict from deck id to deck node
 idToNode = dict()
@@ -23,6 +25,7 @@ def idFromOldNode(node):
 
 #The list of column in configuration which does not exists, and such that the user was already warned about it.
 warned = set()
+
 
 class DeckNode:
     """A node in the new more advanced deck tree.
@@ -150,38 +153,8 @@ class DeckNode:
             self.noteSet[kind]= dict()
 
     def initCountFromDb(self):
-        """ Set the numeric value of each value which can be found by
-        a sql request """
-        cutoff = intTime() + mw.col.conf['collapseTime']
-        today = mw.col.sched.today
-        queriesCardCount = [
-            ("learning now from today", f"sum(case when queue = 1 and due <= {str(cutoff)} then 1 else 0 end)" ),
-            ("learning today from past", f"sum(case when queue = 3 and due <= {str(today)} then 1 else 0 end)" ),
-            ("learning later today", f"sum(case when queue = 1 and due > {str(cutoff)} then 1 else 0 end)" ),
-            ("learning future", f"sum(case when queue = 3 and due > {str(today)} then 1 else 0 end)" ),
-            ("learning today repetition from today", f"sum(case when queue = 1 then left/1000 else 0 end)"),
-            ("learning today repetition from past", f"sum(case when queue = 3 then left/1000 else 0 end)"),
-            ("learning repetition from today", f"sum(case when queue = 1 then mod%1000 else 0 end)"),
-            ("learning repetition from past", f"sum(case when queue = 3 then mod%1000 else 0 end)"),
-            ("review due", f"sum(case when queue =  2 and due <= {str(today)} then 1 else 0 end)" ),
-#            ("reviewed today", f"sum(case when id in (select cid from revlog where time = {str(today)}) then 1 else 0 end)" ),
-            ("reviewed today", f"sum(case when due>0 and due-ivl = {str(today)} then 1 else 0 end)" ),
-            ("unseen", f"sum(case when queue = 0 then 1 else 0 end)"),
-            ("buried", f"sum(case when queue = -2  or queue = -3 then 1 else 0 end)"),
-            ("suspended", f"sum(case when queue = -1 then 1 else 0 end)"),
-            ("cards","sum(1)"),
-            ("undue", f"sum(case when queue = 2 and due >  {str(today)} then 1 else 0 end)"),
-            ("mature", f"sum(case when  ivl >= 21 then 1 else 0 end)" ),
-            ("young", f"sum(case when queue = 2 and 0<ivl and ivl <21 then 1 else 0 end)" )]
-        conjunction = ",".join ([query for (name,query) in queriesCardCount])
-        query = f"select {conjunction} from cards where did = ?"
-        result = mw.col.db.first(query, str(self.did))
-        for index, (name, query) in enumerate(queriesCardCount):
-            if result[index] is None:
-                value = 0
-            else:
-                value = result[index]
-            self.addCount("absolute", "deck", name, value)
+        for name in tree.values:
+            self.addCount("absolute", "deck", name, tree.values[name].get(self.did,0))
 
     def initFromAlreadyComputed(self):
         """Put in dict values already computed by anki"""
@@ -241,12 +214,9 @@ class DeckNode:
 
     def initTimeDue(self):
         """find the time before the first element in learning can be seen"""
-        learn_soonest = mw.col.db.scalar("select min(case when queue = 1 then due else null end) from cards where did = ?", str(self.did))
-        if learn_soonest is None:
-            # no difference between the fact that a card has a 0 second delay and that it's ready.
-            learn_soonest =0
         self.timeDue = dict()
-        self.timeDue["deck"] = learn_soonest
+        self.timeDue["deck"] = tree.times.get(self.did,0) or 0
+
 
 
     def setChildren(self):
@@ -432,7 +402,7 @@ class DeckNode:
     def emptyRow(self, cnt):
         if self.did == 1 and cnt > 1 and not self.children:
             # if the default deck is empty, hide it
-            if not mw.col.db.scalar("select 1 from cards where did = 1 limit 1"):
+            if not self.count["absolute"]["subdeck"]["cards"]:
                 return True
         # parent toggled for collapsing
         for parent in mw.col.decks.parents(self.did):
@@ -535,6 +505,8 @@ def renderDeckTree(self, nodes, depth = 0):
         return ""
     if depth == 0:
         start = time.time()
+        tree.computeValues()
+        tree.computeTime()
         buf = f"""<style>{css}</style>{start_header}{deck_header}"""
         for conf in getUserOption("columns"):
           if conf.get("present",True):
