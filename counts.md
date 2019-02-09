@@ -130,6 +130,11 @@ Cards whose last review was today. (A card deleted after review is not
 counted anymore. A card reviewed and moved is counted in its new
 deck. A card reviewed many time is counted once. )
 
+### repeated today
+Number of times you saw a question from this deck. (A card deleted
+after review is not counted anymore. A card reviewed and moved is
+counted in its new deck.)
+
 ### unseen later
 Cards never seen, and won't be seen today because of deck's
 configuration's limit. (unseen - new today)
@@ -177,6 +182,7 @@ if a value is not already given)
 Mature/young
 Notes/cards
 Buried/suspend
+Reviewed/repeated today
 
 ## Now and later
 

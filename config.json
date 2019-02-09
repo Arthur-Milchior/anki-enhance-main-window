@@ -240,9 +240,33 @@
         }
 		,
         {
-            "description":"Number of review seen today",
-            "present":true,
+            "description":"Number of cards seen today",
+            "present":false,
             "name":"reviewed today",
+            "header":null,
+            "color":"magenta",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        }
+		,
+        {
+            "description":"Number of review done today",
+            "present":false,
+            "name":"repeated today",
+            "header":null,
+            "color":"magenta",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        }
+		,
+        {
+            "description":"Number of cards seen today and of review",
+            "present":true,
+            "name":"reviewed today/repeated today",
             "header":null,
             "color":"magenta",
             "overlay":null,

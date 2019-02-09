@@ -360,7 +360,7 @@ class DeckNode:
         """Set text for columns which are pair"""
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
-                for first,second in [("mature","young"),("notes","cards"), ("buried","suspended")]:
+                for first,second in [("mature","young"),("notes","cards"), ("buried","suspended"), ("reviewed today","repeated today")]:
                     name = f"{first}/{second}"
                     firstValue = self.count[absoluteOrPercent][kind][first]
                     secondValue = self.count[absoluteOrPercent][kind][second]
