@@ -477,7 +477,7 @@ class DeckNode:
         return buf
 
     def getOptionName(self):
-        if getUserOption("option"):
+        if getUserOption("option"):#If it's not filtered
             return deck_option_name(self.confName)
         return ""
 
