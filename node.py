@@ -39,7 +39,7 @@ class DeckNode:
     deck -- the deck objects
 
     Information to potentially display
-    count -- associate to [absolute/percent][deck/subdeck][value] the number/percont of cards satisfying value in the deck (and its subdeck)
+    count -- associate to [absolute/percent][deck/subdeck][value] the number/percent of cards satisfying value in the deck (and its subdeck)
     set -- associate to [deck/subdeck][value] the set of nids satisfying "value" in the deck (and its subdeck)
     markedNotesRec -- the set of marked notes in the deck and its subdkc
     endedMarkedDescendant -- whether the deck has a descendant ended with marked cards
