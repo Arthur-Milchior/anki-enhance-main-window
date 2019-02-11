@@ -73,7 +73,7 @@ defaultOverlay = {
     "young": _("Number of cards reviewed, with interval less than 3 weeks"),
     "marked":_("Number of marked note"),
     "new today":_("Number of new cards you'll see today"),
-    "bar":"" #It provides its own overlays
+    "bar":None #It provides its own overlays
 }
 def getOverlay(conf):
     """The overlay for the configuration in argument"""

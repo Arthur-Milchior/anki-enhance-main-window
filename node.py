@@ -328,7 +328,8 @@ class DeckNode:
         buried = self.count['absolute'][kind][False]['buried']/denominator*100
         suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
         return f"""
-<div		class="progress"	style="position:relative;	height:1em;	display:inline-block;	width:100px;	background-color:lightgrey;	">
+<div		class="progress"	style="position:relative;	height:1em;	display:inline-block;	width:100px;		">
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">unseen</span></div>
 	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:0%;	width:{mature}%;	background-color:green;	"><span class="tooltiptext">mature</span></div>
 	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">young</span></div>
 	<div	class="tooltip bar"	style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">review</span></div>
