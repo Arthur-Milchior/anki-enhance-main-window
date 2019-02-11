@@ -1,9 +1,12 @@
 # anki-enhance-main-window
 Adds a lot of features to the main window. Allows to configure those features. Configurations are explained at the end of this document.
 
-* Update: 19th January 2019: many bugs corrected. Configuration can be
-changed without restarting anki.
-* Update 8th november 2018: you can configure the add-on using anki
+Important updates:
+* February: counting the number of review, today and any time in the
+  past. And the number of cards seen today.
+* 19th January 2019: many bugs corrected. Configuration can be
+  changed without restarting anki.
+* 8th november 2018: you can configure the add-on using anki
 2.1's configuration method. The configuration won't be lost during
 next update of the add-on !
 
@@ -200,7 +203,12 @@ By default, this symbol is "=". To the author, it means that more new card will 
 * In ```Anki.notes```, change ```Note.flush```. The new method calls
   the former one.
 * In ```anki.decks``` change ```DeckManager.save```, calling the former
-  method. Changing ```DeckManager.collaps```, not calling the former method.
+  method. Changing ```DeckManager.collaps```, not calling the former
+  method.
+
+## Documentation for developpers
+See (Documentation.md)[Documentation.md]
+
 ## Links, licence and credits
 
 Key          |Value
