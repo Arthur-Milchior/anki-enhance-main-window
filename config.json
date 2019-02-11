@@ -288,7 +288,7 @@
         },
         {
             "absolute": false,
-            "color": "red",
+            "color": "",
             "description": "",
             "header": null,
             "name": "bar",

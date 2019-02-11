@@ -317,7 +317,7 @@ class DeckNode:
 
     def makeBar(self, kind):
         denominator = self.count["absolute"][kind][False]["cards"]
-        if denominator == 0:
+        if denominator == 0: #empty decks don't get progress bars
             return
         mature = self.count['absolute'][kind][False]['mature']/denominator*100
         young = self.count['absolute'][kind][False]['young']/denominator*100
@@ -327,22 +327,17 @@ class DeckNode:
         new = self.count['absolute'][kind][False]['new today']/denominator*100
         buried = self.count['absolute'][kind][False]['buried']/denominator*100
         suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
-        return f"""
-<div		class="progress"	style="position:relative;	height:1em;	display:inline-block;	width:100px;		">
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">{getOverlay({"name":"unseen",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:{mature}%;	background-color:green;	"><span class="tooltiptext">{getOverlay({"name":"mature",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">{getOverlay({"name":"young",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">{getOverlay({"name":"review due",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:50%;	bottom:0;	width:{leech}%;	background-color:black;	"><span class="tooltiptext">leech</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young}%;	width:{learning}%;	background-color:red;	"><span class="tooltiptext">{getOverlay({"name":"learning card",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young+learning}%;	width:{new}%;	background-color:blue;	"><span class="tooltiptext">{getOverlay({"name":"new today",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:{suspended}%;	width:{buried}%;	background-color:gray;	"><span class="tooltiptext">{getOverlay({"name":"buried",	"overlay":None})}</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">{getOverlay({"name":"suspended",	"overlay":None})}</span></div>
-</div>
-"""
-#:not(.tooltip) > div > .tooltip:hover .tooltiptext {
-#  visibility: visible;
-#}
+        return f"""<div class="progress" style="position:relative;	height:1em;	display:inline-block;	width:100px;		">
+          <div class="tooltip bar" style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">{getOverlay({"name":"unseen",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;		width:{mature}%;	background-color:green;	"><span class="tooltiptext">{getOverlay({"name":"mature",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">{getOverlay({"name":"young",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">{getOverlay({"name":"review due",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:50%;	bottom:0;	width:{leech}%;	background-color:black;	"><span class="tooltiptext">leech</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature+young}%;	width:{learning}%;	background-color:red;	"><span class="tooltiptext">{getOverlay({"name":"learning card",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature+young+learning}%;	width:{new}%;	background-color:blue;	"><span class="tooltiptext">{getOverlay({"name":"new today",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;	right:{suspended}%;	width:{buried}%;	background-color:gray;	"><span class="tooltiptext">{getOverlay({"name":"buried",	"overlay":None})}</span></div>
+          <div class="tooltip bar" style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">{getOverlay({"name":"suspended",	"overlay":None})}</span></div>
+        </div>"""
 
     def setPercentAndBoth(self):
         """Set percent and both count values for each kind and column
