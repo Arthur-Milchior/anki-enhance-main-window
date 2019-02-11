@@ -5,7 +5,7 @@ from anki.utils import intTime, ids2str
 from aqt import mw
 import copy
 import sys
-from .config import getUserOption, writeConfig
+from .config import getUserOption, writeConfig, getFromName
 from .html import *
 from .printing import *
 from .strings import getHeader, getOverlay
@@ -97,7 +97,7 @@ class DeckNode:
         self.setConfParameters()
         self.initCountFromDb() # count information of card from database
         self.initNid() # set of note from database
-        self.initMarked() # set of marked notes
+        self.initTagged() # set of marked/lapsed notes
         self.initTimeDue()
         self.initFromAlreadyComputed()
         self.initCountSum() # basic sum from database information
@@ -198,9 +198,10 @@ class DeckNode:
         """ set the set of nids of this deck"""
         self.addSet("deck", "notes",set(mw.col.db.list("""select  nid from cards where did = ?""", self.did)))
 
-    def initMarked(self):
+    def initTagged(self):
         """ set the set of marked cards of this deck, and someMarked"""
         self.addSet("deck","marked",set(mw.col.db.list("""select  id from notes where tags like '%marked%' and (not (tags like '%notMain%')) and id in """+ ids2str(self.noteSet["deck"]["notes"]))))
+        self.addSet("deck","leech",set(mw.col.db.list("""select  id from notes where tags like '%leech%' and (not (tags like '%notMain%')) and id in """+ ids2str(self.noteSet["deck"]["notes"]))))
         self.someMarked = bool(self.noteSet["deck"]["marked"])
 
 
@@ -302,42 +303,40 @@ class DeckNode:
         numerator = self.count["absolute"][kind][False][column]
         denominator = self.count["absolute"][kind][False][base]
         if numerator == 0:
-            percent = ""
+            percent = 0
+            percentText = ""
         #base can't be empty since a subset of it is not empty, as ensured by the above test
         else:
             if denominator ==0:
-                percent = f"{numerator}/{denominator} ?"
+                percent = 0
+                percentText = f"{numerator}/{denominator} ?"
                 ret = numerator
             else:
-                percent = f"{(100*numerator)//denominator}%"
-        self.addCount("percent", kind, True, column, percent)
-        both = conditionString(numerator,f"{numerator}|{percent}")
+                percent = (100*numerator)/denominator
+                percentText = f"{int(percent)}%"
+        self.addCount("percent", kind, False, column, percent)
+        self.addCount("percent", kind, True, column, percentText)
+        both = conditionString(numerator,f"{numerator}|{percentText}")
         self.addCount("both", kind, True, column, both)
         return ret
 
-    def makeBar(self, kind):
-        denominator = self.count["absolute"][kind][False]["cards"]
-        if denominator == 0: #empty decks don't get progress bars
+    def makeBar(self, kind, names):
+        total = 0
+        for name in names:
+            total +=self.count['absolute'][kind][False].get(name,0)
+        if total == 0: #empty decks don't get progress bars
             return
-        mature = self.count['absolute'][kind][False]['mature']/denominator*100
-        young = self.count['absolute'][kind][False]['young']/denominator*100
-        review = self.count['absolute'][kind][False]['review due']/denominator*100
-        leech =0# self.count['absolute'][kind][False]['leech']/denominator*100
-        learning = self.count['absolute'][kind][False]['learning card']/denominator*100
-        new = self.count['absolute'][kind][False]['new today']/denominator*100
-        buried = self.count['absolute'][kind][False]['buried']/denominator*100
-        suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
-        return f"""<div class="progress" style="position:relative;	height:1em;	display:inline-block;	width:100px;		">
-          <div class="tooltip bar" style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">{getOverlay({"name":"unseen",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;		width:{mature}%;	background-color:green;	"><span class="tooltiptext">{getOverlay({"name":"mature",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">{getOverlay({"name":"young",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">{getOverlay({"name":"review due",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:50%;	bottom:0;	width:{leech}%;	background-color:black;	"><span class="tooltiptext">leech</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature+young}%;	width:{learning}%;	background-color:red;	"><span class="tooltiptext">{getOverlay({"name":"learning card",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;	left:{mature+young+learning}%;	width:{new}%;	background-color:blue;	"><span class="tooltiptext">{getOverlay({"name":"new today",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;	right:{suspended}%;	width:{buried}%;	background-color:gray;	"><span class="tooltiptext">{getOverlay({"name":"buried",	"overlay":None})}</span></div>
-          <div class="tooltip bar" style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">{getOverlay({"name":"suspended",	"overlay":None})}</span></div>
-        </div>"""
+        cumulative = 0
+        content = ""
+        for name in names:
+            conf = getFromName(name)
+            color = conf.get("color","black")
+            number =self.count['absolute'][kind][False].get(name,0)
+            overlay =f"{number}: {getOverlay(conf)}"
+            width = number*100/total
+            content+=bar(name, width, cumulative, color, overlay)
+            cumulative += width
+        return progress (content)
 
     def setPercentAndBoth(self):
         """Set percent and both count values for each kind and column
@@ -476,6 +475,10 @@ class DeckNode:
         for conf in getUserOption("columns"):
           if conf.get("present",True):
             name = conf["name"]
+            if name == "new":
+                name = "new today" #It used to be called "new". Introduced back for retrocomputability.
+                conf["name"] = "new today"
+                writeConfig()
             if conf.get("percent",False):
                 if conf.get("absolute",False):
                     number = "both"
@@ -483,21 +486,20 @@ class DeckNode:
                     number = "percent"
             else:
                 number = "absolute"
-            confName = conf["name"]
-            if confName == "new":
-                confName = "new today" #It used to be called "new". Introduced back for retrocomputability.
-                conf["name"] = "new today"
-                writeConfig()
-            if confName == "bar":
-                contents = self.makeBar("subdeck" if conf.get("subdeck",False) else "deck")
-            else:
-                countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"][True]
-                if confName not in countNumberKind:
-                    if confName not in warned :
-                        warned.add(confName)
-                        print(f"The add-on enhance main window does not know any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+            kind = "subdeck" if conf.get("subdeck",False) else "deck"
+            if name == "bar":
+                if not "names" in conf:
+                    print("""A configuration whose name is "bar", without names.""", file = sys.stderr)
                     continue
-                contents = countNumberKind[confName]
+                contents = self.makeBar(kind, conf["names"])
+            else:
+                countNumberKind = self.count[number][kind][True]
+                if name not in countNumberKind:
+                    if name not in warned :
+                        warned.add(name)
+                        print(f"The add-on enhance main window does not know any column whose name is {name}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+                    continue
+                contents = countNumberKind[name]
             if contents == 0 or contents == "0" or contents == "0%":
                 contents = ""#colour = "#e0e0e0"
             buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))

@@ -122,3 +122,16 @@ def deck_option_name(option):
 
 end_line = """
   </tr>"""
+
+def bar(name, width, left, color, overlay):
+    return f"""
+          <div class="tooltip bar" style="position:absolute; height:100%; width:{width}%; background-color:{color}; left :{left}% ;">
+            <!-- {name}-->
+            <span class="tooltiptext">
+              {overlay}
+            </span>
+          </div>"""
+def progress(content):
+    return f"""
+      <div class="progress" style="position:relative;	height:1em;	display:inline-block;	width:100px;		">{content}
+      </div>"""

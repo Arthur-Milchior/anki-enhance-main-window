@@ -2,6 +2,7 @@ import aqt
 from aqt import mw
 
 userOption = None
+
 def getUserOption(key = None, default = None):
     #print(f"getUserOption(key = {key}, default = {default})")
     global userOption
@@ -22,7 +23,16 @@ def writeConfig():
     aqt.mw.addonManager.writeConfig(__name__,userOption)
 
 def update(_):
-    global userOption
+    global userOption, fromName
     userOption = None
+    fromName = None
 
 mw.addonManager.setConfigUpdatedAction(__name__,update)
+fromName = None
+def getFromName(name):
+    global fromName
+    if fromName is None:
+        fromName = dict()
+        for dic in getUserOption("columns"):
+            fromName[dic["name"]]=dic
+    return fromName.get(name)

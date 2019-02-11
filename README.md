@@ -159,7 +159,17 @@ By default, this value is false if Percent is set to true, otherwise its default
 When you consider a deck which has subdecks, you may want to consider cards in subdecks (it is done when the value is true), or you may want to ignore them (it is done when the value is false).
 
 ### Short name
-Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and anki won't be able to display the main window.
+Please do not touch this value. It is used internally by the
+add-on. If you edit this value, the add-on will throw an error message
+and anki won't be able to display the main window.
+
+## Percent Bar
+If the name is "bar", instead of a number, the column contain a
+percent bar.
+
+In this case, the configuration of this column must contain a field
+"names", whose value is a list of name. The names are the same name
+than for columns. It uses the same color and overlay.
 
 ## Coloring decks
 The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant.
@@ -216,8 +226,9 @@ Key          |Value
 Copyright    |Arthur Milchior <arthur@milchior.fr>
 Based on     |Anki code by Damien Elmes <anki@ichi2.net>
 Based on     |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
-Original idea| Juda Kaleta <juda.kaleta@gmail.com>
-Somme CSS    | Some idea from cjdduarte
+Original idea|Juda Kaleta <juda.kaleta@gmail.com>
+Somme CSS    |Some idea from cjdduarte
+Percent bar |Idea and partial realization by Khonkhortisan
 License      |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 Source in    | https://github.com/Arthur-Milchior/anki-enhance-main-window
 Addon number | [877182321](https://ankiweb.net/shared/info/877182321)

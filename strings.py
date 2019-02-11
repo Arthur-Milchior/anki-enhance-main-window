@@ -31,6 +31,7 @@ defaultHeader = {
     "mature/young":_("Mature"+"/<br/>"+_("Young"),),
     "young": _("Young"),
     "marked":_("Marked"),
+    "leech":_("Leech"),
     "bar":_("Progress")
 }
 def getHeader(conf):
@@ -68,10 +69,11 @@ defaultOverlay = {
     "notes":_("Number of cards/note in the deck"),
     "today":_("Number of review you will see today")+"<br/>"+_("(new, review and learning)"),
     "undue":_("Number of cards reviewed, not yet due"),
-    "mature/young":_("Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks"),
-    "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
-    "young": _("Number of cards reviewed, with interval less than 3 weeks"),
+    "mature/young":_("Number of cards reviewed,")+"<br/>"+_("with interval at least 3 weeks/")+"<br/>"+_("less than 3 weeks"),
+    "mature":_("Number of cards reviewed,")+"<br/>"+_("with interval at least 3 weeks"),
+    "young": _("Number of cards reviewed,")+"<br/>"+_("with interval less than 3 weeks"),
     "marked":_("Number of marked note"),
+    "leech":_("Number of note with a leech card"),
     "new today":_("Number of new cards you'll see today"),
     "bar":None #It provides its own overlays
 }

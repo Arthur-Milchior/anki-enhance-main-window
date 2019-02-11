@@ -187,7 +187,7 @@
             "present":true,
             "name":"mature/young",
             "header":null,
-            "color":"",
+            "color":"grey",
             "overlay":null,
             "absolute":true,
             "percent":false,
@@ -209,7 +209,7 @@
             "present":false,
             "name":"mature",
             "header":null,
-            "color":"",
+            "color":"grey",
             "overlay":null,
             "absolute":true,
             "percent":false,
@@ -231,6 +231,18 @@
             "description":"Number of marked note",
             "present":true,
             "name":"marked",
+            "header":null,
+            "color":"purple",
+            "overlay":null,
+            "absolute":true,
+            "percent":true,
+            "subdeck":true
+        }
+		,
+        {
+            "description":"Number of note with a leech card",
+            "present":false,
+            "name":"leech",
             "header":null,
             "color":"purple",
             "overlay":null,
@@ -287,15 +299,23 @@
             "subdeck":true
         },
         {
-            "absolute": false,
-            "color": "",
-            "description": "A column containing percent bar",
-            "header": null,
-            "name": "bar",
-            "overlay": null,
-            "percent": false,
-            "present": true,
-            "subdeck": true
+		  "present":true,
+          "description": "Percent bar to do today",
+          "header": "Today",
+          "name": "bar",
+		  "names": ["new today", "review today", "learning card", "reviewed today"],
+		  "overlay": null,
+          "subdeck": true
+        }
+,
+        {
+          "description": "Percent bar showing the decks's repartition",
+		  "present":true,
+          "header": "Total",
+          "name": "bar",
+		  "names": ["learning card", "unseen", "young","mature", "buried", "suspended"],
+		  "overlay": null,
+          "subdeck": true
         }
     ],
 

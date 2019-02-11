@@ -17,7 +17,7 @@ def computeValues():
         ("learning today repetition from past","queue = 3" , f"left/1000",""),
         ("learning repetition from today", "queue = 1", f"mod%1000",""),
         ("learning repetition from past","queue = 3", f"mod%1000",""),
-        ("review due", f"queue =  2 and due <= {str(today)}" ,"",""),
+        ("review due", f"queue = 2 and due <= {str(today)}" ,"",""),
         ("reviewed today", f"due>0 and due-ivl = {str(today)}" ,"",""),
         ("repeated today", f"revlog.id>{yesterdayLimit}" ,"","revlog inner join cards on revlog.cid = cards.id"),
         ("repeated", "" ,"","revlog inner join cards on revlog.cid = cards.id"),
@@ -26,7 +26,7 @@ def computeValues():
         ("suspended", f"queue = -1","",""),
         ("cards","","",""),
         ("undue", f"queue = 2 and due >  {str(today)}","",""),
-        ("mature", f"ivl >= 21" ,"",""),
+        ("mature", f"queue = 2 and ivl >= 21" ,"",""),
         ("young", f"queue = 2 and 0<ivl and ivl <21" ,"",""),
     ]
     for name, condition, addend, table in queriesCardCount:
