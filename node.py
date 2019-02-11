@@ -39,7 +39,7 @@ class DeckNode:
     deck -- the deck objects
 
     Information to potentially display
-    count -- associate to [absolute/percent][deck/subdeck][value] the number/percont of cards satisfying value in the deck (and its subdeck)
+    count -- associate to [absolute/percent][deck/subdeck][value] the number/percent of cards satisfying value in the deck (and its subdeck)
     set -- associate to [deck/subdeck][value] the set of nids satisfying "value" in the deck (and its subdeck)
     markedNotesRec -- the set of marked notes in the deck and its subdkc
     endedMarkedDescendant -- whether the deck has a descendant ended with marked cards
@@ -70,7 +70,7 @@ class DeckNode:
         #Look at aqt/deckbrowser.py for a description of oldNode
         "Build the new deck tree or subtree (with extra info) by traversing the old one."
 
-        # Associate each potentially interesting parameters of this node
+        # Associate each of the potentially interesting parameters of this node
         self.param = dict()
         #CSS Style
         self.style = dict()
@@ -100,7 +100,7 @@ class DeckNode:
         self.initMarked() # set of marked notes
         self.initTimeDue()
         self.initFromAlreadyComputed()
-        self.initCountSum() # basic some from database information
+        self.initCountSum() # basic sum from database information
 
 
     def setSubdeck(self):
@@ -243,7 +243,7 @@ class DeckNode:
             if self.endedMarkedDescendant:
                 self.style["background-color"] = getUserOption("ended marked background color")
             else:
-                self.style["background-color"] = getUserOption("marked backgroud color")
+                self.style["background-color"] = getUserOption("marked background color")
 
     def setSubdeckCount(self):
         """Compute subdeck value, as the sum of deck, and children's subdeck value"""
@@ -303,7 +303,7 @@ class DeckNode:
         denominator = self.count["absolute"][kind][False][base]
         if numerator == 0:
             percent = ""
-        #base can't be empty since a subset of its is not empty, as ensured by the above test
+        #base can't be empty since a subset of it is not empty, as ensured by the above test
         else:
             if denominator ==0:
                 percent = f"{numerator}/{denominator} ?"
@@ -468,7 +468,7 @@ class DeckNode:
             if confName not in countNumberKind:
                 if confName not in warned :
                     warned.add(confName)
-                    print(f"The add-on enhance main window does not now any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+                    print(f"The add-on enhance main window does not know any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
                 continue
             contents = countNumberKind[confName]
             if contents == 0 or contents == "0" or contents == "0%":
