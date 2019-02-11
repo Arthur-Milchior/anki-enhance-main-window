@@ -310,15 +310,24 @@ class DeckNode:
                 ret = numerator
             else:
                 percent = f"{(100*numerator)//denominator}%"
-                mature = self.count['absolute'][kind][False]['mature']/denominator*100
-                young = self.count['absolute'][kind][False]['young']/denominator*100
-                review = self.count['absolute'][kind][False]['review due']/denominator*100
-                leech =0# self.count['absolute'][kind][False]['leech']/denominator*100
-                learning = self.count['absolute'][kind][False]['learning card']/denominator*100
-                new = self.count['absolute'][kind][False]['new today']/denominator*100
-                buried = self.count['absolute'][kind][False]['buried']/denominator*100
-                suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
-                percent += f"""
+        self.addCount("percent", kind, True, column, percent)
+        both = conditionString(numerator,f"{numerator}|{percent}")
+        self.addCount("both", kind, True, column, both)
+        return ret
+
+    def makeBar(self, kind):
+        denominator = self.count["absolute"][kind][False]["cards"]
+        if denominator == 0:
+            return
+        mature = self.count['absolute'][kind][False]['mature']/denominator*100
+        young = self.count['absolute'][kind][False]['young']/denominator*100
+        review = self.count['absolute'][kind][False]['review due']/denominator*100
+        leech =0# self.count['absolute'][kind][False]['leech']/denominator*100
+        learning = self.count['absolute'][kind][False]['learning card']/denominator*100
+        new = self.count['absolute'][kind][False]['new today']/denominator*100
+        buried = self.count['absolute'][kind][False]['buried']/denominator*100
+        suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
+        return f"""
 <div		class="progress"	style="position:relative;	height:1em;	display:inline-block;	width:100px;	background-color:lightgrey;	">
 	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:0%;	width:{mature}%;	background-color:green;	"><span class="tooltiptext">mature</span></div>
 	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">young</span></div>
@@ -330,13 +339,9 @@ class DeckNode:
 	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">suspended</span></div>
 </div>
 """
-        #:not(.tooltip) > div > .tooltip:hover .tooltiptext {
-        #  visibility: visible;
-        #}
-        self.addCount("percent", kind, True, column, percent)
-        both = conditionString(numerator,f"{numerator}|{percent}")
-        self.addCount("both", kind, True, column, both)
-        return ret
+#:not(.tooltip) > div > .tooltip:hover .tooltiptext {
+#  visibility: visible;
+#}
 
     def setPercentAndBoth(self):
         """Set percent and both count values for each kind and column
@@ -487,13 +492,16 @@ class DeckNode:
                 confName = "new today" #It used to be called "new". Introduced back for retrocomputability.
                 conf["name"] = "new today"
                 writeConfig()
-            countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"][True]
-            if confName not in countNumberKind:
-                if confName not in warned :
-                    warned.add(confName)
-                    print(f"The add-on enhance main window does not know any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
-                continue
-            contents = countNumberKind[confName]
+            if confName == "bar":
+                contents = self.makeBar("subdeck" if conf.get("subdeck",False) else "deck")
+            else:
+                countNumberKind = self.count[number]["subdeck" if conf.get("subdeck",False) else "deck"][True]
+                if confName not in countNumberKind:
+                    if confName not in warned :
+                        warned.add(confName)
+                        print(f"The add-on enhance main window does not know any column whose name is {confName}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+                    continue
+                contents = countNumberKind[confName]
             if contents == 0 or contents == "0" or contents == "0%":
                 contents = ""#colour = "#e0e0e0"
             buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))

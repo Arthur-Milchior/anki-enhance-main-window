@@ -285,6 +285,17 @@
             "absolute":true,
             "percent":false,
             "subdeck":true
+        },
+        {
+            "absolute": false,
+            "color": "red",
+            "description": "",
+            "header": null,
+            "name": "bar",
+            "overlay": null,
+            "percent": false,
+            "present": true,
+            "subdeck": true
         }
     ],
 
