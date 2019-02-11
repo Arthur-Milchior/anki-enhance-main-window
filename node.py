@@ -329,15 +329,15 @@ class DeckNode:
         suspended = self.count['absolute'][kind][False]['suspended']/denominator*100
         return f"""
 <div		class="progress"	style="position:relative;	height:1em;	display:inline-block;	width:100px;		">
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">unseen</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:0%;	width:{mature}%;	background-color:green;	"><span class="tooltiptext">mature</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">young</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">review</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:50%;	left:0;bottom:0;	width:{leech}%;	background-color:black;	"><span class="tooltiptext">leech</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young}%;	width:{learning}%;	background-color:red;	"><span class="tooltiptext">learning</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young+learning}%;	width:{new}%;	background-color:blue;	"><span class="tooltiptext">new</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:{suspended}%;	width:{buried}%;	background-color:gray;	"><span class="tooltiptext">buried</span></div>
-	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">suspended</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:100%;	background-color:lightgrey;	"><span class="tooltiptext">{getOverlay({"name":"unseen",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;		width:{mature}%;	background-color:green;	"><span class="tooltiptext">{getOverlay({"name":"mature",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature}%;	width:{young}%;	background-color:lightgreen;	"><span class="tooltiptext">{getOverlay({"name":"young",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:50%;	left:{mature+young-review}%;	width:{review}%;	background-color:#48B748;	"><span class="tooltiptext">{getOverlay({"name":"review due",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:50%;	bottom:0;	width:{leech}%;	background-color:black;	"><span class="tooltiptext">leech</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young}%;	width:{learning}%;	background-color:red;	"><span class="tooltiptext">{getOverlay({"name":"learning card",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;	left:{mature+young+learning}%;	width:{new}%;	background-color:blue;	"><span class="tooltiptext">{getOverlay({"name":"new today",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:{suspended}%;	width:{buried}%;	background-color:gray;	"><span class="tooltiptext">{getOverlay({"name":"buried",	"overlay":None})}</span></div>
+	<div	class="tooltip bar"	style="position:absolute;	height:100%;	right:0;	width:{suspended}%;	background-color:yellow;	"><span class="tooltiptext">{getOverlay({"name":"suspended",	"overlay":None})}</span></div>
 </div>
 """
 #:not(.tooltip) > div > .tooltip:hover .tooltiptext {
