@@ -1,7 +1,9 @@
 # anki-enhance-main-window
 Adds a lot of features to the main window. Allows to configure those features. Configurations are explained at the end of this document.
 
+
 Important updates:
+* 11 February 2019: percent bar
 * February: counting the number of review, today and any time in the
   past. And the number of cards seen today.
 * 19th January 2019: many bugs corrected. Configuration can be
@@ -9,6 +11,8 @@ Important updates:
 * 8th november 2018: you can configure the add-on using anki
 2.1's configuration method. The configuration won't be lost during
 next update of the add-on !
+
+![Example](example.png)
 
 # Features
 ## Column
