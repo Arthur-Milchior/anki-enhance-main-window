@@ -285,6 +285,17 @@
             "absolute":true,
             "percent":false,
             "subdeck":true
+        },
+        {
+            "absolute": false,
+            "color": "",
+            "description": "A column containing percent bar",
+            "header": null,
+            "name": "bar",
+            "overlay": null,
+            "percent": false,
+            "present": true,
+            "subdeck": true
         }
     ],
 

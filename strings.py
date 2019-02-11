@@ -31,6 +31,7 @@ defaultHeader = {
     "mature/young":_("Mature"+"/<br/>"+_("Young"),),
     "young": _("Young"),
     "marked":_("Marked"),
+    "bar":_("Progress")
 }
 def getHeader(conf):
     """The header for the configuration in argument"""
@@ -71,7 +72,8 @@ defaultOverlay = {
     "mature":_("Number of cards reviewed, with interval at least 3 weeks"),
     "young": _("Number of cards reviewed, with interval less than 3 weeks"),
     "marked":_("Number of marked note"),
-    "new today":_("Number of new cards you'll see today")
+    "new today":_("Number of new cards you'll see today"),
+    "bar":None #It provides its own overlays
 }
 def getOverlay(conf):
     """The overlay for the configuration in argument"""

@@ -84,12 +84,14 @@ def deck_name(depth,collapse,extraclass,did,cssStyle,name):
 def number_cell(colour,contents,description):
     if description is None or description is False:
         description = ""
+        t= f"""
+    <td align = 'right'>"""
     else:
         description = f"""
       <span class = 'tooltiptext'>
         {description}
       </span>"""
-    t= f"""
+        t= f"""
     <td align = 'right' class = 'tooltip'>"""
     if contents:
         t+=f"""
