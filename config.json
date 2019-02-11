@@ -289,7 +289,7 @@
         {
             "absolute": false,
             "color": "",
-            "description": "",
+            "description": "A column containing percent bar",
             "header": null,
             "name": "bar",
             "overlay": null,
