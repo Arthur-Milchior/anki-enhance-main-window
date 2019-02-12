@@ -83,9 +83,7 @@ defaultOverlay = {
 }
 def getOverlay(conf):
     """The overlay for the configuration in argument"""
-    if "overlay" not in conf:
-        return None
-    overlay =  conf["overlay"]
+    overlay =  conf.get("overlay")
     if overlay is None:
         return defaultOverlay[conf["name"]]
     return overlay

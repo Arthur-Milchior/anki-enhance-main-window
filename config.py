@@ -36,6 +36,4 @@ def getFromName(name):
         fromName = dict()
         for dic in getUserOption("columns"):
             fromName[dic["name"]]=dic
-    if name in fromName:
-        return fromName[name]
-    print(f"""You ask for the configuration of {name}. But it's not a column of the configuration.""", file = sys.stderr)
+    return fromName.get(name)

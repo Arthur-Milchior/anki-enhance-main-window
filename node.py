@@ -329,7 +329,7 @@ class DeckNode:
         cumulative = 0
         content = ""
         for name in names:
-            conf = getFromName(name) or {}
+            conf = getFromName(name) or {"name":name}
             color = getColor(conf)
             number =self.count['absolute'][kind][False].get(name,0)
             overlay =f"{number}: {getOverlay(conf)}"
