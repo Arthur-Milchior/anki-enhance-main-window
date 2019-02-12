@@ -389,7 +389,7 @@ class DeckNode:
                     name = f"{first}/{second}"
                     firstValue = self.count[absoluteOrPercent][kind][True][first]
                     secondValue = self.count[absoluteOrPercent][kind][True][second]
-                    values = conditionString(firstValue and secondValue, f"{firstValue}/{secondValue}")
+                    values = conditionString(firstValue or secondValue, f"{firstValue}/{secondValue}")
                     self.addCount(absoluteOrPercent, kind, True, name, values)
 
     def setNowLaters(self):
