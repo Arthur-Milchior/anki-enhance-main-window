@@ -252,7 +252,7 @@
         }
 		,
         {
-            "description":"Number of cards seen today",
+            "description":"Number of review cards seen today",
             "present":false,
             "name":"reviewed today",
             "header":null,
@@ -276,7 +276,7 @@
         }
 		,
         {
-            "description":"Number of cards seen today and of review",
+            "description":"Number of review cards seen today and number of review",
             "present":true,
             "name":"reviewed today/repeated today",
             "header":null,

@@ -2,32 +2,34 @@ from anki.utils import intTime
 from aqt import mw
 from .debug import debug
 values = dict()
+from .consts import *
+
 def computeValues():
     debug("Compute values")
     cutoff = intTime() + mw.col.conf['collapseTime']
     today = mw.col.sched.today
     yesterdayLimit = (mw.col.sched.dayCutoff-86400)*1000
-    debug("Yesterday limit is {yesterdayLimit}")
+    debug(f"Yesterday limit is {yesterdayLimit}")
     queriesCardCount = [
-        ("learning now from today", f"queue = 1 and due <= {str(cutoff)}" ,"",""),
-        ("learning today from past", f"queue = 3 and due <= {str(today)}" ,"",""),
-        ("learning later today", f"queue = 1 and due > {str(cutoff)}" ,"",""),
-        ("learning future", f"queue = 3 and due > {str(today)}" ,"",""),
-        ("learning today repetition from today", "queue = 1", f"left/1000",""),
-        ("learning today repetition from past","queue = 3" , f"left/1000",""),
-        ("learning repetition from today", "queue = 1", f"mod%1000",""),
-        ("learning repetition from past","queue = 3", f"mod%1000",""),
-        ("review due", f"queue = 2 and due <= {str(today)}" ,"",""),
-        ("reviewed today", f"due>0 and due-ivl = {str(today)}" ,"",""),
+        ("learning now from today", f"queue = {QUEUE_LRN} and due <= {str(cutoff)}" ,"",""),
+        ("learning today from past", f"queue = {QUEUE_DAY_LRN} and due <= {str(today)}" ,"",""),
+        ("learning later today", f"queue = {QUEUE_LRN} and due > {str(cutoff)}" ,"",""),
+        ("learning future", f"queue = {QUEUE_DAY_LRN} and due > {str(today)}" ,"",""),
+        ("learning today repetition from today", f"queue = {QUEUE_LRN}", f"left/1000",""),
+        ("learning today repetition from past",f"queue = {QUEUE_DAY_LRN}" , f"left/1000",""),
+        ("learning repetition from today", f"queue = {QUEUE_LRN}", f"mod%1000",""),
+        ("learning repetition from past",f"queue = {QUEUE_DAY_LRN}", f"mod%1000",""),
+        ("review due", f"queue = {QUEUE_REV} and due <= {str(today)}" ,"",""),
+        ("reviewed today", f"queue = {QUEUE_REV} and due>0 and due-ivl = {str(today)}" ,"",""),
         ("repeated today", f"revlog.id>{yesterdayLimit}" ,"","revlog inner join cards on revlog.cid = cards.id"),
-        ("repeated", "" ,"","revlog inner join cards on revlog.cid = cards.id"),
-        ("unseen", f"queue = 0","",""),
-        ("buried", f"queue = -2  or queue = -3","",""),
-        ("suspended", f"queue = -1","",""),
+        ("repeated", "" ,"",f"revlog inner join cards on revlog.cid = cards.id"),
+        ("unseen", f"queue = {QUEUE_NEW_CRAM}","",""),
+        ("buried", f"queue = {QUEUE_USER_BURIED}  or queue = {QUEUE_SCHED_BURIED}","",""),
+        ("suspended", f"queue = {QUEUE_SUSPENDED}","",""),
         ("cards","","",""),
-        ("undue", f"queue = 2 and due >  {str(today)}","",""),
+        ("undue", f"queue = {QUEUE_REV} and due >  {str(today)}","",""),
         ("mature", f"queue = 2 and ivl >= 21" ,"",""),
-        ("young", f"queue = 2 and 0<ivl and ivl <21" ,"",""),
+        ("young", f"queue = {QUEUE_REV} and 0<ivl and ivl <21" ,"",""),
     ]
     for name, condition, addend, table in queriesCardCount:
         if addend:
@@ -49,6 +51,6 @@ def computeValues():
 times = dict()
 def computeTime():
     debug("Compute times")
-    for did, time in mw.col.db.all("select did,min(case when queue = 1 then due else null end) from cards"):
+    for did, time in mw.col.db.all(f"select did,min(case when queue = {QUEUE_LRN} then due else null end) from cards"):
         debug("time for {did} is {time}")
         times[did]=time
