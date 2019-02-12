@@ -303,7 +303,7 @@
           "description": "Percent bar to do today",
           "header": "Today",
           "name": "bar",
-		  "names": ["new today", "review today", "learning card", "reviewed today"],
+		  "names": ["review today", "learning card","new today", "reviewed today"],
 		  "overlay": null,
           "subdeck": true
         }
@@ -313,7 +313,7 @@
 		  "present":true,
           "header": "Total",
           "name": "bar",
-		  "names": ["learning card", "unseen", "young","mature", "buried", "suspended"],
+		  "names": ["mature","young", "learning card",  "unseen","buried", "suspended"],
 		  "overlay": null,
           "subdeck": true
         }
