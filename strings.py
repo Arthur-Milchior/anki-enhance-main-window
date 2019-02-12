@@ -1,10 +1,13 @@
 from .config import getUserOption
+from anki.stats import colYoung, colMature, colCum, colLearn, colRelearn, colCram, colIvl, colHour, colTime, colUnseen, colSusp
+
 
 # Associate to each column its title
 defaultHeader = {
     "learning card":_("Learning")+"<br/>"+_("(card)"),
     "learning later":_("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,
     "learning now":_("Learning")+"<br/>"+_("now") ,
+    "learning today":_("Learning")+"<br/>"+_("now")+"<br/>"+_("and later"),
     "learning all":_("Learning")+"<br/>"+_("now")+"<br/>("+_("later today")+"<br/>("+_("other day")+"))",
     "review due":_("Due")+"<br/>"+_("all") ,
     "review today":_("Due")+"<br/>"+_("today") ,
@@ -48,6 +51,7 @@ defaultOverlay = {
     "learning card":_("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""),
     "learning later":_("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
     "learning now":_("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
+    "learning today":_("Cards in learning which are due now and then later."),
     "learning all":_("Cards in learning which are due now")+"<br/>"+_("(and in parenthesis, the number of reviews")+"<br/>"+_("which are due later)"),
     "review due":_("Review cards which are due today")+"<br/>"+_("(not counting the one in learning)"),
     "review today":_("Review cards you will see today"),
@@ -85,3 +89,21 @@ def getOverlay(conf):
     if overlay is None:
         return defaultOverlay[conf["name"]]
     return overlay
+
+def getColor(conf):
+    if "color" in conf and conf.get('color') is not None:
+        return conf.get('color')
+    name = conf.get('name',"")
+    for word, color in [
+            ("learning",colRelearn),
+            ("unseen",colUnseen),
+            ("new",colLearn),
+            ("suspend",colSusp),
+            ("young",colYoung),
+            ("mature",colMature),
+            ("buried",colSusp),
+            ("repeated",colCum)
+    ]:
+        if word in name:
+            return color
+    return getUserOption("default column color","grey")

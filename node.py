@@ -8,7 +8,7 @@ import sys
 from .config import getUserOption, writeConfig, getFromName
 from .html import *
 from .printing import *
-from .strings import getHeader, getOverlay
+from .strings import getHeader, getOverlay, getColor
 from .debug import debug
 from . import tree
 
@@ -329,8 +329,8 @@ class DeckNode:
         cumulative = 0
         content = ""
         for name in names:
-            conf = getFromName(name)
-            color = conf.get("color","black")
+            conf = getFromName(name) or {}
+            color = getColor(conf)
             number =self.count['absolute'][kind][False].get(name,0)
             overlay =f"{number}: {getOverlay(conf)}"
             width = number*100/total
@@ -502,7 +502,7 @@ class DeckNode:
                 contents = countNumberKind[name]
             if contents == 0 or contents == "0" or contents == "0%":
                 contents = ""#colour = "#e0e0e0"
-            buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))
+            buf += number_cell(getColor(conf), contents, getOverlay(conf))
         return buf
 
     def getOptionName(self):

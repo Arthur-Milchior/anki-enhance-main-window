@@ -47,7 +47,7 @@ The header of the column. If you leave «null» then the default header will be 
 The text shown when your mouse is over a number. It will describe what this number represent. You can remove this key or set it to false if you want no description to be present. And leave this value to null if you want to use the default value.
 
 ### Color
-The color in which the number is written in this column. You can use any color acceptable in an HTML document. The most standard color's name should work.
+The color in which the number is written in this column. You can use any color acceptable in an HTML document. The most standard color's name should work. None means that it should use the same color than in the statistic window, if this color exists, or the default color otherwise.
 
 ###  Percent
 true or false whether you want to show the percent of cards satisfying this colun condition. For example, 23% of cards are new. Note that sometime, this would not make sens. For example, for the column «cards», the value will always be 100% (unless the deck is empty). For the column notes, the number would not really make any sens (formally, you'd get the percent of cards which is the first of its sibling in this deck).
@@ -80,6 +80,8 @@ The color of the name of decks with a descendant without new cards
 #### Default color
 The color of a deck whose every descendant has new cards.
 
+#### Default column color
+The color of the content of a deck, if no other color is specified.
 #### ended marked background color
 The color of the decks which has an ended deck with marked cards. The  notion of ended deck will be explained in the next section of this documentation.
 
