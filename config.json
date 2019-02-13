@@ -324,7 +324,7 @@
     "cap value" : null,
     "color empty" : "red",
     "color empty descendant" : "green",
-    "marked backgroud color" : "powderblue",
+    "marked background color" : "powderblue",
     "ended marked background color" : "yellow",
     "end symbol" : ";",
     "book symbol" : "{",
