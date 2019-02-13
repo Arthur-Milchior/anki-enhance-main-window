@@ -195,7 +195,7 @@ The color of a deck whose every descendant has new cards.
 #### ended marked background color
 The color of the decks which has an ended deck with marked cards. The  notion of ended deck will be explained in the next section of this documentation.
 
-#### marked backgroud color
+#### marked background color
 The color of deck who have marked cards but none of its descendant are both ended and has marked card.
 
 
