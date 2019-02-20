@@ -6,7 +6,7 @@ from aqt import mw
 import copy
 import sys
 from .config import getUserOption, writeConfig, getFromName
-from .html import css, start_header, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
+from .htmlAndCss import start_header, css, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
 from .printing import *
 from .strings import getHeader, getOverlay, getColor
 from .debug import debug
