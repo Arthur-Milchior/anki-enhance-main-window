@@ -24,6 +24,17 @@
             "subdeck":true
         },
         {
+            "description":"Cards in learning (either learning now, or later in the same day)",
+            "present":false,
+            "name":"learning today sum",
+            "header":null,
+            "color":"orange",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        },
+        {
             "description":"Review which will happen later. Either because a review happened recently, or because the card have many review left.",
             "present":false,
             "name":"learning later",

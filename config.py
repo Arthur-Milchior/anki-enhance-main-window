@@ -1,4 +1,3 @@
-import aqt
 from aqt import mw
 
 userOption = None
@@ -7,7 +6,7 @@ def getUserOption(key = None, default = None):
     #print(f"getUserOption(key = {key}, default = {default})")
     global userOption
     if userOption is None:
-        userOption = aqt.mw.addonManager.getConfig(__name__)
+        userOption = mw.addonManager.getConfig(__name__)
         #debug("userOption read from the file and is {userOption}")
     if key is None:
         #debug("return {userOption}")
