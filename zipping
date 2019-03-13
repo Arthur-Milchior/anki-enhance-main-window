@@ -1,2 +1,2 @@
 rm enhancedMainWindow.zip
-zip enhancedMainWindow.zip config.* *py  LICENSE *.md ziping --exclude \*~
+zip enhancedMainWindow.zip config.* *py  LICENSE *.md zipping --exclude \*~

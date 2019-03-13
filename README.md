@@ -3,6 +3,8 @@ Adds a lot of features to the main window. Allows to configure those features. C
 
 
 Important updates:
+* 12 February 2019: default color are changed to use the color of the
+  statistic window.
 * 11 February 2019: percent bar
 * February: counting the number of review, today and any time in the
   past. And the number of cards seen today.
@@ -193,7 +195,7 @@ The color of a deck whose every descendant has new cards.
 #### ended marked background color
 The color of the decks which has an ended deck with marked cards. The  notion of ended deck will be explained in the next section of this documentation.
 
-#### marked backgroud color
+#### marked background color
 The color of deck who have marked cards but none of its descendant are both ended and has marked card.
 
 
@@ -232,7 +234,7 @@ Based on     |Anki code by Damien Elmes <anki@ichi2.net>
 Based on     |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
 Original idea|Juda Kaleta <juda.kaleta@gmail.com>
 Somme CSS    |Some idea from cjdduarte
-Percent bar |Idea and partial realization by Khonkhortisan
+Percent bar | Idea and partial realization by Kyle "Khonkhortisan" Mills
 License      |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 Source in    | https://github.com/Arthur-Milchior/anki-enhance-main-window
 Addon number | [877182321](https://ankiweb.net/shared/info/877182321)

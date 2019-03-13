@@ -126,9 +126,11 @@ Cards to review, which are due, but won't be seen today because of
 deck's configuration's limit. (review due - review today)
 
 ### reviewed today
-Cards whose last review was today. (A card deleted after review is not
-counted anymore. A card reviewed and moved is counted in its new
-deck. A card reviewed many time is counted once. )
+Cards whose last succesfull review was today. (A card deleted after
+review is not counted anymore. A card reviewed and moved is counted in
+its new deck. A card reviewed many time is counted once. Cards in
+learning are not counted. TODO: find how to easily find how to count
+cards in learning whose last review is today)
 
 ### repeated today
 Number of times you saw today a question from this deck. (A card

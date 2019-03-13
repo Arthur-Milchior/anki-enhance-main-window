@@ -6,9 +6,9 @@ from aqt import mw
 import copy
 import sys
 from .config import getUserOption, writeConfig, getFromName
-from .html import *
+from .htmlAndCss import start_header, css, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
 from .printing import *
-from .strings import getHeader, getOverlay
+from .strings import getHeader, getOverlay, getColor
 from .debug import debug
 from . import tree
 
@@ -329,8 +329,8 @@ class DeckNode:
         cumulative = 0
         content = ""
         for name in names:
-            conf = getFromName(name)
-            color = conf.get("color","black")
+            conf = getFromName(name) or {"name":name}
+            color = getColor(conf)
             number =self.count['absolute'][kind][False].get(name,0)
             overlay =f"{number}: {getOverlay(conf)}"
             width = number*100/total
@@ -389,7 +389,7 @@ class DeckNode:
                     name = f"{first}/{second}"
                     firstValue = self.count[absoluteOrPercent][kind][True][first]
                     secondValue = self.count[absoluteOrPercent][kind][True][second]
-                    values = conditionString(firstValue and secondValue, f"{firstValue}/{secondValue}")
+                    values = conditionString(firstValue or secondValue, f"{firstValue}/{secondValue}")
                     self.addCount(absoluteOrPercent, kind, True, name, values)
 
     def setNowLaters(self):
@@ -502,7 +502,7 @@ class DeckNode:
                 contents = countNumberKind[name]
             if contents == 0 or contents == "0" or contents == "0%":
                 contents = ""#colour = "#e0e0e0"
-            buf += number_cell(conf.get("color","black"), contents, getOverlay(conf))
+            buf += number_cell(getColor(conf), contents, getOverlay(conf))
         return buf
 
     def getOptionName(self):
