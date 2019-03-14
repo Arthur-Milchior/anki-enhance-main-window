@@ -8,26 +8,28 @@ def computeValues():
     debug("Compute values")
     cutoff = intTime() + mw.col.conf['collapseTime']
     today = mw.col.sched.today
+    tomorrow = today+1
     yesterdayLimit = (mw.col.sched.dayCutoff-86400)*1000
     debug(f"Yesterday limit is {yesterdayLimit}")
     queriesCardCount = [
-        ("learning now from today", f"queue = {QUEUE_LRN} and due <= {str(cutoff)}" ,"",""),
-        ("learning today from past", f"queue = {QUEUE_DAY_LRN} and due <= {str(today)}" ,"",""),
-        ("learning later today", f"queue = {QUEUE_LRN} and due > {str(cutoff)}" ,"",""),
-        ("learning future", f"queue = {QUEUE_DAY_LRN} and due > {str(today)}" ,"",""),
+        ("due tomorrow", f"queue in (2,3) and due <= {tomorrow}" ,"",""),
+        ("learning now from today", f"queue = {QUEUE_LRN} and due <= {cutoff}" ,"",""),
+        ("learning today from past", f"queue = {QUEUE_DAY_LRN} and due <= {today}" ,"",""),
+        ("learning later today", f"queue = {QUEUE_LRN} and due > {cutoff}" ,"",""),
+        ("learning future", f"queue = {QUEUE_DAY_LRN} and due > {today}" ,"",""),
         ("learning today repetition from today", f"queue = {QUEUE_LRN}", f"left/1000",""),
         ("learning today repetition from past",f"queue = {QUEUE_DAY_LRN}" , f"left/1000",""),
         ("learning repetition from today", f"queue = {QUEUE_LRN}", f"mod%1000",""),
         ("learning repetition from past",f"queue = {QUEUE_DAY_LRN}", f"mod%1000",""),
-        ("review due", f"queue = {QUEUE_REV} and due <= {str(today)}" ,"",""),
-        ("reviewed today", f"queue = {QUEUE_REV} and due>0 and due-ivl = {str(today)}" ,"",""),
+        ("review due", f"queue = {QUEUE_REV} and due <= {today}" ,"",""),
+        ("reviewed today", f"queue = {QUEUE_REV} and due>0 and due-ivl = {today}" ,"",""),
         ("repeated today", f"revlog.id>{yesterdayLimit}" ,"","revlog inner join cards on revlog.cid = cards.id"),
         ("repeated", "" ,"",f"revlog inner join cards on revlog.cid = cards.id"),
         ("unseen", f"queue = {QUEUE_NEW_CRAM}","",""),
         ("buried", f"queue = {QUEUE_USER_BURIED}  or queue = {QUEUE_SCHED_BURIED}","",""),
         ("suspended", f"queue = {QUEUE_SUSPENDED}","",""),
         ("cards","","",""),
-        ("undue", f"queue = {QUEUE_REV} and due >  {str(today)}","",""),
+        ("undue", f"queue = {QUEUE_REV} and due >  {today}","",""),
         ("mature", f"queue = 2 and ivl >= 21" ,"",""),
         ("young", f"queue = {QUEUE_REV} and 0<ivl and ivl <21" ,"",""),
     ]

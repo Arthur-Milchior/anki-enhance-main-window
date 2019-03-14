@@ -501,19 +501,14 @@ class DeckNode:
                     continue
                 contents = countNumberKind[name]
             colour = getColor(conf)
-            print(f"Input contents is «{contents}»")
             if contents == "": #In some case, we decided contents is empty. Instead of having complex value such as "0/0%" or "0(0)". Then we set it back to 0, which nicely summarize everything.
                 contents = 0
             if contents in [0,"0","0%",""]:
                 whatToDo = getUserOption("color zero")
                 if whatToDo is False:
                     contents = ""
-                    print(f"Set content to empty")
                 elif isinstance(whatToDo,str):
-                    print(f"Set colour to {whatToDo}")
                     colour = whatToDo
-            print(f"Output contents is «{contents}»")
-            print(f"Output colour is «{colour}»")
             buf += number_cell(colour, contents, getOverlay(conf))
         return buf
 

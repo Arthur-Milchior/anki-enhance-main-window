@@ -21,7 +21,7 @@ Note that capping to a thousand does not usually make the rendering quicker.
 Whether you want a big number such as 34968 to be shown as "34.968" or as "34968".
 
 ### color zero
-The color to use for the zero. If it's a string, use always this color. By default, it's a kind of grey. If you set it to false, then it's not shown at all. You car remove this line or set it to  null to ensure that the default column is used.
+The color to use for the zero. If it's a string, use always this color. By default in anki, it's a kind of grey. If you set it to false (default in this add-on), then the zero is not shown at all. You car remove this line or set it to  null to ensure that the default column is used. To obtain the grey which is the default value in anki, you can set the color to "#e0e0e0".
 
 ## Columns
 
