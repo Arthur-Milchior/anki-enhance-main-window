@@ -1,5 +1,6 @@
 from .config import getUserOption
 from anki.stats import colYoung, colMature, colCum, colLearn, colRelearn, colCram, colIvl, colHour, colTime, colUnseen, colSusp
+from anki.lang import _
 
 
 # Associate to each column its title

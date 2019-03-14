@@ -1,4 +1,5 @@
 from .config import getUserOption
+from anki.lang import _
 
 defaultCSS = """/* Tooltip container */
         a:hover{
