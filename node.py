@@ -325,7 +325,7 @@ class DeckNode:
         for name in names:
             total +=self.count['absolute'][kind][False].get(name,0)
         if total == 0: #empty decks don't get progress bars
-            return
+            return ""
         cumulative = 0
         content = ""
         for name in names:
@@ -489,7 +489,7 @@ class DeckNode:
             kind = "subdeck" if conf.get("subdeck",False) else "deck"
             if name == "bar":
                 if not "names" in conf:
-                    print("""A configuration whose name is "bar", without names.""", file = sys.stderr)
+                    print("""A configuration whose name is "bar", should have a field "names".""", file = sys.stderr)
                     continue
                 contents = self.makeBar(kind, conf["names"])
             else:
