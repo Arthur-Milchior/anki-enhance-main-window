@@ -18,7 +18,10 @@ By default, without add-on, anki never show number greater than a thousand. Inst
 Note that capping to a thousand does not usually make the rendering quicker.
 
 ### Dot in number
-Whether you want a big number such as 34968 to be shown as 34.968 or as 34968.
+Whether you want a big number such as 34968 to be shown as "34.968" or as "34968".
+
+### color zero
+The color to use for the zero. If it's a string, use always this color. By default, it's a kind of grey. If you set it to false, then it's not shown at all. You car remove this line or set it to  null to ensure that the default column is used.
 
 ## Columns
 

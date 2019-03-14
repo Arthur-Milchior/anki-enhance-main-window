@@ -11,6 +11,17 @@
             "percent":false,
             "subdeck":true
         },
+        {
+            "description":"Cards you'll see today which are not new card",
+            "present":false,
+            "name":"cards seen today",
+            "header":null,
+            "color":"red",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        },
 
         {
             "description":"Cards in learning (either new cards you see again, or cards which you have forgotten recently. Assuming those cards didn't graduate)",
@@ -343,7 +354,7 @@
     "pause symbol" : "=",
     "do color marked" : true,
     "do color empty" : true,
-	"dot in numbers":true
-
+	"dot in numbers":true,
+	"color zero": false
 
 }

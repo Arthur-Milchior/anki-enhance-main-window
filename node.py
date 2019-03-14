@@ -7,7 +7,7 @@ import copy
 import sys
 from .config import getUserOption, writeConfig, getFromName
 from .htmlAndCss import start_header, css, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
-from .printing import *
+from .printing import conditionString, nowLater
 from .strings import getHeader, getOverlay, getColor
 from .debug import debug
 from . import tree
@@ -257,7 +257,7 @@ class DeckNode:
                 if not isinstance(childNb,int):
                     debugWrongLine(f"childNb for «{name}» is «{childNb}»")
                 count += childNb
-            self.addCount("absolute", "subdeck", False, name,count)
+            self.addCount("absolute", "subdeck", False, name, count)
 
     def setSubdeckSets(self):
         """ Compute subdeck's set as union of the deck set and children subdecks set"""
@@ -304,7 +304,7 @@ class DeckNode:
         denominator = self.count["absolute"][kind][False][base]
         if numerator == 0:
             percent = 0
-            percentText = ""
+            percentText = "0%"
         #base can't be empty since a subset of it is not empty, as ensured by the above test
         else:
             if denominator ==0:
@@ -500,9 +500,21 @@ class DeckNode:
                         print(f"The add-on enhance main window does not know any column whose name is {name}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
                     continue
                 contents = countNumberKind[name]
-            if contents == 0 or contents == "0" or contents == "0%":
-                contents = ""#colour = "#e0e0e0"
-            buf += number_cell(getColor(conf), contents, getOverlay(conf))
+            colour = getColor(conf)
+            print(f"Input contents is «{contents}»")
+            if contents == "": #In some case, we decided contents is empty. Instead of having complex value such as "0/0%" or "0(0)". Then we set it back to 0, which nicely summarize everything.
+                contents = 0
+            if contents in [0,"0","0%",""]:
+                whatToDo = getUserOption("color zero")
+                if whatToDo is False:
+                    contents = ""
+                    print(f"Set content to empty")
+                elif isinstance(whatToDo,str):
+                    print(f"Set colour to {whatToDo}")
+                    colour = whatToDo
+            print(f"Output contents is «{contents}»")
+            print(f"Output colour is «{colour}»")
+            buf += number_cell(colour, contents, getOverlay(conf))
         return buf
 
     def getOptionName(self):

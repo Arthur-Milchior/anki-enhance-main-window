@@ -81,7 +81,7 @@ def deck_name(depth,collapse,extraclass,did,cssStyle,name):
     </td>
 """
 
-def number_cell(colour,contents,description):
+def number_cell(colour, number, description):
     if description is None or description is False:
         description = ""
         t= f"""
@@ -93,10 +93,10 @@ def number_cell(colour,contents,description):
       </span>"""
         t= f"""
     <td align = 'right' class = 'tooltip'>"""
-    if contents:
-        t+=f"""
+    # if number:
+    t+=f"""
       <font color = '{colour}'>
-        {contents}
+        {number}
       </font>"""
     if description:
         t+=f"""
@@ -131,6 +131,7 @@ def bar(name, width, left, color, overlay):
               {overlay}
             </span>
           </div>"""
+
 def progress(content):
     return f"""
       <div class="progress" style="position:relative;	height:1em;	display:inline-block;	width:100px;		">{content}
