@@ -12,7 +12,7 @@ def computeValues():
     yesterdayLimit = (mw.col.sched.dayCutoff-86400)*1000
     debug(f"Yesterday limit is {yesterdayLimit}")
     queriesCardCount = [
-        ("due tomorrow", f"queue in (2,3) and due <= {tomorrow}" ,"",""),
+        ("due tomorrow", f"queue in (2,3) and due = {tomorrow}" ,"",""),
         ("learning now from today", f"queue = {QUEUE_LRN} and due <= {cutoff}" ,"",""),
         ("learning today from past", f"queue = {QUEUE_DAY_LRN} and due <= {today}" ,"",""),
         ("learning later today", f"queue = {QUEUE_LRN} and due > {cutoff}" ,"",""),
