@@ -20,7 +20,7 @@ def getUserOption(key = None, default = None):
         return default
 
 def writeConfig():
-    aqt.mw.addonManager.writeConfig(__name__,userOption)
+    mw.addonManager.writeConfig(__name__,userOption)
 
 def update(_):
     global userOption, fromName
