@@ -39,7 +39,7 @@ class DeckNode:
     deck -- the deck objects
 
     Information to potentially display
-    count -- associate to [absolute/percent][deck/subdeck][value] the number/percent of cards satisfying value in the deck (and its subdeck)
+    count -- associate to [absolute/percent][deck/subdeck][isThisAString][value] the number/percent of cards satisfying value in the deck (and its subdeck)
     set -- associate to [deck/subdeck][value] the set of nids satisfying "value" in the deck (and its subdeck)
     markedNotesRec -- the set of marked notes in the deck and its subdkc
     endedMarkedDescendant -- whether the deck has a descendant ended with marked cards
@@ -175,10 +175,10 @@ class DeckNode:
         self.addCount("absolute","deck", False, newName,(sum1+sum2))
 
     def initCountSum(self):
-        self.absoluteDeckSum("learning now sum","learning now from today","learning today from past")
+        self.absoluteDeckSum("learning now","learning now from today","learning today from past")
         self.absoluteDeckSum("learning later","learning later today","learning future")
-        self.absoluteDeckSum("learning card","learning now sum","learning later")
-        self.absoluteDeckSum("learning today sum","learning later today","learning now sum")
+        self.absoluteDeckSum("learning card","learning now","learning later")
+        self.absoluteDeckSum("learning today","learning later today","learning now")
 
         # Repetition
         self.absoluteDeckSum("learning today repetition","learning today repetition from today","learning today repetition from past")
@@ -190,7 +190,7 @@ class DeckNode:
         self.absoluteDeckSum("unseen later", "unseen","new today", negate=True)
         self.absoluteDeckSum("repetition seen today", "repetition of today learning", "review today")
         self.absoluteDeckSum("repetition today", "repetition seen today", "new today")
-        self.absoluteDeckSum("cards seen today", "learning today sum", "review today")
+        self.absoluteDeckSum("cards seen today", "learning today", "review today")
         self.absoluteDeckSum("today", "cards seen today", "new today")
 
 
@@ -218,7 +218,9 @@ class DeckNode:
     def initTimeDue(self):
         """find the time before the first element in learning can be seen"""
         self.timeDue = dict()
-        self.timeDue["deck"] = tree.times.get(self.did,0) or 0
+        fromTree = tree.times.get(self.did,0)
+        self.timeDue["deck"] = fromTree or 0
+        debug("""For deck {self.name} with id {self.did!r}, we get from tree {fromTree} and thus {self.timeDue["deck"]}.""")
 
 
 
@@ -367,19 +369,23 @@ class DeckNode:
                     later = nowLater(self.count[absoluteOrPercent][kind][True]["learning later today"],future)
                 else:
                     later = conditionString(self.count[absoluteOrPercent][kind][True]["learning later today"],parenthesis = True)
-                self.addCount(absoluteOrPercent, kind, True, "learning all", nowLater(self.count[absoluteOrPercent][kind][True]["learning now sum"],later))
+                string = nowLater(self.count[absoluteOrPercent][kind][True]["learning now"],later)
+                self.addCount(absoluteOrPercent, kind, True, "learning all", string)
 
     def setTextTime(self):
         """set text for the time remaining before next card"""
-        for absoluteOrPercent in self.count:
-            for kind in ["deck", "subdeck"]:
-                self.addCount(absoluteOrPercent, kind, True, "learning now", self.count[absoluteOrPercent][kind][True]["learning now sum"])
-                if ((not self.count["absolute"][kind][True]["learning now"])) and (self.timeDue[kind] is not 0):
+        for kind in ["deck", "subdeck"]:
+            learningNow = self.count["absolute"][kind][False]["learning now"]
+            debug("""{self.name}[{kind}]=={learningNow}. Time due is {self.timeDue[kind]}.""")
+            for absoluteOrPercent in self.count:
+                if ((not learningNow)) and (self.timeDue[kind] is not 0):
                     remainingSeconds = self.timeDue[kind] - intTime()
                     if remainingSeconds >= 60:
                         self.addCount(absoluteOrPercent, kind, True, "learning now", "[%dm]" % (remainingSeconds // 60))
                     else :
                         self.addCount(absoluteOrPercent, kind, True, "learning now", "[%ds]" % remainingSeconds)
+                    debug("""Thus we set it to be time {self.count[absoluteOrPercent][kind][True]["learning now"]}""")
+
 
     def setPairs(self):
         """Set text for columns which are pair"""
@@ -405,8 +411,8 @@ class DeckNode:
                     self.addCount(absoluteOrPercent, kind, True, name, value)
 
     def setText(self):
-        self.setLearningAll()
         self.setTextTime()
+        self.setLearningAll()
         self.setPairs()
         self.setNowLaters()
 
@@ -497,7 +503,7 @@ class DeckNode:
                 if name not in countNumberKind:
                     if name not in warned :
                         warned.add(name)
-                        print(f"The add-on enhance main window does not know any column whose name is {name}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
+                        debug("The add-on enhance main window does not know any column whose name is {name}. It thus won't be displayed. Please correct your add-on's configuration.", file = sys.stderr)
                     continue
                 contents = countNumberKind[name]
             colour = getColor(conf)

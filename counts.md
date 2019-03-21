@@ -102,11 +102,6 @@ or in the future).
 ### learning card
 Number of cards in learning (now+later)
 
-### learning today sum
-Number of cards in learning that will be seen today (now+later today)
-
-"sum" is used to distinguish it from the text
-
 ### learning today repetition
 Number of repetition to cards in learding today (sum of repetition
 from card from a past day, and from today).

@@ -22,24 +22,12 @@
             "percent":false,
             "subdeck":true
         },
-
         {
             "description":"Cards in learning (either new cards you see again, or cards which you have forgotten recently. Assuming those cards didn't graduate)",
             "present":false,
             "name":"learning card",
             "header":null,
             "color":null,
-            "overlay":null,
-            "absolute":true,
-            "percent":false,
-            "subdeck":true
-        },
-        {
-            "description":"Cards in learning (either learning now, or later in the same day)",
-            "present":false,
-            "name":"learning today sum",
-            "header":null,
-            "color":"orange",
             "overlay":null,
             "absolute":true,
             "percent":false,
@@ -60,6 +48,17 @@
             "description":"Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)",
             "present":true,
             "name":"learning all",
+            "header":null,
+            "color":null,
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
+        },
+        {
+            "description":"Cards in learning which are due now",
+            "present":false,
+            "name":"learning now",
             "header":null,
             "color":null,
             "overlay":null,
