@@ -52,7 +52,6 @@ def computeValues():
 
 times = dict()
 def computeTime():
-    print("Compute times")
     times.clear()
     for did, time in mw.col.db.all(f"select did,min(case when queue = {QUEUE_LRN} then due else null end) from cards group by did"):
         times[did]=time

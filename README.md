@@ -234,6 +234,7 @@ Based on     |Anki code by Damien Elmes <anki@ichi2.net>
 Based on     |Helen Foster's code, in add-on "Deck_Counts_Now_Later"
 Original idea|Juda Kaleta <juda.kaleta@gmail.com>
 Somme CSS    |Some idea from cjdduarte
+Bug correction|telotortium on Github
 Percent bar | Idea and partial realization by Kyle "Khonkhortisan" Mills
 License      |GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html
 Source in    | https://github.com/Arthur-Milchior/anki-enhance-main-window
