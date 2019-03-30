@@ -6,7 +6,7 @@ from aqt import mw
 import copy
 import sys
 from .config import getUserOption, writeConfig, getFromName
-from .htmlAndCss import start_header, css, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
+from .htmlAndCss import start_header, css, js, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
 from .printing import conditionString, nowLater
 from .strings import getHeader, getOverlay, getColor
 from .debug import debug
@@ -557,10 +557,10 @@ def renderDeckTree(self, nodes, depth = 0):
         start = time.time()
         tree.computeValues()
         tree.computeTime()
-        buf = f"""<style>{css}</style>{start_header}{deck_header}"""
-        for conf in getUserOption("columns"):
+        buf = f"""<style>{css}</style><script>{js}</script>{start_header}{deck_header}"""
+        for colpos, conf in enumerate(getUserOption("columns")):
           if conf.get("present",True):
-                buf += column_header(getHeader(conf))
+                buf += column_header(getHeader(conf),colpos)
         buf += option_header #for deck's option
         if getUserOption("option"):
             buf += option_name_header

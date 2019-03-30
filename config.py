@@ -28,6 +28,7 @@ def update(_):
     fromName = None
 
 mw.addonManager.setConfigUpdatedAction(__name__,update)
+
 fromName = None
 def getFromName(name):
     global fromName
