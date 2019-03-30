@@ -106,7 +106,9 @@ deck_header = f"""
 def column_header(heading, colpos):
     return f"""
     <th class = "count ui-draggable ui-draggable-handle ui-droppable" colpos = "{colpos}">
-      {_(heading)}
+      <a onclick = "return pycmd('optsColumn:{colpos}');">
+        {_(heading)}
+      </a>
     </th>"""
 
 option_header = """

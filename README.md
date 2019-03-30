@@ -3,6 +3,8 @@ Adds a lot of features to the main window. Allows to configure those features. C
 
 
 Important updates:
+* 30th of march 2019: column can be dragged and drop. And right click
+  to delete.
 * 12 February 2019: default color are changed to use the color of the
   statistic window.
 * 11 February 2019: percent bar
@@ -19,6 +21,10 @@ next update of the add-on !
 # Features
 ## Column
 Most features offered by this add-on are related to some column.
+
+
+You can change the order of the column by dragging their name and
+droping them at their new position.
 ### Name of the (sub)deck
 There is not a lot of change in this column, apart from the decks's color.
 #### Empty decks
@@ -125,7 +131,7 @@ Note that capping to a thousand does not usually make the rendering quicker.
 
 ## Columns
 
-Each column should occur after the line "columns" :[, and before the line with a closing bracket ]. The order of the lines is important, since it's the order in which columns will be displayed by anki. This means that you can reorder columns in anki by reordering the lines in the configuration. You can copy a line to display a column multiple time (for example, once using percent, and another time using absolute number).
+Each column should occur after the line "columns" :[, and before the line with a closing bracket ]. The order of the lines is important, since it's the order in which columns will be displayed by anki. This order can also be changed by dragging and dropping the column title. This means that you can reorder columns in anki by reordering the lines in the configuration. You can copy a line to display a column multiple time (for example, once using percent, and another time using absolute number).
 
 Each column is represented between an opening curly bracket {, and a closing curly bracket }. Each column uses 8 parameters, each represented as a pair
 >>key:value
