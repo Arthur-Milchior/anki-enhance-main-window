@@ -111,7 +111,7 @@ In this section, we describe various small configurations related to
 the whole add-on.
 
 ### CSS
-If the value is ```null``` then the default css is used. Otherwise,
+If the value is `null` then the default css is used. Otherwise,
 you can put the CSS you want here.  Use the add-on (Newline in strings
 in add-ons configurations)[https://ankiweb.net/shared/info/112201952]
 if you want to use newline in JSON/CSS string.
@@ -220,12 +220,12 @@ By default, this symbol is "/".To the author, it means that no new card will be 
 By default, this symbol is "=". To the author, it means that more new card will be added latter, but right now it does not want anki to change the color of the deck's name. In a future version, there may be an option to change the color of those decks.
 
 ## Internals
-* In ```aqt.deckbrowser```, change ```DeckBrowser._renderDeckTree```, ```DeckBrowser.refresh``` and
-  ```DeckBrowser._deckRow```. The former methods are not called.
-* In ```Anki.notes```, change ```Note.flush```. The new method calls
+* In `aqt.deckbrowser`, change `DeckBrowser._renderDeckTree`, `DeckBrowser.refresh` and
+  `DeckBrowser._deckRow`. The former methods are not called.
+* In `Anki.notes`, change `Note.flush`. The new method calls
   the former one.
-* In ```anki.decks``` change ```DeckManager.save```, calling the former
-  method. Changing ```DeckManager.collaps```, not calling the former
+* In `anki.decks` change `DeckManager.save`, calling the former
+  method. Changing `DeckManager.collaps`, not calling the former
   method.
 
 ## Documentation for developpers
