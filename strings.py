@@ -38,8 +38,8 @@ defaultHeader = {**{
     "marked":_("Marked"),
     "leech":_("Leech"),
     "bar":_("Progress"),
-    "flags":_("Flags")
-    "All flags":_("Flags")
+    "flags":_("Flags"),
+    "all flags":_("Flags")
 },**{f"flag {i}": _("Flag")+" {i}" for i in range(5)}}
 
 def getHeader(conf):
@@ -86,7 +86,7 @@ defaultOverlay = {**{
     "leech":_("Number of note with a leech card"),
     "new today":_("Number of new cards you'll see today"),
     "bar":None, #It provides its own overlays,
-    "flags":_("Number of cards for each flag")
+    "flags":_("Number of cards for each flag"),
     "all flags":_("Number of cards for each flag")
 },**{f"flag {i}": _(f"Number of cards with flag {i}") for i in range(5)}}
 
