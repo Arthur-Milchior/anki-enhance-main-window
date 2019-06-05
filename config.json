@@ -352,7 +352,7 @@
             "subdeck":true
         },
         {
-            "description":"Flags 1",
+            "description":"Flag 1",
             "present":false,
             "name":"flag 1",
             "header":"Flag 1",
