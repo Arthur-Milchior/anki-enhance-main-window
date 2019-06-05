@@ -1,8 +1,10 @@
 from anki.utils import intTime
 from aqt import mw
 from .debug import debug
-values = dict()
 from .consts import *
+# Associate to [column name][deck id name] some value corresponding to
+# the number of card of this deck in this column
+values = dict()
 
 def computeValues():
     debug("Compute values")
@@ -48,7 +50,7 @@ def computeValues():
         debug("""For {name}: query "{query}".""")
         values[name] = dict()
         for did, value in results:
-            debug("In deck {did} there are {value} cards of kind {name}")
+            debug(f"In deck {did} there are {value} cards of kind {name}")
             values[name][did] = value
 
 times = dict()

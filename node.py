@@ -390,10 +390,15 @@ class DeckNode:
         flagColor = {1:"red", 2:"orange",3:"green", 4:"blue"}
         for absoluteOrPercent in self.count:
             for kind in ["deck", "subdeck"]:
+                hasFlag = False
+                for i in range(1,5):
+                    if self.count[absoluteOrPercent][kind][False].get(f"flag {i}"):
+                        hasFlag = True
+                        break
                 value = "/".join([f"""<font color = {flagColor[i]}>{self.count[absoluteOrPercent][kind][True][f"flag {i}"]}</font>""" for i in range(1,5)])
-                self.addCount(absoluteOrPercent, kind, True, "flags", value)
+                self.addCount(absoluteOrPercent, kind, True, "flags", conditionString(hasFlag, value))
                 value = self.count[absoluteOrPercent][kind][True]["flag 0"]+"/"+value
-                self.addCount(absoluteOrPercent,kind, True, "all flags", value)
+                self.addCount(absoluteOrPercent,kind, True, "all flags", conditionString(hasFlag or self.count[absoluteOrPercent][kind][False].get("flag 0"), value))
 
     def setPairs(self):
         """Set text for columns which are pair"""
