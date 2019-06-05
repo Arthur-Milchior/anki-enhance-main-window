@@ -350,6 +350,17 @@
             "absolute":true,
             "percent":false,
             "subdeck":true
+        },
+        {
+            "description":"Flags 1",
+            "present":false,
+            "name":"flag 1",
+            "header":"Flag 1",
+            "color":"Red",
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
         }
     ],
 

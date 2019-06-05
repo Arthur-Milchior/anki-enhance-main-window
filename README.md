@@ -3,6 +3,7 @@ Adds a lot of features to the main window. Allows to configure those features. C
 
 
 Important updates:
+* 5th of Juin 2019: A column for flags, and columns for each flag
 * 30th of march 2019: column can be dragged and drop. And right click
   to delete.
 * 12 February 2019: default color are changed to use the color of the
