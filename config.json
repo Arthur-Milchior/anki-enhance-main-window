@@ -339,6 +339,17 @@
             "absolute":true,
             "percent":false,
             "subdeck":true
+        },
+        {
+            "description":"Flags from 0 to 4",
+            "present":true,
+            "name":"flags",
+            "header":"Flags",
+            "color":null,
+            "overlay":null,
+            "absolute":true,
+            "percent":false,
+            "subdeck":true
         }
     ],
 

@@ -4,7 +4,7 @@ from anki.lang import _
 
 
 # Associate to each column its title
-defaultHeader = {
+defaultHeader = {**{
     "learning card":_("Learning")+"<br/>"+_("(card)"),
     "learning later":_("Learning")+"<br/>"+_("later")+" ("+_("review")+")" ,
     "learning now":_("Learning")+"<br/>"+_("now") ,
@@ -33,12 +33,14 @@ defaultHeader = {
     "today":_("Today"),
     "undue":_("Undue"),
     "mature":_("Mature"),
-    "mature/young":_("Mature"+"/<br/>"+_("Young"),),
+    "mature/young":_("Mature")+"/<br/>"+_("Young"),
     "young": _("Young"),
     "marked":_("Marked"),
     "leech":_("Leech"),
-    "bar":_("Progress")
-}
+    "bar":_("Progress"),
+    "flags":_("Flags")
+},**{f"flag {i}": _("Flag")+" {i}" for i in range(5)}}
+
 def getHeader(conf):
     """The header for the configuration in argument"""
     if "header" not in conf:
@@ -49,7 +51,7 @@ def getHeader(conf):
     return header
 
 # Associate to each column its overlay
-defaultOverlay = {
+defaultOverlay = {**{
     "learning card":_("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""),
     "learning later":_("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
     "learning now":_("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
@@ -82,13 +84,16 @@ defaultOverlay = {
     "marked":_("Number of marked note"),
     "leech":_("Number of note with a leech card"),
     "new today":_("Number of new cards you'll see today"),
-    "bar":None #It provides its own overlays
-}
+    "bar":None, #It provides its own overlays,
+    "flags":_("Number of cards for each flag")
+},**{f"flag {i}": _(f"Number of cards with flag {i}") for i in range(5)}}
+
 def getOverlay(conf):
     """The overlay for the configuration in argument"""
     overlay =  conf.get("overlay")
     if overlay is None:
-        return defaultOverlay[conf["name"]]
+        name = conf["name"]
+        return defaultOverlay[name]
     return overlay
 
 def getColor(conf):

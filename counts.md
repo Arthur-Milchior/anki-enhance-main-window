@@ -17,6 +17,9 @@ Numbers of review you'll see of cards in learning today.
 ### learning now from today
 Number of cards in learning to see today which was planified today.
 
+### flag i
+Cards flagged with flag i.
+
 ### learning today from past
 Cards in learning to see today and which have waited at least a day.
 

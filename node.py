@@ -386,6 +386,15 @@ class DeckNode:
                         self.addCount(absoluteOrPercent, kind, True, "learning now", "[%ds]" % remainingSeconds)
                     debug("""Thus we set it to be time {self.count[absoluteOrPercent][kind][True]["learning now"]}""")
 
+    def setFlags(self):
+        flagColor = {1:"red", 2:"orange",3:"green", 4:"blue"}
+        for absoluteOrPercent in self.count:
+            for kind in ["deck", "subdeck"]:
+                name = "flags"
+                value = self.count[absoluteOrPercent][kind][True]["flag 0"]
+                for i in range(1,5):
+                    value = f"""{value}/<font color = {flagColor[i]}>{self.count[absoluteOrPercent][kind][True][f"flag {i}"]}</font>"""
+                self.addCount(absoluteOrPercent,kind, True, name, value)
 
     def setPairs(self):
         """Set text for columns which are pair"""
@@ -413,6 +422,7 @@ class DeckNode:
     def setText(self):
         self.setTextTime()
         self.setLearningAll()
+        self.setFlags()
         self.setPairs()
         self.setNowLaters()
 
