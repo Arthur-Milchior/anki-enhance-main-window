@@ -189,6 +189,11 @@ Notes/cards
 Buried/suspend
 Reviewed/repeated today
 
+## flags
+flags 1 to 4.
+### all flags
+(considering flag 0, i.e. no flag).
+
 ## Now and later
 
 ### Review
