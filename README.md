@@ -100,7 +100,7 @@ In this section, we describe various small configurations related to
 the whole add-on.
 
 ### CSS
-If the value is `null` then the default css is used. Otherwise, you can put the CSS you want here.  Use the add-on (Newline in strings in add-ons configurations)[https://ankiweb.net/shared/info/112201952] if you want to use newline in JSON/CSS string.
+If the value is `null` then the default css is used. Otherwise, you can put the CSS you want here.  Use the add-on [Newline in strings in add-ons configurations](https://ankiweb.net/shared/info/112201952) if you want to use newline in JSON/CSS string.
 
 ### Refresh rate
 How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown.
@@ -119,9 +119,7 @@ Note that capping to a thousand does not usually make the rendering quicker.
 
 Each column should occur after the line "columns" :[, and before the line with a closing bracket ]. The order of the lines is important, since it's the order in which columns will be displayed by anki. This order can also be changed by dragging and dropping the column title. This means that you can reorder columns in anki by reordering the lines in the configuration. You can copy a line to display a column multiple time (for example, once using percent, and another time using absolute number).
 
-Each column is represented between an opening curly bracket {, and a closing curly bracket }. Each column uses 8 parameters, each represented as a pair
->>key:value
-We'll tell you the meaning of each key, whether you can change its value, and what will this change do.
+Each column is represented between an opening curly bracket {, and a closing curly bracket }. Each column uses 8 parameters, each represented as a pair `key:value`. We'll tell you the meaning of each key, whether you can change its value, and what will this change do.
 
 ### Name
 The first value is a description, which will tell you what the column represent. Do NOT alter this value, or the add-on will raise an error.
@@ -205,7 +203,7 @@ By default, this symbol is "=". To the author, it means that more new card will 
 * In `anki.decks` change `DeckManager.save`, calling the former method. Changing `DeckManager.collaps`, not calling the former method.
 
 ## Documentation for developpers
-See (Documentation.md)[Documentation.md]
+See [Documentation.md](Documentation.md)
 
 ## Links, licence and credits
 
