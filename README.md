@@ -4,18 +4,13 @@ Adds a lot of features to the main window. Allows to configure those features. C
 
 Important updates:
 * 5th of Juin 2019: A column for flags, and columns for each flag
-* 30th of march 2019: column can be dragged and drop. And right click
-  to delete.
-* 12 February 2019: default color are changed to use the color of the
-  statistic window.
+* 30th of march 2019: column can be dragged and drop. And right click to delete.
+* 12 February 2019: default color are changed to use the color of the statistic window.
 * 11 February 2019: percent bar
-* February: counting the number of review, today and any time in the
-  past. And the number of cards seen today.
-* 19th January 2019: many bugs corrected. Configuration can be
-  changed without restarting anki.
-* 8th november 2018: you can configure the add-on using anki
-2.1's configuration method. The configuration won't be lost during
-next update of the add-on !
+* February: counting the number of review, today and any time in the past. And the number of cards seen today.
+* 19th January 2019: many bugs corrected. Configuration can be changed without restarting anki.
+* 8th november 2018: you can configure the add-on using anki 2.1's
+  configuration method. The configuration won't be lost during next update of the add-on !
 
 ![Example](example.png)
 
@@ -23,9 +18,7 @@ next update of the add-on !
 ## Column
 Most features offered by this add-on are related to some column.
 
-
-You can change the order of the column by dragging their name and
-droping them at their new position.
+You can change the order of the column by dragging their name and droping them at their new position.
 ### Name of the (sub)deck
 There is not a lot of change in this column, apart from the decks's color.
 #### Empty decks
@@ -48,14 +41,10 @@ The number of cards which you have seen in the past, and that you should see tod
 
 
 ### New today
-This column called new in Anki. It means New means «number of new
-cards you will see today». With the caveat that it is not exactly true
-for subdecks.
+This column called new in Anki. It means New means «number of new cards you will see today». With the caveat that it is not exactly true for subdecks.
 
 ### New
-The column name "new" is deprecated. It is keep for
-retrocompatibility, but may be removed one day. It is the same thing
-as New Today.
+The column name "new" is deprecated. It is keep for retrocompatibility, but may be removed one day. It is the same thing as New Today.
 
 ### Due
 By default, this column is hidden. Indeed, it becames two columns «due now» and «later». We recall that, in Anki, a due card is a card which is not new, and that you have to view again today.
@@ -68,7 +57,6 @@ The number of cards whose delay is less than 3 weeks
 
 ### Mature
 The number of cards whose delay is least at least 3 weeks
-
 
 ### Buried
 The number of Buried cards. Recall that a buried card is a card you will not see today. Either because you did press the «bury» button. Or because you saw another card of the same note, so it was automatically buried.
@@ -112,10 +100,7 @@ In this section, we describe various small configurations related to
 the whole add-on.
 
 ### CSS
-If the value is `null` then the default css is used. Otherwise,
-you can put the CSS you want here.  Use the add-on (Newline in strings
-in add-ons configurations)[https://ankiweb.net/shared/info/112201952]
-if you want to use newline in JSON/CSS string.
+If the value is `null` then the default css is used. Otherwise, you can put the CSS you want here.  Use the add-on (Newline in strings in add-ons configurations)[https://ankiweb.net/shared/info/112201952] if you want to use newline in JSON/CSS string.
 
 ### Refresh rate
 How much time to wait between refreshing the main window. In seconds. By default, the window is refreshed every 30 seconds, thus, it is possible that change made less than half a minute ago are not yet shown.
@@ -172,17 +157,12 @@ By default, this value is false if Percent is set to true, otherwise its default
 When you consider a deck which has subdecks, you may want to consider cards in subdecks (it is done when the value is true), or you may want to ignore them (it is done when the value is false).
 
 ### Short name
-Please do not touch this value. It is used internally by the
-add-on. If you edit this value, the add-on will throw an error message
-and anki won't be able to display the main window.
+Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and anki won't be able to display the main window.
 
 ## Percent Bar
-If the name is "bar", instead of a number, the column contain a
-percent bar.
+If the name is "bar", instead of a number, the column contain a percent bar.
 
-In this case, the configuration of this column must contain a field
-"names", whose value is a list of name. The names are the same name
-than for columns. It uses the same color and overlay.
+In this case, the configuration of this column must contain a field "names", whose value is a list of name. The names are the same name than for columns. It uses the same color and overlay.
 
 ## Coloring decks
 The author of this add-on want to know when a deck is empty. This is very important to him, because he want to add new cards in them as soon as possible. Thus, this add-on change the color of the name of empty decks, and of name of decks with an empty descendant.
@@ -191,11 +171,12 @@ The author also want to know which deck has marked card. Thus, the background of
 
 Both of those configuration can be changed as explained in this section. In particular, you can turn one or both of those options off by setting "color empty" and "color marked" to false.
 ### Choice of color
-
 #### Color empty
 The color of the name of decks without new cards
+
 #### Color empty descendant
 The color of the name of decks with a descendant without new cards
+
 #### Default color
 The color of a deck whose every descendant has new cards.
 
@@ -204,8 +185,6 @@ The color of the decks which has an ended deck with marked cards. The  notion of
 
 #### marked background color
 The color of deck who have marked cards but none of its descendant are both ended and has marked card.
-
-
 
 ### Deck modifier
 A deck modifier is a symbol (or a word, etc..) whose presence in a deck name change the meaning of the deck. When the meaning is changed, the coloration is also change. It's not clear to the author of this add-on whether anyone appart from himself will need those, but if you want to use them, here is the explanation.
@@ -221,13 +200,9 @@ By default, this symbol is "/".To the author, it means that no new card will be 
 By default, this symbol is "=". To the author, it means that more new card will be added latter, but right now it does not want anki to change the color of the deck's name. In a future version, there may be an option to change the color of those decks.
 
 ## Internals
-* In `aqt.deckbrowser`, change `DeckBrowser._renderDeckTree`, `DeckBrowser.refresh` and
-  `DeckBrowser._deckRow`. The former methods are not called.
-* In `Anki.notes`, change `Note.flush`. The new method calls
-  the former one.
-* In `anki.decks` change `DeckManager.save`, calling the former
-  method. Changing `DeckManager.collaps`, not calling the former
-  method.
+* In `aqt.deckbrowser`, change `DeckBrowser._renderDeckTree`, `DeckBrowser.refresh` and `DeckBrowser._deckRow`. The former methods are not called.
+* In `Anki.notes`, change `Note.flush`. The new method calls the former one.
+* In `anki.decks` change `DeckManager.save`, calling the former method. Changing `DeckManager.collaps`, not calling the former method.
 
 ## Documentation for developpers
 See (Documentation.md)[Documentation.md]
