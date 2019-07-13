@@ -1,97 +1,17 @@
 from .config import getUserOption
 from anki.lang import _
+import os
 
-## CSS
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
+js_file = os.path.join(__location__,"deckbrowser.js")
+css_file = os.path.join(__location__,"defaultcss.css")
 
-defaultCSS = """/* Tooltip container */
-        a:hover{
-         cursor: pointer;
-        }
+with open(js_file,"r") as f:
+    js= f.read()
+with open(css_file,"r") as f:
+    css= f.read()
 
-        /* Tooltip text */
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-
-            /* Position the tooltip text - see examples below! */
-            position: absolute;
-            z-index: 1;
-        }
-
-        /* Show the tooltip text when you mouse over the tooltip container */
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-        }
-
-	/* padding-left for header columns except deck-column */
-	th.count {
-          padding-left:15px;
-          cursor: pointer;
-	}
-
-	"""
-css = getUserOption("css", defaultCSS)
-
-## JS
-js = """/* Copyright: Ankitects Pty Ltd and contributors
- * License: GNU AGPL, version 3 or later; http://www.gnu.org/licenses/agpl.html */
-
-
-function init() {
-
-
-    $("tr.deck").draggable({
-        scroll: false,
-
-        // can't use "helper: 'clone'" because of a bug in jQuery 1.5
-        helper: function (event) {
-            return $(this).clone(false);
-        },
-        delay: 200,
-        opacity: 0.7
-    });
-    $("th.count").draggable({
-        scroll: false,
-
-        // can't use "helper: 'clone'" because of a bug in jQuery 1.5
-        helper: function (event) {
-            return $(this).clone(false);
-        },
-        delay: 200,
-        opacity: 0.7
-    });
-    $("tr.deck").droppable({
-        drop: handleDropEvent,
-        hoverClass: 'drag-hover'
-    });
-    $("th.count").droppable({
-        drop: columnDropEvent,
-        hoverClass: 'drag-hover'
-    });
-    $("tr.top-level-drag-row").droppable({
-        drop: handleDropEvent,
-        hoverClass: 'drag-hover'
-    });
-}
-$(init);
-
-function handleDropEvent(event, ui) {
-    var draggedDeckId = ui.draggable.attr('id');
-    var ontoDeckId = $(this).attr('id') || '';
-
-    pycmd("drag:" + draggedDeckId + "," + ontoDeckId);
-}
-
-function columnDropEvent(event, ui) {
-    var draggedDeckId = ui.draggable.attr('colpos');
-    var ontoDeckId = $(this).attr('colpos') || '';
-    pycmd("dragColumn:" + draggedDeckId + "," + ontoDeckId);
-}
-"""
 
 ######################
 #header related html #
