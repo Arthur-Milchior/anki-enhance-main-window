@@ -6,6 +6,7 @@ from .consts import *
 # the number of card of this deck in this column
 values = dict()
 
+
 def computeValues():
     debug("Compute values")
     cutoff = intTime() + mw.col.conf['collapseTime']
@@ -15,7 +16,7 @@ def computeValues():
     debug(f"Yesterday limit is {yesterdayLimit}")
     queriesCardCount = ([(f"flag {i}", f"(flags & 7) == {i}" ,"","") for i in range(5)]+
     [
-        ("due tomorrow", f"queue in (2,3) and due = {tomorrow}" ,"",""),
+        ("due tomorrow", f"queue in ({QUEUE_REV},{QUEUE_DAY_LRN}) and due = {tomorrow}" ,"",""),
         ("learning now from today", f"queue = {QUEUE_LRN} and due <= {cutoff}" ,"",""),
         ("learning today from past", f"queue = {QUEUE_DAY_LRN} and due <= {today}" ,"",""),
         ("learning later today", f"queue = {QUEUE_LRN} and due > {cutoff}" ,"",""),
@@ -33,7 +34,7 @@ def computeValues():
         ("suspended", f"queue = {QUEUE_SUSPENDED}","",""),
         ("cards","","",""),
         ("undue", f"queue = {QUEUE_REV} and due >  {today}","",""),
-        ("mature", f"queue = 2 and ivl >= 21" ,"",""),
+        ("mature", f"queue = {QUEUE_REV} and ivl >= 21" ,"",""),
         ("young", f"queue = {QUEUE_REV} and 0<ivl and ivl <21" ,"",""),
     ])
     for name, condition, addend, table in queriesCardCount:
