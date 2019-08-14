@@ -69,7 +69,7 @@ def deck_name(depth,collapse,extraclass,did,cssStyle,name):
     </td>
 """
 
-def number_cell(colour, number, description):
+def number_cell(font_family, colour, number, description):
     if description is None or description is False:
         description = ""
         t= f"""
@@ -83,7 +83,7 @@ def number_cell(colour, number, description):
     <td align = 'right' class = 'tooltip'>"""
     # if number:
     t+=f"""
-      <font color = '{colour}'>
+      <font face = '{font_family}' color = '{colour}'>
         {number}
       </font>"""
     if description:
