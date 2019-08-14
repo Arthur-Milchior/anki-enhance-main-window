@@ -81,6 +81,10 @@ class DeckNode:
         self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCardsToday, self.oldChildren = oldNode
         self.deck = mw.col.decks.get(self.did)
 
+        self.style["color"] = getUserOption("deck name color","black")
+        self.style["font-size"] = "14px"
+        self.style["font-family"] = "montserrat"
+
         self.initDicts()
         self.setSymbolsParameters()
         self.setChildren()
@@ -529,7 +533,8 @@ class DeckNode:
                     contents = ""
                 elif isinstance(whatToDo,str):
                     colour = whatToDo
-            buf += number_cell(colour, contents, getOverlay(conf))
+            font_family = getUserOption('font-family', 'montserrat')
+            buf += number_cell(font_family, colour, contents, getOverlay(conf))
         return buf
 
     def getOptionName(self):
