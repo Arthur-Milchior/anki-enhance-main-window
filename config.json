@@ -1,7 +1,7 @@
 {
     "columns" :[
         {
-            "description":"Number of review you will see today (new, review and learning)",
+            "description":"Number of reviews you will see today (new, review and learning)",
             "present":true,
             "name":"today",
             "header":null,
@@ -12,7 +12,7 @@
             "subdeck":true
         },
         {
-            "description":"Cards you'll see today which are not new card",
+            "description":"Cards you'll see today which are not new",
             "present":false,
             "name":"cards seen today",
             "header":null,
@@ -23,7 +23,7 @@
             "subdeck":true
         },
         {
-            "description":"Cards in learning (either new cards you see again, or cards which you have forgotten recently. Assuming those cards didn't graduate)",
+            "description":"Cards in learning (either new cards you see again, or cards which you have forgotten recently, assuming those cards didn't graduate)",
             "present":false,
             "name":"learning card",
             "header":null,
@@ -34,7 +34,7 @@
             "subdeck":true
         },
         {
-            "description":"Review which will happen later. Either because a review happened recently, or because the card have many review left.",
+            "description":"Reviews which will happen later, either because a review happened recently, or because the card has many review left.",
             "present":false,
             "name":"learning later",
             "header":null,
@@ -45,7 +45,7 @@
             "subdeck":true
         },
         {
-            "description":"Cards in learning which are due now (and in parenthesis, the number of reviews which are due later)",
+            "description":"Cards in learning which are due now (and in parentheses, the number of reviews which are due later)",
             "present":true,
             "name":"learning all",
             "header":null,
@@ -68,7 +68,7 @@
         },
 
         {
-            "description":"Review cards cards you will see today (and the ones you will not see today)",
+            "description":"Review cards you will see today (and the ones you will not see today)",
             "present":true,
             "name":"review",
             "header":null,
@@ -79,7 +79,7 @@
             "subdeck":true
         },
         {
-            "description":"Review cards which are due today (not counting the one in learning)",
+            "description":"Review cards which are due today (not counting those in learning)",
             "present":false,
             "name":"review due",
             "header":null,
@@ -102,7 +102,7 @@
         },
 
         {
-            "description":"Unseen cards you will see today, not buried nor suspended.(what anki calls new cards). Followed by the unseen cards not buried nor suspended that you will not see today.",
+            "description":"Unseen cards you will see today (what Anki calls New cards), followed by the unseen cards that you will not see today. Neither buried nor suspended.",
             "present":true,
             "name":"unseen new",
             "header":null,
@@ -124,7 +124,7 @@
             "subdeck":true
         },
         {
-            "description":"Unseen cards you will see today, not buried nor suspended. (what anki calls new cards)",
+            "description":"Unseen cards you will see today (what Anki calls New cards). Neither buried nor suspended.",
             "present":false,
             "name":"new today",
             "header":null,
@@ -136,7 +136,7 @@
         },
 
         {
-            "description":"number of buried (cards you decided not to see today)/number of suspended cards, (cards you will never see unless you unsuspend them in the browser)",
+            "description":"Number of buried cards (cards you decided not to see today)/Number of suspended cards (cards you will never see unless you unsuspend them in the browser)",
             "present":true,
             "name":"buried/suspended",
             "header":null,
@@ -147,7 +147,7 @@
             "subdeck":true
         },
         {
-            "description":"number of buried cards, (cards you decided not to see today. Or such that you saw a sibling.)",
+            "description":"Number of buried cards (cards you decided not to see today, or you saw a sibling)",
             "present":false,
             "name":"buried",
             "header":null,
@@ -158,7 +158,7 @@
             "subdeck":true
         },
         {
-            "description":"number of suspended cards, (cards you will never see unless you unsuspend them in the browser)",
+            "description":"Number of suspended cards (cards you will never see unless you unsuspend them in the browser)",
             "present":false,
             "name":"suspended",
             "header":null,
@@ -202,7 +202,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of cards reviewed, with interval at least 3 weeks/less than 3 weeks ",
+            "description":"Number of reviewed cards with interval at least 3 weeks/less than 3 weeks ",
             "present":true,
             "name":"mature/young",
             "header":null,
@@ -213,7 +213,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of cards reviewed, not yet due",
+            "description":"Number of reviewed cards which are not yet due",
             "present":false,
             "name":"undue",
             "header":null,
@@ -224,7 +224,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of cards reviewed, with interval at least 3 weeks",
+            "description":"Number of reviewed cards with interval at least 3 weeks",
             "present":false,
             "name":"mature",
             "header":null,
@@ -235,7 +235,7 @@
             "subdeck":true
         },
         {
-            "description":" Number of cards reviewed, with interval less than 3 weeks,",
+            "description":"Number of reviewed cards with interval less than 3 weeks",
             "present":false,
             "name":"young",
             "header":null,
@@ -246,7 +246,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of marked note",
+            "description":"Number of marked notes",
             "present":true,
             "name":"marked",
             "header":null,
@@ -257,7 +257,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of note with a leech card",
+            "description":"Number of notes with a leech card",
             "present":false,
             "name":"leech",
             "header":null,
@@ -268,7 +268,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of review cards seen today",
+            "description":"Number of reviewed cards seen today",
             "present":false,
             "name":"reviewed today",
             "header":null,
@@ -279,7 +279,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of review done today",
+            "description":"Number of reviews done today",
             "present":false,
             "name":"repeated today",
             "header":null,
@@ -290,7 +290,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of review cards seen today and number of review",
+            "description":"Number of reviewed cards seen today and number of reviews",
             "present":true,
             "name":"reviewed today/repeated today",
             "header":null,
@@ -301,7 +301,7 @@
             "subdeck":true
         },
         {
-            "description":"Number of time you saw a question from this deck",
+            "description":"Number of times you saw a question from this deck",
             "present":true,
             "name":"repeated",
             "header":null,
@@ -330,7 +330,7 @@
           "subdeck": true
         },
         {
-            "description":"Review cards which are due tomorrow",
+            "description":"Reviewed cards which are due tomorrow",
             "present":true,
             "name":"due tomorrow",
             "header":null,

@@ -1,11 +1,11 @@
-* changeFunction: ensure that anki's method are changed by the new one
-* column: from html to configuration, deleting/moving column
+* changeFunction: ensure that Anki's methods are changed by the new one
+* column: from HTML to configuration, deleting/moving column
 * config: allow to access and update config
-* htmlAndCss: constant and method allowing to have css and html to
-  enter in the deckBrowser
-* node: compute the value associated to each deck, taking subdeck into
+* htmlAndCss: constants and methods allowing to CSS and HTML to be
+  entered in the deckBrowser
+* node: compute the values associated with each deck, taking subdecks into
   account
 * printing: method to compute the strings shown to the user
-* strings: dictionnaries associating to each name the column's header
+* strings: dictionaries associating to each name the column's header
   and description
-* Computing the set of values associated to each card
+* Computing the set of values associated with each card
