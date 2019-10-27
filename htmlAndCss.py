@@ -1,6 +1,8 @@
-from .config import getUserOption
-from anki.lang import _
 import os
+
+from anki.lang import _
+
+from .config import getUserOption
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))

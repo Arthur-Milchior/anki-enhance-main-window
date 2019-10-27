@@ -1,16 +1,22 @@
-import time
-from aqt.qt import *
-from aqt.utils import downArrow
-from anki.utils import intTime, ids2str
-from aqt import mw
 import copy
 import sys
-from .config import getUserOption, writeConfig, getFromName
-from .htmlAndCss import start_header, css, js, deck_header, column_header, option_header, option_name_header, end_header, start_line, collapse_children_html, collapse_no_child, deck_name, number_cell, gear, deck_option_name, end_line, bar, progress
-from .printing import conditionString, nowLater
-from .strings import getHeader, getOverlay, getColor
-from .debug import debug
+import time
+
+from anki.utils import ids2str, intTime
+from aqt import mw
+from aqt.qt import *
+from aqt.utils import downArrow
+
 from . import tree
+from .config import getFromName, getUserOption, writeConfig
+from .debug import debug
+from .htmlAndCss import (bar, collapse_children_html, collapse_no_child,
+                         column_header, css, deck_header, deck_name,
+                         deck_option_name, end_header, end_line, gear, js,
+                         number_cell, option_header, option_name_header,
+                         progress, start_header, start_line)
+from .printing import conditionString, nowLater
+from .strings import getColor, getHeader, getOverlay
 
 debugWrongLine = debug
 

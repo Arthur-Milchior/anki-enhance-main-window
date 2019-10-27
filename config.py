@@ -1,5 +1,6 @@
-from aqt import mw
 import sys
+
+from aqt import mw
 
 userOption = None
 

@@ -1,7 +1,7 @@
-from .config import getUserOption
-from anki.stats import *
 from anki.lang import _
+from anki.stats import *
 
+from .config import getUserOption
 
 # Associate to each column its title
 defaultHeader = {**{
