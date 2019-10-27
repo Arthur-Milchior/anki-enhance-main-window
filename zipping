@@ -1,2 +1,2 @@
 rm enhancedMainWindow.zip
-zip enhancedMainWindow.zip config.* *py  LICENSE *.md *.js zipping --exclude \*~ *png
+zip enhancedMainWindow.zip config.* *py  LICENSE *.md *.js *css *jpg zipping --exclude \*~ *png
