@@ -384,7 +384,7 @@ class DeckNode:
             learningNow = self.count["absolute"][kind][False]["learning now"]
             debug("""{self.name}[{kind}]=={learningNow}. Time due is {self.timeDue[kind]}.""")
             for absoluteOrPercent in self.count:
-                if ((not learningNow)) and (self.timeDue[kind] is not 0):
+                if ((not learningNow)) and (self.timeDue[kind] != 0):
                     remainingSeconds = self.timeDue[kind] - intTime()
                     if remainingSeconds >= 60:
                         self.addCount(absoluteOrPercent, kind, True, "learning now", "[%dm]" % (remainingSeconds // 60))
