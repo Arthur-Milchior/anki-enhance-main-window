@@ -574,12 +574,11 @@ def renderDeckTree(self, nodes, depth = 0):
     if not nodes:
         return ""
     if depth == 0:
-        start = time.time()
         tree.computeValues()
         tree.computeTime()
         buf = f"""<style>{css}</style><script>{js}</script>{start_header}{deck_header}"""
         for colpos, conf in enumerate(getUserOption("columns")):
-          if conf.get("present",True):
+          if conf.get("present", True):
                 buf += column_header(getHeader(conf),colpos)
         buf += option_header #for deck's option
         if getUserOption("option"):
@@ -597,7 +596,6 @@ def renderDeckTree(self, nodes, depth = 0):
     if depth == 0:
         buf += self._topLevelDragRow()
         end = time.time()
-        debug("printing tree was done in {end - start}")
     return buf
 
 
