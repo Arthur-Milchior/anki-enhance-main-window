@@ -120,9 +120,8 @@ class DeckNode:
 
     def setConfParameters(self):
         """ Find the configuration and its name """
-        if "conf" in self.deck:#a classical deck
-            confId = str(self.deck["conf"])
-            conf = mw.col.decks.dconf[confId]
+        if "conf" in self.deck: # a classical deck
+            conf = mw.col.decks.confForDid(self.deck["id"])
             self.isFiltered = False
             self.confName = conf['name']
         else:
