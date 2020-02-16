@@ -27,3 +27,7 @@
           padding-left:15px;
           cursor: pointer;
 	}
+
+        .openDeck .number_cell {
+            visibility: hidden;
+        }

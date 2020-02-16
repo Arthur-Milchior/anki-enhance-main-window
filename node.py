@@ -496,12 +496,13 @@ class DeckNode:
             if parent['collapsed']:
                 return True
 
-    def getOpenTr(self):
+    def getOpenTr(self, showSubdeck):
+        klasses = ["deck"]
         if self.did == mw.col.conf['curDeck']:
-            klass = 'deck current'
-        else:
-            klass = 'deck'
-        return start_line(klass, self.did)
+            klasses.append('current')
+        if getUserOption("hide values of parent decks when subdecks are shown") and showSubdeck:
+            klasses.append("openDeck")
+        return start_line(" ".join(klasses), self.did)
 
     def getCss(self):
         cssStyle = ""
@@ -583,7 +584,7 @@ class DeckNode:
         if self.emptyRow(cnt):
             return ""
         return (
-            self.getOpenTr() +
+            self.getOpenTr(self.children and not self.deck['collapsed']) +
             self.getName(depth) +
             self.getNumberColumns() +
             gear(self.did) +
