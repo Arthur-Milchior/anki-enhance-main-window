@@ -14,6 +14,8 @@ def getUserOption(key=None, default=None):
     if key in userOption:
         return userOption[key]
     else:
+        userOption[key] = default
+        writeConfig()
         return default
 
 
