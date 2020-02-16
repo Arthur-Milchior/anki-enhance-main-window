@@ -82,14 +82,14 @@ def number_cell(colour, number, description):
     if description is None or description is False:
         description = ""
         t = f"""
-    <td align = 'right'>"""
+    <td align = 'right' class='number_cell'>"""
     else:
         description = f"""
       <span class = 'tooltiptext'>
         {description}
       </span>"""
         t = f"""
-    <td align = 'right' class = 'tooltip'>"""
+    <td align = 'right' class = 'tooltip number_cell'>"""
     # if number:
     t += f"""
       <font color = '{colour}'>
