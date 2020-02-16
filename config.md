@@ -94,8 +94,6 @@ The color of the decks which have an ended deck with marked cards. The notion of
 #### marked background color
 The color of decks who have marked cards but none of its descendants are both ended and have marked cards.
 
-
-
 ### Deck modifier
 A deck modifier is a symbol (or a word, etc.) whose presence in a deck name changes the meaning of the deck. When the meaning is changed, the coloration is also changed. It's not clear to the author of this add-on whether anyone apart from himself will need those, but if you want to use them, here is the explanation.
 

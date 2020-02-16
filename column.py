@@ -6,14 +6,16 @@ from aqt.utils import askUser
 from .config import getUserOption, writeConfig
 
 lastHandler = DeckBrowser._linkHandler
-def  _linkHandler(self,url):
+
+
+def _linkHandler(self, url):
     if ":" in url:
         (cmd, arg) = url.split(":")
-        if cmd=="dragColumn":
+        if cmd == "dragColumn":
             return columnHandler(self, arg)
-        elif cmd=="optsColumn":
-            return columnOptions(self,arg)
-    return lastHandler(self,url)
+        elif cmd == "optsColumn":
+            return columnOptions(self, arg)
+    return lastHandler(self, url)
 
 
 def columnHandler(self, arg):
@@ -25,11 +27,13 @@ def columnHandler(self, arg):
     writeConfig()
     self.show()
 
+
 def columnOptions(self, colpos):
     m = QMenu(self.mw)
     a = m.addAction(_("Delete"))
     a.triggered.connect(lambda: deleteColumn(self, colpos))
     m.exec_(QCursor.pos())
+
 
 def deleteColumn(self, colpos):
     if not askUser(_("""Are you sure you wish to delete this column ?""")):

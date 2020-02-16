@@ -6,13 +6,13 @@ from .config import getUserOption
 
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
-js_file = os.path.join(__location__,"deckbrowser.js")
-css_file = os.path.join(__location__,"defaultcss.css")
+js_file = os.path.join(__location__, "deckbrowser.js")
+css_file = os.path.join(__location__, "defaultcss.css")
 
-with open(js_file,"r") as f:
-    js= f.read()
-with open(css_file,"r") as f:
-    css= f.read()
+with open(js_file, "r") as f:
+    js = f.read()
+with open(css_file, "r") as f:
+    css = f.read()
 
 
 ######################
@@ -25,6 +25,8 @@ deck_header = f"""
     <th colspan = 5 align = left>
       {_("Deck")}
     </th>"""
+
+
 def column_header(heading, colpos):
     return f"""
     <th class = "count ui-draggable ui-draggable-handle ui-droppable" colpos = "{colpos}">
@@ -32,6 +34,7 @@ def column_header(heading, colpos):
         {_(heading)}
       </a>
     </th>"""
+
 
 option_header = """
     <th></th>"""
@@ -43,23 +46,26 @@ end_header = """
   </tr>"""
 
 
-
 ##############
 #deck's html #
 ##############
-def start_line(klass,did):
+def start_line(klass, did):
     return f"""
   <tr class = '{klass}' id = '{did}'>"""
 
-def collapse_children_html(did,name,prefix):
+
+def collapse_children_html(did, name, prefix):
     return f"""
       <a class = collapse onclick = 'return pycmd("collapse:{did}")' id = "{name}" href = "#{name}" >
          {prefix}
       </a>"""
+
+
 collapse_no_child = """
       <span class = collapse></span>"""
 
-def deck_name(depth,collapse,extraclass,did,cssStyle,name):
+
+def deck_name(depth, collapse, extraclass, did, cssStyle, name):
     return f"""
     <td class = decktd colspan = 5>
       {"&nbsp;"*6*depth}{collapse}
@@ -71,27 +77,28 @@ def deck_name(depth,collapse,extraclass,did,cssStyle,name):
     </td>
 """
 
+
 def number_cell(colour, number, description):
     if description is None or description is False:
         description = ""
-        t= f"""
+        t = f"""
     <td align = 'right'>"""
     else:
         description = f"""
       <span class = 'tooltiptext'>
         {description}
       </span>"""
-        t= f"""
+        t = f"""
     <td align = 'right' class = 'tooltip'>"""
     # if number:
-    t+=f"""
+    t += f"""
       <font color = '{colour}'>
         {number}
       </font>"""
     if description:
-        t+=f"""
+        t += f"""
       {description}"""
-    t+="""
+    t += """
     </td>"""
     return t
 
@@ -104,14 +111,17 @@ def gear(did):
       </a>
     </td>"""
 
+
 def deck_option_name(option):
     return f"""
     <td>
       {option}
     </td>"""
 
+
 end_line = """
   </tr>"""
+
 
 def bar(name, width, left, color, overlay):
     return f"""
@@ -121,6 +131,7 @@ def bar(name, width, left, color, overlay):
               {overlay}
             </span>
           </div>"""
+
 
 def progress(content):
     return f"""

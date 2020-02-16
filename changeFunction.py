@@ -8,9 +8,11 @@ from .debug import debug
 from .node import idToNode, renderDeckTree
 
 
-#based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._deckRow
+# based on Anki 2.0.36 aqt/deckbrowser.py DeckBrowser._deckRow
 def deckRow(self, node, depth, cnt):
-    return node.htmlRow(self,depth,cnt)
+    return node.htmlRow(self, depth, cnt)
+
+
 DeckBrowser._deckRow = deckRow
 
 DeckBrowser._renderDeckTree = renderDeckTree
