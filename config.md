@@ -74,17 +74,20 @@ The author of this add-on wants to know when a deck is empty. This is very impor
 The author also wants to know which deck has marked cards. Thus, the background of the deck's name with marked cards changes color.
 
 Both of these configurations can be changed as explained in this section. In particular, you can turn one or both of these options off by setting "color empty" and "color marked" to false.
-### Choice of color
 
+### Choice of color
 #### Color empty
 The color of the names of decks without new cards
+
 #### Color empty descendant
 The color of the names of decks with a descendant without new cards
+
 #### Default color
 The color of a deck whose every descendant has new cards.
 
 #### Default column color
 The color of the content of a deck, if no other color is specified.
+
 #### ended marked background color
 The color of the decks which have an ended deck with marked cards. The notion of ended deck will be explained in the next section of this documentation.
 
@@ -97,6 +100,7 @@ The color of decks who have marked cards but none of its descendants are both en
 A deck modifier is a symbol (or a word, etc.) whose presence in a deck name changes the meaning of the deck. When the meaning is changed, the coloration is also changed. It's not clear to the author of this add-on whether anyone apart from himself will need those, but if you want to use them, here is the explanation.
 
 The first three symbols currently have the same effect, but one day this effect may change, according to what the author wants to do.
+
 #### End symbol
 By default, this symbol is ";". It means that the deck is definitively done, and no new card may ever be added to it. When a deck has this symbol, neither itself nor its descendants will ever be colored.
 
