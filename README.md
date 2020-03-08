@@ -154,9 +154,6 @@ By default, this value is false if Percent is set to true, otherwise its default
 ### Subdecks
 When you consider a deck which has subdecks, you may want to consider cards in subdecks (it is done when the value is true), or you may want to ignore them (it is done when the value is false).
 
-### Short name
-Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and anki won't be able to display the main window.
-
 ## Percent Bar
 If the name is "bar", instead of a number, the column contain a percent bar.
 

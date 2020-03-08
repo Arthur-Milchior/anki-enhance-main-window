@@ -68,9 +68,6 @@ By default, this value is false if Percent is set to true, otherwise its default
 ### Subdecks
 When you consider a deck which has subdecks, a true value considers cards in subdecks; a false value ignores cards in subdecks.
 
-### Short name
-Please do not touch this value. It is used internally by the add-on. If you edit this value, the add-on will throw an error message and Anki won't be able to display the main window.
-
 ## Coloring decks
 The author of this add-on wants to know when a deck is empty. This is very important to him, because he wants to add new cards in them as soon as possible. Thus, this add-on changes the color of the names of empty decks, and of the names of decks with an empty descendant.
 
