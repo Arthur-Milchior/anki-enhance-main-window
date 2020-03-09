@@ -24,7 +24,7 @@ Whether you want a big number such as 34968 to be shown as "34.968" or as "34968
 When you open a deck in the deck browser, every number disappear. This makes the screen more readable for some people.
 
 ### color zero
-The color to use for the zero. If it's a string, use always this color. By default in Anki, it's a kind of grey. If you set it to false (default in this add-on), then the zero is not shown at all. You car remove this line or set it to  null to ensure that the default column is used. To obtain the grey which is the default value in Anki, you can set the color to "#e0e0e0".
+The color to use for the zero. If it's a string, use always this color. By default in Anki, it's a kind of grey. If you set it to false (default in this add-on), then the zero is not shown at all. You car remove this line or set it to `null` to ensure that the default column is used. To obtain the grey which is the default value in Anki, you can set the color to "#e0e0e0".
 
 ## Columns
 
@@ -47,13 +47,13 @@ The value for the key "present" is either true or false. If the value is true, t
 If this value is absent, by default, it is assumed that it should be true.
 
 ### Header
-The header of the column. If you leave «null» then the default header will be used. This description will be translated as much as it is possible to do it automatically. However, you can also choose to write your own description. You can use HTML in this description. You should use "<br/>" when you want a newline.
+The header of the column. If you leave `null` then the default header will be used. This description will be translated as much as it is possible to do it automatically. However, you can also choose to write your own description. You can use HTML in this description. You should use "<br/>" when you want a newline.
 
 ### Overlay
-The text shown when your mouse is over a number. It will describe what this number represents. You can set this key to false if you want no description to be present. And leave this value to null if you want to use the default value.
+The text shown when your mouse is over a number. It will describe what this number represents. You can set this key to false if you want no description to be present. And leave this value to `null` if you want to use the default value.
 
 ### Color
-The color in which the number is written in this column. You can use any color acceptable in an HTML document. Most standard color names should work. None means that it should use the same color as in the statistic window, if this color exists, or the default color otherwise.
+The color in which the number is written in this column. You can use any color acceptable in an HTML document. Most standard color names should work. `null` means that it should use the same color as in the statistic window, if this color exists, or the default color otherwise.
 
 ###  Percent
 true or false whether you want to show the percent of cards satisfying this column condition. For example, 23% of cards are new. Note that sometimes this would not make sense. For example, for the column «cards», the value will always be 100% (unless the deck is empty). For the column notes, the number would not really make any sense (formally, you'd get the percent of cards which is the first of its siblings in this deck).
