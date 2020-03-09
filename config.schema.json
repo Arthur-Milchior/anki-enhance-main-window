@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Enhance main window",
+  "properties": {
+    "hide values of parent decks when subdecks are shown": {
+      "type": "boolean",
+      "default": false
+    },
+    "default column color": {
+      "type": "string",
+      "default": "grey"
+    },
+    "option": {
+      "type": "boolean",
+      "default": true
+    },
+    "cap value": {
+      "type": ["integer", "null"],
+      "default": null
+    },
+    "color empty": {
+      "type": "string",
+      "default": "red"
+    },
+    "color empty descendant": {
+      "type": "string",
+      "default": "green"
+    },
+    "marked background color": {
+      "type": "string",
+      "default": "powderblue"
+    },
+    "ended marked background color": {
+      "type": "string",
+      "default": "yellow"
+    },
+    "end symbol": {
+      "type": "string",
+      "default": ";"
+    },
+    "book symbol": {
+      "type": "string",
+      "default": "{"
+    },
+    "given up symbol": {
+      "type": "string",
+      "default": "/"
+    },
+    "pause symbol": {
+      "type": "string",
+      "default": "="
+    },
+    "do color marked": {
+      "type": "boolean",
+      "default": true
+    },
+    "do color empty": {
+      "type": "boolean",
+      "default": true
+    },
+    "color zero": {
+      "type": "boolean",
+      "default": false
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "learning card",
+                "learning later",
+                "learning now",
+                "learning today",
+                "learning all",
+                "review due",
+                "due tomorrow",
+                "review today",
+                "review",
+                "unseen",
+                "unseen later",
+                "review later",
+                "reviewed today",
+                "reviewed today/repeated today",
+                "repeated today",
+                "repeated",
+                "new",
+                "unseen new",
+                "buried",
+                "buried/suspended",
+                "suspended",
+                "cards",
+                "notes/cards",
+                "notes",
+                "today",
+                "undue",
+                "mature/young",
+                "mature",
+                "young",
+                "marked",
+                "leech",
+                "new today",
+                "bar",
+                "flags",
+                "all flags",
+                "review later",
+                "repetition seen today",
+                "repetition today",
+                "cards seen today"
+              ]
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of this column. Not used by the add-on, here to help you understand the default."
+          },
+          "name": {
+            "type": "string",
+            "description": "The internal name of the column. Used to know what to display",
+            "enum": [
+              "learning card",
+              "learning later",
+              "learning now",
+              "learning today",
+              "learning all",
+              "review due",
+              "due tomorrow",
+              "review today",
+              "review",
+              "unseen",
+              "unseen later",
+              "review later",
+              "reviewed today",
+              "reviewed today/repeated today",
+              "repeated today",
+              "repeated",
+              "new",
+              "unseen new",
+              "buried",
+              "buried/suspended",
+              "suspended",
+              "cards",
+              "notes/cards",
+              "notes",
+              "today",
+              "undue",
+              "mature/young",
+              "mature",
+              "young",
+              "marked",
+              "leech",
+              "new today",
+              "bar",
+              "flags",
+              "flag 1",
+              "flag 2",
+              "flag 3",
+              "flag 4",
+              "all flags",
+              "review later",
+              "repetition seen today",
+              "repetition today",
+              "cards seen today"
+            ]
+          },
+          "color": {
+            "type": ["string", "null"],
+            "description": "Color of number shown in this column"
+          },
+          "present": {
+            "type": "boolean",
+            "description": "Whether to show this column. Allow to hide the column without deleting it from the configuration."
+          },
+          "absolute": {
+            "type": "boolean",
+            "description": "Whteher to give an absolute number."
+          },
+          "percent": {
+            "type": "boolean",
+            "description": "Whether to give a relative number."
+          },
+          "subdeck": {
+            "type": "boolean",
+            "description": "Do you count elements in subdecks"
+          },
+          "header": {
+            "type": ["string", "null"],
+            "description": "The header of the column. If you leave «null» then the default header will be used. This description will be translated as much as it is possible to do it automatically. However, you can also choose to write your own description. You can use HTML in this description. You should use `<br/>` when you want a newline.",
+            "default": ""
+          },
+          "overlay": {
+            "type": ["string", "null"],
+            "description": "The text shown when your mouse is over a number. It will describe what this number represents. You can set this key to false if you want no description to be present. And leave this value to null if you want to use the default value.",
+            "default": ""
+          }
+        }
+      }
+    }
+  }
+}
