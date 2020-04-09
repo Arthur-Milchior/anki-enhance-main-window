@@ -11,7 +11,7 @@ The number of reviewed cards to see today.
 The number of new cards to learn today.
 
 ### Repetition of today learning
-Numbers of review you'll see of cards in learning today.
+Number of reviews you'll see of cards in learning today.
 
 ## Numbers directly computed in the database
 ### learning now from today
@@ -65,8 +65,8 @@ see today. Similar to "learning repetition from today" apart from the negation.
 
 ### review due
 Number of cards which have already been seen and are due today (even
-if it's greater than the maximal number of cards the configuration allows
-to see for this deck)
+if it's greater than the maximum number of cards the configuration allows
+to see for this deck).
 
 ### unseen
 Number of cards which have never graduated and are not in learning.
@@ -88,10 +88,10 @@ Cards which have already been seen at least once, are not in learning,
 and are not due today.
 
 ### mature
-Any card already seen with an interval at least 21 days
+Any card already seen with an interval of at least 21 days
 
 ### young
-Any card already seen with an interval at least one day and at most 20 days
+Any card already seen with an interval of at least one day and at most 20 days
 
 ## Sum of previous values
 
@@ -112,7 +112,7 @@ from card from a past day, and from today).
 Isn't it equal to "Repetition of today learning"???TODO
 
 ### learning repetition
-Numbers of repetition of cards in learning, any days (sum of
+Number of repetition of cards in learning, any days (sum of
 repetitions from today and from past days)
 
 ### learning future repetition
@@ -156,14 +156,13 @@ Number of cards to see today which are not new
 ### today
 Number of cards to see today
 
-
 Similar to Repetition of today learning, but each card is counted
-once, even if it'll be seen multiple time.
+once, even if it'll be seen multiple times.
 
 
 # Sets
 When we consider note, we must use sets instead of numbers. Because a
-note may be in multiple subdeck, and we don't want to count it
+note may be in multiple subdecks, and we don't want to count it
 multiple times.
 
 The size of the sets are then counted and added in the previous
@@ -173,7 +172,7 @@ dictionnary.
 The set of nids from this deck
 
 ### marked
-the set of nids of marked notes in this deck
+The set of nids of marked notes in this deck
 
 # Texts
 Here, we have columns content which is more than just text
@@ -183,10 +182,10 @@ Here, we have columns content which is more than just text
 Number of minute/seconds before a card in learning can be seen (only
 if a value is not already given)
 
-## Pair of value
+## Pair of values
 Mature/young
 Notes/cards
-Buried/suspend
+Buried/suspended
 Reviewed/repeated today
 
 ## flags
