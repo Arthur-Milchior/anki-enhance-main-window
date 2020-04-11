@@ -24,21 +24,19 @@ There is not a lot of change in this column, apart from the decks's color.
 #### Empty decks
 If a (sub)deck is empty, it turns red. (You can configure the color.)
 
-This may not be useful for everybody. But if you want to know when a deck is empty in order to add new notes in it, it avoids having to check the number of new cards in each deck. For example, if you want to learn guitar chords, it will let you know that it is time to add new chords to Anki.
+This may not be useful for everybody. But if you want to know when a deck is empty in order to add new notes in it, it avoids having to check the number of new cards for each deck. For example, if you want to learn guitar chords, it will let you know that it is time to add new chords to Anki.
 
-Better ! If you use subdecks, the ancestors of an empty subdeck become blue (also configurable). This allows you to find decks with an empty subdeck. Hence, it helps finding empty subdecks without having to expand every top-level deck.
+Whats even better ! If you use subdecks, the ancestors (parent) of an empty subdeck become blue (also configurable). This allows you to find decks with an empty subdeck. Hence, it helps finding empty subdecks without having to expand every top-level deck.
 
-Note that, in some cases, you don't want the name to become red, e.g. you wanted to learn the name of the Greek letters. When you know all of them, you won't add any new note ever. You just have to add a semicolon (;) (it is configurable) to the name of the deck, and it will not turn red.
+Note that, in some cases, you don't want the name to become red, e.g. you wanted to learn the name of the Greek letters. When you know all of them, you won't add any new note ever. You just have to add a semicolon (;) (that is configurable) to the name of the deck, and it will not turn red.
 #### Marked cards
 Decks with marked card have a blue background (configurable). Furthermore, if the deck's name contains a semicolon (i.e. as explained above, the deck is ended), then the background become yellow.
-
 
 ### Learning
 The number of reviews of cards in learning. By default you will see the number of reviews that can be done now, and in parentheses the number of reviews which can be done later today.
 
 ### Review
 The number of cards which you have seen in the past, and that you should see today. By default, the number of cards you will see today. And in parentheses the number of cards you should see today, but that you will not see today because of your limit.
-
 
 ### New today
 This column called new in Anki. New means «number of new cards you will see today», with the caveat that it is not exactly true for subdecks.
@@ -53,22 +51,22 @@ By default, this column is hidden. Indeed, it became two columns «due now» and
 The number of cards which you have never answered. Most of these cards are cards you have never seen, but it also considers cards you have seen and buried. By default, the number of unseen cards which you will discover today, and in parentheses the number of unseen cards you will not see today.
 
 ### Young
-The number of cards whose delay is less than 3 weeks
+The number of cards whose interval is less than 3 weeks
 
 ### Mature
-The number of cards whose delay is least at least 3 weeks
+The number of cards whose interval is at least 3 weeks
 
 ### Buried
-The number of Buried cards. Recall that a buried card is a card you will not see today, either because you pressed the «bury» button, or because you saw another card from the same note, so it was automatically buried.
+The number of Buried cards. Keep in mind that a buried card is a card you will not see today, either because you pressed the «bury» button, or because you saw another card from the same note, so it was automatically buried.
 
 ### Suspended
-The number of Suspended cards. Recall that a suspended card is a card you will never see again, unless you unsuspend it manually (using the browser)
+The number of Suspended cards. Keep in mind that a suspended card is a card you will never see again, unless you unsuspend it manually (using the browser).
 
 ### Total
-The number of cards in this deck. It is not the sum of the preceding column, since it contains also cards you have already seen and which are not yet due (and it counts only once a card with multiple reviews).
+The number of cards in this deck. It is not the sum of the preceding column, since it contains also cards you have already seen and which are not yet due (and it counts a card with multiple reviews once).
 
 ### Today
-The total number of reviews you will see today (assuming you always press good)
+The total number of reviews you will see today (assuming you always rate good).
 
 ### Configuration
 The last column states which options group is used for the current deck. This avoids the pain of opening the menu to see the option names. Really useful when you have a lot of decks and want to see which is the last deck which used this old configuration you want to delete.
@@ -80,16 +78,14 @@ You can now edit this limit, or remove it entirely (by using a negative number).
 
 How to configure this add-on
 ===========================
-Most options are configurable. If some option is not, send me an email, I'll see what I can do.
+Most options are configurable. If some option is not configurable, send me an email and I'll see what I can do.
 
-In order to configure this add-on,(hence, to configure what is shown in the main window) Go to Tools>add-ons>[name of this add-on]>Config. You'll see the configuration file. It will also display in a small window a display of the configuration's rule. We copy them below
-
+In order to configure this add-on (hence, to configure what is shown in the main window), go to Tools>add-ons>[name of this add-on]>Config. You'll see the configuration file. It will also display in a small window a display of the configuration's rule. We copy them below
 
 # Configuration file
 
 
 # Configuration of Anki's addon Enhanced Main
-
 1. We first discuss the various small configurations related to the whole add-on.
 1. We then explain how to configure each column.
 1. We then explain how to configure coloring related to empty deck.
@@ -108,12 +104,10 @@ How much time to wait between refreshing the main window. In seconds. By default
 ### Option
 Whether you want to display the deck's Option group's name, at the end of its line.
 
-
 ### cap value
 By default, without add-on, Anki never shows number greater than a thousand. Instead, it shows 1000+. You can decide to change a thousand by an arbitrary number. Or leave this value to null, and always show the real value.
 
 Note that capping to a thousand does not usually make the rendering quicker.
-
 
 ## Columns
 
@@ -139,15 +133,15 @@ The header of the column. If you leave «null» then the default header will be 
 The text shown when your mouse is over a number. It will describe what this number represent. You can remove this key if you want no description to be present. And leave this value to null if you want to use the default value.
 
 ### Color
-The color in which the number is written in this column. You can use any color acceptable in an HTML document. The most standard color's name should work.
+The color in which the number is shown in this column. You can use any color acceptable in an HTML document. The most standard color's name should work.
 
 ### Percent
-true or false whether you want to show the percent of cards satisfying this colun condition. For example, 23% of cards are new. Note that sometime, this would not make sens. For example, for the column «cards», the value will always be 100% (unless the deck is empty). For the column notes, the number would not really make any sens (formally, you'd get the percent of cards which is the first of its sibling in this deck).
+true or false whether you want to show the percent of cards satisfying this column condition. For example, 23% of cards are new. Note that sometimes, this would not make sense. For example, for the column «cards», the value will always be 100% (unless the deck is empty). For the column notes, the number would not really make any sens (formally, you'd get the percent of cards which is the first of its sibling in this deck).
 
-By default, if percent is absent, it is assumed to be false.
+By default, percent is assumed to be false if absent.
 
 ### Absolute
-Whether you want an absolute number in your column. That is, a number which is not a percent, but an exact number.
+Whether you want an absolute number in your column or not. That is, a number which is not a percent, but an exact number.
 
 By default, this value is false if Percent is set to true, otherwise its default value is true.
 

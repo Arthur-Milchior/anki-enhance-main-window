@@ -4,7 +4,7 @@ from aqt import mw
 from .consts import *
 from .debug import debug
 
-# Associate to [column name][deck id name] some value corresponding to
+# Associate [column name][deck id name] to some value corresponding to
 # the number of card of this deck in this column
 values = dict()
 
