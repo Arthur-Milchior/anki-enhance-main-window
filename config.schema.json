@@ -7,6 +7,10 @@
       "type": "boolean",
       "default": false
     },
+    "hide values of parent decks": {
+      "type": "boolean",
+      "default": false
+    },
     "default column color": {
       "type": "string",
       "default": "grey"

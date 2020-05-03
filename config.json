@@ -375,6 +375,7 @@
     }
   ],
 
+  "hide values of parent decks": false,
   "hide values of parent decks when subdecks are shown": false,
   "default column color": "grey",
   "option" : true,

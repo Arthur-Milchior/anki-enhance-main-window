@@ -20,8 +20,11 @@ Note that capping to a thousand does not usually make the rendering quicker.
 ### Dot in number
 Whether you want a big number such as 34968 to be shown as "34.968" or as "34968".
 
+### hide values of parent decks
+If a deck has children, its number are not shown.
+
 ### hide values of parent decks when subdecks are shown
-When you open a deck in the deck browser, every number disappear. This makes the screen more readable for some people.
+Similar to last option, but it hides number only if the subdecks are shown.
 
 ### color zero
 The color to use for the zero. If it's a string, use always this color. By default in Anki, it's a kind of grey. If you set it to false (default in this add-on), then the zero is not shown at all. You car remove this line or set it to `null` to ensure that the default column is used. To obtain the grey which is the default value in Anki, you can set the color to "#e0e0e0".
