@@ -16,8 +16,8 @@ must be False in the code distributed, and thus no debugging occurs.
 ## Html
 Contains all of the HTML which is used to generate the list of decks in
 the main window. The HTML is either contained in a string variable if
-it does not change, or in a small function which takes parameter and
-return the HTML string.
+it does not change, or in a small function which takes a parameter and
+returns the HTML string.
 
 ## Strings
 This associates to each column some strings describing it: a short one

@@ -66,7 +66,7 @@ class DeckNode:
     containsGivenUpSymbol
 
     content of the deck's parent:
-    endedParent -- whether an ancestor's name contains the end symbol
+    endedParent -- whether an ancestor's deck name contains the end symbol
     givenUpParent
     pauseParent
 
@@ -147,7 +147,7 @@ class DeckNode:
         self.pause = self.pauseParent or self.containsPauseSymbol
 
     def initDicts(self):
-        """ Ensure that each dictionarry are created"""
+        """ Ensure that each dictionarry is created"""
         self.count = dict()
         for absoluteOrPercent in ["absolute", "percent", "both"]:
             self.count[absoluteOrPercent] = dict()
@@ -250,7 +250,8 @@ class DeckNode:
             self.children.append(childNode)
 
     def setEndedMarkedDescendant(self):
-        """ check whether there is a descendant empty with marked note. Set background color appropriately"""
+        """ check whether there is a descendant empty deck with a marked note.
+        Set the background color appropriately"""
         self.endedMarkedDescendant = False
         if self.ended and self.someMarked:
             self.endedMarkedDescendant = True
@@ -282,7 +283,7 @@ class DeckNode:
             self.addCount("absolute", "subdeck", False, name, count)
 
     def setSubdeckSets(self):
-        """ Compute subdeck's set as union of the deck set and children subdecks set"""
+        """Compute subdeck's set as union of the deck set and children subdecks set"""
         for name in self.noteSet["deck"]:
             newSet = self.noteSet["deck"][name]
             for child in self.children:

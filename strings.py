@@ -3,7 +3,7 @@ from anki.stats import *
 
 from .config import getUserOption
 
-# Associate to each column its title
+# Associate each column to its title
 defaultHeader = {**{
     "learning card": _("Learning")+"<br/>"+_("(card)"),
     "learning later": _("Learning")+"<br/>"+_("later")+" ("+_("review")+")",
@@ -53,9 +53,9 @@ def getHeader(conf):
     return header
 
 
-# Associate to each column its overlay
+# Associate each column to its overlay
 defaultOverlay = {**{
-    "learning card": _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduate)"""),
+    "learning card": _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduated)"""),
     "learning later": _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
     "learning now": _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
     "learning today": _("Cards in learning which are due now and then later."),

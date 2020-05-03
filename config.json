@@ -202,7 +202,7 @@
       "subdeck":true
     },
     {
-      "description":"Number of reviewed cards with interval at least 3 weeks/less than 3 weeks ",
+      "description":"Number of reviewed cards with interval at least 3 weeks/less than 3 weeks",
       "present":true,
       "name":"mature/young",
       "header":null,
@@ -321,7 +321,7 @@
       "subdeck": true
     },
     {
-      "description": "Percent bar showing the decks's repartition",
+      "description": "Percent bar showing the decks' repartition",
       "present":true,
       "header": "Total",
       "name": "bar",
