@@ -28,8 +28,11 @@ idToOldNode = dict()
 
 def idFromOldNode(node):
     # Look at aqt/deckbrowser.py for a description of node
-    (_, did, _, _, _, _) = node
-    return did
+    try:
+        (_, did, _, _, _, _) = node
+        return did
+    except:
+        return node.deck_id
 
 
 # The list of column in configuration which does not exists, and such that the user was already warned about it.
@@ -87,7 +90,10 @@ class DeckNode:
         self.endedParent = endedParent
         self.pauseParent = pauseParent
         self.givenUpParent = givenUpParent
-        self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCardsToday, self.oldChildren = oldNode
+        try:
+            self.name, self.did, self.dueRevCards, self.dueLrnReps, self.newCardsToday, self.oldChildren = oldNode
+        except:
+            self.name = oldNode.name; self.did = oldNode.deck_id; self.dueRevCards = oldNode.review_count; self.dueLrnReps = oldNode.learn_count; self.newCardsToday = oldNode.new_count; self.oldChildren = oldNode.children;
         self.deck = mw.col.decks.get(self.did)
 
         self.initDicts()
@@ -626,7 +632,10 @@ def renderDeckTree(self, nodes, depth=0):
         buf += end_header
 
         # convert nodes
-        nodes = [make(node) for node in nodes]
+        try:
+            nodes = [make(node) for node in nodes]
+        except:
+            nodes = [make(node) for node in nodes.children]
 
         buf += self._topLevelDragRow()
     else:
