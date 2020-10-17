@@ -1,3 +1,6 @@
+/* Prevent horizontal scrollbar overflow */
+body { overflow-x: hidden; }
+
 /* Tooltip container */
         a:hover{
          cursor: pointer;
