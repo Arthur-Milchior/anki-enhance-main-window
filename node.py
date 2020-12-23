@@ -506,7 +506,7 @@ class DeckNode:
     def getOpenTr(self, collapsed, haveSubdeck):
         showSubdeck = haveSubdeck and not collapsed
         klasses = ["deck"]
-        if self.did == mw.col.conf['curDeck']:
+        if self.did == mw.col.get_config('curDeck'):
             klasses.append('current')
         if ((getUserOption("hide values of parent decks") and haveSubdeck) or
             (getUserOption("hide values of parent decks when subdecks are shown") and showSubdeck)) :

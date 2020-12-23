@@ -11,7 +11,7 @@ values = dict()
 
 def computeValues():
     debug("Compute values")
-    cutoff = intTime() + mw.col.conf['collapseTime']
+    cutoff = intTime() + mw.col.get_config('collapseTime')
     today = mw.col.sched.today
     tomorrow = today+1
     yesterdayLimit = (mw.col.sched.dayCutoff-86400)*1000
