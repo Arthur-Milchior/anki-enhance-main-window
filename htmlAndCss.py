@@ -69,7 +69,7 @@ def deck_name(depth, collapse, extraclass, did, cssStyle, name):
     return f"""
     <td class = decktd colspan = 5>
       {"&nbsp;"*6*depth}{collapse}
-      <a class = "deck{extraclass}" onclick = "return pycmd('open:{did}')">
+      <a class = "deck{extraclass}" href="#" onclick = "return pycmd('open:{did}')">
         <font style = '{cssStyle}'>
           {name}
         </font>
