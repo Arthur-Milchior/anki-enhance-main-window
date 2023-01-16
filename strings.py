@@ -5,6 +5,7 @@ from .config import getUserOption
 
 # Associate each column to its title
 defaultHeader = {**{
+    "cards seen today": _("Today"),
     "learning card": _("Learning")+"<br/>"+_("(card)"),
     "learning later": _("Learning")+"<br/>"+_("later")+" ("+_("review")+")",
     "learning now": _("Learning")+"<br/>"+_("now"),
@@ -55,6 +56,7 @@ def getHeader(conf):
 
 # Associate each column to its overlay
 defaultOverlay = {**{
+    "cards seen today": _("Cards seen today")+"<br/>"+_("""cards you'll see today which are not new"""),
     "learning card": _("Cards in learning")+"<br/>"+_("""(either new cards you see again,""")+"<br/>"+_("or cards which you have forgotten recently.")+"<br/>"+_("""Assuming those cards didn't graduated)"""),
     "learning later": _("Review which will happen later.")+"<br/>"+_("Either because a review happened recently,")+"<br/>"+_("or because the card have many review left."),
     "learning now": _("Cards in learning which are due now.")+"<br/>"+_("If there are no such cards,")+"<br/>"+_("the time in minutes")+"<br/>"+_("or seconds until another learning card is due"),
